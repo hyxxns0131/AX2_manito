@@ -264,10 +264,13 @@ manito/
 ├─ js/
 │  ├─ participants.js  # 명단
 │  ├─ draw.js          # 매칭 알고리즘
-│  ├─ store.js         # 데이터 저장소 (Firebase / localStorage)
+│  ├─ store.js         # 데이터 저장소 (Supabase / Firebase / localStorage)
 │  ├─ auth.js          # 코드 로그인
 │  ├─ me.js
 │  └─ admin.js
+├─ supabase/
+│  ├─ schema.sql       # 테이블 + RLS + 함수 (SQL Editor에서 한 번 실행)
+│  └─ reset.sql        # 테스트 후 초기화
 ├─ firestore.rules     # Firestore 보안 규칙
 └─ assets/
    └─ icons/           # 선물상자, 리본, 하트 SVG
@@ -291,7 +294,9 @@ admin/secret      = { codes, assignment, threads }    // 관리자 전용
 ```
 
 > 배정을 다시 실행하면 모든 쪽지가 초기화됩니다. 코드 재발급 시에는 쪽지가 유지됩니다.
-> 새 쪽지는 몇 초마다 자동으로 불러옵니다 (local 2초 / firebase 5초).
+> 새 쪽지는 몇 초마다 자동으로 불러옵니다 (local 2초 / supabase·firebase 5초).
+>
+> Supabase 모드에서는 같은 내용을 `supabase/schema.sql`의 테이블(`people`, `settings`, `login_keys`, `profiles`, `chats`, `chat_items`, `admin_secret`)에 저장합니다.
 
 ---
 
@@ -301,12 +306,26 @@ admin/secret      = { codes, assignment, threads }    // 관리자 전용
 
 | 방식 | 장점 | 단점 |
 |---|---|---|
-| **Firebase (Firestore) — 추천** | 무료 범위 충분, 보안 규칙으로 "본인 배정만 읽기" 가능 | 프로젝트 생성 필요 |
-| Supabase | SQL 기반, RLS로 권한 제어 | 설정 약간 더 필요 |
-| Google Sheets + Apps Script | 시트로 결과 관리 쉬움 | 권한 제어가 약함 |
+| **Supabase — 기본값** | 무료 범위 충분, 모든 권한을 서버 함수에서 확인 | 프로젝트 생성 필요 |
+| Firebase (Firestore) | 보안 규칙으로 "본인 배정만 읽기" 가능 | 관리자 이메일 계정 필요 |
 | localStorage만 사용 | 설정 없음 | **한 기기에서만** 동작 (테스트용) |
 
-`js/store.js`에서 `STORE = "firebase" | "local"`로 전환합니다.
+`js/store.js`에서 `STORE = "supabase" | "firebase" | "local"`로 전환합니다.
+
+### Supabase 설정
+
+1. [supabase.com](https://supabase.com)에서 새 프로젝트 생성 (무료 플랜, 리전은 Seoul 추천)
+2. **SQL Editor**에 `supabase/schema.sql` 전체를 붙여넣고 **Run**
+3. 같은 곳에서 관리자 비밀번호 설정 (바꾸기 전에는 관리자 화면에 못 들어가요)
+   ```sql
+   update admin_secret set password_hash = extensions.crypt('원하는비밀번호', extensions.gen_salt('bf')) where id = 1;
+   ```
+4. **Project Settings > API**(또는 API Keys)에서 Project URL과 anon(public) 키를 복사해 `js/store.js`의 `supabaseConfig`에 입력
+5. 커밋·푸시 → Vercel이 자동으로 다시 배포
+
+- anon 키는 공개돼도 괜찮습니다. 테이블은 RLS로 모두 막혀 있고, 함수들이 로그인 키·관리자 비밀번호·공개 시각을 서버에서 확인합니다.
+- 마니띠 확인 시작 전에는 서버가 배정 정보를 내려주지 않고, 쪽지는 그 쪽지함의 두 사람만 읽고 쓸 수 있습니다.
+- 테스트 후 초기화: SQL Editor에서 `supabase/reset.sql` 실행 (명단·성별·비밀번호는 유지)
 
 > ⚠️ 배정 결과 전체를 클라이언트 JS에 넣으면 개발자도구로 누구나 볼 수 있습니다. 반드시 서버 측(Firestore 보안 규칙 등)에서 **로그인한 본인 문서만 읽도록** 막아주세요.
 
@@ -318,8 +337,8 @@ admin/secret      = { codes, assignment, threads }    // 관리자 전용
 # 1. 클론
 git clone <repo-url> && cd manito
 
-# 2. index.html / admin.html 을 더블클릭해서 바로 열어도 동작 (local 모드)
-#    여러 기기에서 접속하려면 정적 서버 또는 배포 필요
+# 2. Supabase 사용 시 위 "Supabase 설정" 진행 후 정적 서버로 열기
+#    (local 모드로 테스트하려면 js/store.js 의 STORE = "local")
 npx serve .
 
 # 3. Firebase 사용 시 js/store.js 의 STORE = "firebase", firebaseConfig 입력

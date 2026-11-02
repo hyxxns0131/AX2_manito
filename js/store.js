@@ -1,7 +1,14 @@
-// 데이터 저장소 — STORE 값으로 Firebase(Firestore) / localStorage 전환
+// 데이터 저장소 — STORE 값으로 Supabase / Firebase(Firestore) / localStorage 전환
 // participants.js 다음에 로드하세요. 전역 `store` 객체로 사용합니다.
 const store = (() => {
-  const STORE = "local"; // "firebase" | "local"
+  const STORE = "supabase"; // "supabase" | "firebase" | "local"
+
+  // Supabase 대시보드 > Project Settings > API 의 Project URL과 anon(public) 키
+  // anon 키는 공개돼도 괜찮아요. 권한은 supabase/schema.sql 의 함수들이 서버에서 확인합니다.
+  const supabaseConfig = {
+    url: "",
+    anonKey: "",
+  };
 
   // Firebase 사용 시 콘솔의 웹 앱 설정값을 입력하세요
   const firebaseConfig = {
@@ -63,18 +70,18 @@ const store = (() => {
     async hasIssuedCodes() { return Object.keys(lsLoad().keys).length > 0; },
 
     async getProfile(id) { return lsLoad().profiles[id] ?? null; },
-    async saveProfile(id, data) {
+    async saveProfile(session, data) {
       const db = lsLoad();
-      db.profiles[id] = { ...data, updatedAt: Date.now() };
+      db.profiles[session.id] = { ...data, updatedAt: Date.now() };
       lsSave(db);
     },
 
-    async findThreadFor(receiverId) {
-      const entry = Object.entries(lsLoad().chats).find(([, c]) => c.receiverId === receiverId);
+    async findThreadFor(session) {
+      const entry = Object.entries(lsLoad().chats).find(([, c]) => c.receiverId === session.id);
       return entry?.[0] ?? null;
     },
-    async getChat(threadId) { return lsLoad().chats[threadId]?.items ?? []; },
-    async sendChat(threadId, item) {
+    async getChat(session, threadId) { return lsLoad().chats[threadId]?.items ?? []; },
+    async sendChat(session, threadId, item) {
       const db = lsLoad();
       const chat = db.chats[threadId];
       if (!chat) throw new Error("쪽지함을 찾을 수 없어요.");
@@ -159,20 +166,20 @@ const store = (() => {
     hasIssuedCodes: async () => true, // 목록 조회가 막혀 있어 확인 불가
 
     getProfile: id => fbGet(`profiles/${id}`),
-    saveProfile: (id, data) => fbSet(`profiles/${id}`, { ...data, updatedAt: Date.now() }),
+    saveProfile: (session, data) => fbSet(`profiles/${session.id}`, { ...data, updatedAt: Date.now() }),
 
-    async findThreadFor(receiverId) {
+    async findThreadFor(session) {
       const { fs, db } = await fb();
-      const q = fs.query(fs.collection(db, "chats"), fs.where("receiverId", "==", receiverId), fs.limit(1));
+      const q = fs.query(fs.collection(db, "chats"), fs.where("receiverId", "==", session.id), fs.limit(1));
       const snap = await fs.getDocs(q);
       return snap.empty ? null : snap.docs[0].id;
     },
-    async getChat(threadId) {
+    async getChat(session, threadId) {
       const { fs, db } = await fb();
       const q = fs.query(fs.collection(db, `chats/${threadId}/items`), fs.orderBy("at"));
       return (await fs.getDocs(q)).docs.map(d => d.data());
     },
-    async sendChat(threadId, item) {
+    async sendChat(session, threadId, item) {
       const { fs, db } = await fb();
       await fs.addDoc(fs.collection(db, `chats/${threadId}/items`), item);
     },
@@ -216,7 +223,66 @@ const store = (() => {
     },
   };
 
-  const impl = STORE === "firebase" ? firebase : local;
+  /* ───────────── Supabase ───────────── */
+
+  // 테이블은 RLS로 막혀 있고 schema.sql의 함수(RPC)로만 읽고 씀
+  async function rpc(fn, args = {}) {
+    const { url, anonKey } = supabaseConfig;
+    if (!url || !anonKey) throw new Error("js/store.js 의 supabaseConfig를 먼저 채워주세요.");
+    const headers = { apikey: anonKey, "Content-Type": "application/json" };
+    if (anonKey.startsWith("eyJ")) headers.Authorization = `Bearer ${anonKey}`; // 예전 JWT 형식 키
+    const res = await fetch(`${url.replace(/\/$/, "")}/rest/v1/rpc/${fn}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(args),
+    });
+    const data = await res.json().catch(() => null); // 반환값 없는 함수는 본문이 비어 있음
+    if (!res.ok) throw new Error(data?.message || `서버 오류 (${res.status})`);
+    return data;
+  }
+
+  // 관리자 함수는 매번 서버에서 비밀번호를 다시 확인
+  let adminPassword = null;
+  const asAdmin = (fn, args = {}) => rpc(fn, { p_password: adminPassword, ...args });
+
+  const supabase = {
+    async getPeople() {
+      const people = await rpc("get_people");
+      return people?.length ? people : PARTICIPANTS.map(p => ({ ...p }));
+    },
+    async getSettings() {
+      return { ...DEFAULT_SETTINGS, ...(await rpc("get_settings")) };
+    },
+
+    findKey: key => rpc("find_key", { p_key: key }),
+    hasIssuedCodes: async () => true, // 서버에 있으니 브라우저와 무관
+
+    getProfile: id => rpc("get_profile", { p_id: id }),
+    saveProfile: (session, data) => rpc("save_profile", {
+      p_key: session.key, p_likes: data.likes, p_dislikes: data.dislikes, p_allergy: data.allergy,
+    }),
+
+    findThreadFor: session => rpc("find_thread_for", { p_key: session.key }),
+    getChat: (session, threadId) => rpc("get_chat", { p_key: session.key, p_thread: threadId }),
+    sendChat: (session, threadId, item) =>
+      rpc("send_chat", { p_key: session.key, p_thread: threadId, p_text: item.text }),
+
+    getFinalReveal: () => rpc("get_final_reveal"),
+
+    async adminLogin({ password }) {
+      await rpc("admin_login", { p_password: password });
+      adminPassword = password;
+    },
+    adminLoadSecret: () => asAdmin("admin_load_secret"),
+    adminSavePeople: people => asAdmin("admin_save_people", { p_people: people }),
+    adminSaveSettings: patch => asAdmin("admin_save_settings", { p_patch: patch }),
+    adminCommit: ({ codes, assignment, threads, keys, resetChats }) => asAdmin("admin_commit", {
+      p_codes: codes, p_assignment: assignment, p_threads: threads, p_keys: keys,
+      p_reset_chats: !!resetChats,
+    }),
+  };
+
+  const impl = { supabase, firebase, local }[STORE];
 
   /* ───────────── 공개 API ───────────── */
 
@@ -239,13 +305,15 @@ const store = (() => {
 
   const hasIssuedCodes = () => impl.hasIssuedCodes();
 
-  const saveProfile = (session, data) => impl.saveProfile(session.id, data);
+  const saveProfile = (session, data) => impl.saveProfile(session, data);
 
   // 익명 쪽지: 쪽지함 하나 = 마니또(giver, 챙겨주는 사람) ↔ 마니띠(receiver, 챙김 받는 사람)
   // 쪽지함 id는 무작위라 마니띠 쪽에서는 마니또가 누군지 알 수 없음
-  const findThreadFor = receiverId => impl.findThreadFor(receiverId);
-  const getChat = threadId => impl.getChat(threadId);
-  const sendChat = (threadId, from, text) => impl.sendChat(threadId, { from, text, at: Date.now() });
+  // findThreadFor: 나(session)를 챙겨주는 마니또와의 쪽지함
+  const findThreadFor = session => impl.findThreadFor(session);
+  const getChat = (session, threadId) => impl.getChat(session, threadId);
+  const sendChat = (session, threadId, from, text) =>
+    impl.sendChat(session, threadId, { from, text, at: Date.now() });
 
   const getFinalReveal = () => impl.getFinalReveal();
 
