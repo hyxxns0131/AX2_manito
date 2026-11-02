@@ -12,7 +12,7 @@ const store = (() => {
   };
 
   // local 모드 전용 관리자 비밀번호 (firebase 모드는 Firebase Auth 이메일 로그인 사용)
-  const LOCAL_ADMIN_PASSWORD = "manito-admin";
+  const LOCAL_ADMIN_PASSWORD = "ax2manitomato";
 
   const DEFAULT_SETTINGS = { mode: "balanced", customPct: 50, revealAt: null, drawnAt: null };
 
