@@ -311,9 +311,9 @@ admin/secret      = { codes, assignment }             // 관리자 전용
 # 1. 클론
 git clone <repo-url> && cd manito
 
-# 2. 로컬 서버 (ES Module 사용으로 file:// 대신 서버 필요)
+# 2. index.html / admin.html 을 더블클릭해서 바로 열어도 동작 (local 모드)
+#    여러 기기에서 접속하려면 정적 서버 또는 배포 필요
 npx serve .
-# 또는 VS Code Live Server
 
 # 3. Firebase 사용 시 js/store.js 의 STORE = "firebase", firebaseConfig 입력
 #    + firestore.rules 배포, Authentication에서 관리자 이메일 계정 생성
@@ -330,6 +330,7 @@ npx serve .
 2. 29명 **성별 입력**
 3. 매칭 **모드 선택** (`balanced` 기본)
 4. **배정 실행** → 결과 검증(본인 0건, 쌍방 0건, 이성 매칭 비율) 표시
+   + "누가 누구의 마니또?" 전체 배정표 표시 (복사 가능)
 5. **개인 코드 발급** → 각자에게 DM으로 전달
 6. **공개 일시** 설정 → 그 전엔 마니또 카드가 잠겨 있음
 
