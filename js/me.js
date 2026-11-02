@@ -1,6 +1,8 @@
-// 마이페이지 — 내 프로필, 마니또 공개, 한마디, 받은 편지함
+// 마이페이지 — 내 프로필, 마니띠 확인, 익명 쪽지, 정체 공개
+// 마니또 = 나를 챙겨주는 사람, 마니띠 = 내가 챙겨주는 사람
 const session = requireSession();
 const $ = sel => document.querySelector(sel);
+const POLL_MS = store.STORE === "firebase" ? 5000 : 2000;
 
 function chips(text) {
   const frag = document.createDocumentFragment();
@@ -31,6 +33,14 @@ function formatDate(ts) {
   });
 }
 
+function formatTime(ts) {
+  const d = new Date(ts);
+  const sameDay = d.toDateString() === new Date().toDateString();
+  return d.toLocaleString("ko-KR", sameDay
+    ? { hour: "2-digit", minute: "2-digit" }
+    : { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+
 async function initProfile() {
   const form = $("#profile-form");
   const p = (await store.getProfile(session.id)) ?? {};
@@ -51,18 +61,18 @@ async function initProfile() {
   });
 }
 
-async function initManito(people, settings) {
-  const receiverId = await store.getMyReceiverId(session);
+// 반환: { receiver, lockedUntil } — receiver가 null이면 아직 볼 수 없음
+async function initManito(people, settings, receiverId) {
   const receiver = people.find(p => p.id === receiverId);
   const revealAt = settings.revealAt ? new Date(settings.revealAt).getTime() : null;
 
   if (!receiver) {
-    $("#manito-status").textContent = "아직 마니또 배정 전이에요. 조금만 기다려 주세요!";
-    return null;
+    $("#manito-status").textContent = "아직 배정 전이에요. 조금만 기다려 주세요!";
+    return { receiver: null, lockedUntil: null };
   }
   if (revealAt && Date.now() < revealAt) {
     $("#manito-status").textContent = `${formatDate(revealAt)}에 공개돼요 🔒`;
-    return null;
+    return { receiver: null, lockedUntil: revealAt };
   }
 
   $("#manito-status").hidden = true;
@@ -80,7 +90,7 @@ async function initManito(people, settings) {
     $("#their-profile").hidden = false;
   };
 
-  // 재배정되면 새 마니또는 다시 뒤집어 보도록 receiverId까지 키에 포함
+  // 재배정되면 새 마니띠는 다시 뒤집어 보도록 receiverId까지 키에 포함
   const openedKey = `manito-opened-${session.id}-${receiverId}`;
   const open = () => {
     card.classList.add("is-open");
@@ -94,53 +104,144 @@ async function initManito(people, settings) {
   if (opened) open();
   else card.addEventListener("click", open, { once: true });
 
-  return receiver;
+  return { receiver, lockedUntil: null };
 }
 
-async function initMessage(receiver) {
-  const form = $("#message-form");
-  bindCounter(form.message, $("#message-count"));
-  if (!receiver) {
-    form.message.disabled = true;
-    form.querySelector("button").disabled = true;
-    form.message.placeholder = "마니또가 공개되면 한마디를 남길 수 있어요.";
-    return;
+/* ───── 익명 쪽지 ───── */
+
+// role: 이 화면에서 나의 역할 ("giver" = 내가 챙겨주는 쪽, "receiver" = 챙김 받는 쪽)
+function createChat(root, role) {
+  const log = root.querySelector(".chat-log");
+  const form = root.querySelector(".chat-form");
+  const empty = root.querySelector(".chat-empty");
+  let threadId = null;
+  let count = -1;
+
+  function render(items) {
+    if (items.length === count) return;
+    const nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+    count = items.length;
+    empty.hidden = items.length > 0;
+    log.replaceChildren(...items.map(m => {
+      const li = document.createElement("li");
+      li.className = `bubble ${m.from === role ? "is-mine" : "is-theirs"}`;
+      const text = document.createElement("p");
+      text.textContent = m.text;
+      const time = document.createElement("time");
+      time.textContent = formatTime(m.at);
+      li.append(text, time);
+      return li;
+    }));
+    if (nearBottom || items.at(-1)?.from === role) log.scrollTop = log.scrollHeight;
   }
-  $("#message-to").textContent = receiver.name;
-  const mine = await store.getMyMessage(session);
-  if (mine?.toId === receiver.id) form.message.value = mine.text;
-  form.message.dispatchEvent(new Event("input"));
+
+  async function refresh() {
+    if (threadId) render(await store.getChat(threadId));
+  }
 
   form.addEventListener("submit", async e => {
     e.preventDefault();
-    await store.saveMyMessage(session, receiver.id, form.message.value.trim());
-    flash($("#message-saved"));
+    const text = form.text.value.trim();
+    if (!text || !threadId) return;
+    form.text.value = "";
+    await store.sendChat(threadId, role, text);
+    await refresh();
+    form.text.focus();
   });
+
+  return {
+    refresh,
+    open(id) {
+      threadId = id;
+      root.classList.remove("is-locked");
+      form.text.disabled = false;
+      form.querySelector("button").disabled = false;
+      return refresh();
+    },
+    lock(message) {
+      root.classList.add("is-locked");
+      form.text.disabled = true;
+      form.querySelector("button").disabled = true;
+      empty.textContent = message;
+      empty.hidden = false;
+    },
+    setTitle(text) { root.querySelector(".chat-title-name").textContent = text; },
+  };
 }
 
-async function initInbox() {
-  const list = $("#inbox");
-  const msgs = await store.getInbox(session.id);
-  $("#inbox-empty").hidden = msgs.length > 0;
-  list.replaceChildren(...msgs.map(m => {
+/* ───── 정체 공개 ───── */
+
+function renderFinal(people, assignment) {
+  const section = $("#final");
+  if (!assignment) { section.hidden = true; return null; }
+  const byId = Object.fromEntries(people.map(p => [p.id, p]));
+  const giverId = Object.keys(assignment).find(g => assignment[g] === session.id);
+  const myGiver = byId[giverId];
+
+  $("#final-giver").textContent = myGiver?.name ?? "?";
+  $("#final-list").replaceChildren(...people.map(p => {
     const li = document.createElement("li");
-    li.className = "letter";
-    const from = document.createElement("p");
-    from.className = "letter-from";
-    from.textContent = "💌 누군가로부터";
-    const body = document.createElement("p");
-    body.className = "letter-body";
-    body.textContent = m.text;
-    li.append(from, body);
+    li.className = "assign-row";
+    if (p.id === session.id || assignment[p.id] === session.id) li.classList.add("is-me");
+    const from = document.createElement("span");
+    from.className = "assign-name";
+    from.textContent = p.name;
+    const arrow = document.createElement("span");
+    arrow.className = "assign-arrow";
+    arrow.textContent = "→";
+    const to = document.createElement("span");
+    to.className = "assign-name assign-to";
+    to.textContent = byId[assignment[p.id]]?.name ?? "?";
+    li.append(from, arrow, to);
     return li;
   }));
+  section.hidden = false;
+  return myGiver;
 }
+
+/* ───── 시작 ───── */
 
 if (session) (async () => {
   $("#logout").addEventListener("click", logout);
-  const [people, settings] = await Promise.all([store.getPeople(), store.getSettings()]);
+  const [people, settings, mine] = await Promise.all([
+    store.getPeople(), store.getSettings(), store.getMyAssignment(session),
+  ]);
   $("#me-name").textContent = people.find(p => p.id === session.id)?.name ?? "";
   initProfile();
-  initInbox();
-  initMessage(await initManito(people, settings));
+
+  const { receiver, lockedUntil } = await initManito(people, settings, mine.receiverId);
+  const toManitti = createChat($("#chat-giver"), "giver");   // 내가 마니또 → 마니띠에게 익명
+  const toManito = createChat($("#chat-receiver"), "receiver"); // 익명의 내 마니또와
+
+  if (receiver) {
+    toManitti.setTitle(receiver.name);
+    await toManitti.open(mine.threadId);
+    const inThread = await store.findThreadFor(session.id);
+    if (inThread) await toManito.open(inThread);
+    else toManito.lock("쪽지함이 아직 준비되지 않았어요.");
+  } else {
+    const msg = lockedUntil
+      ? `${formatDate(lockedUntil)}부터 쪽지를 주고받을 수 있어요 🔒`
+      : "배정 후에 쪽지를 주고받을 수 있어요.";
+    toManitti.lock(msg);
+    toManito.lock(msg);
+  }
+
+  let revealed = false;
+  async function checkFinal() {
+    const giver = renderFinal(people, await store.getFinalReveal());
+    revealed = !!giver;
+    toManito.setTitle(giver ? giver.name : "???");
+  }
+  await checkFinal();
+
+  // 새 쪽지·공개 시각·재배정을 주기적으로 확인
+  setInterval(async () => {
+    if (lockedUntil && Date.now() >= lockedUntil) return location.reload();
+    const s = await store.getSettings();
+    if (s.drawnAt !== settings.drawnAt) return location.reload();
+    if (store.isFinalRevealed(s) !== revealed) await checkFinal();
+    toManitti.refresh();
+    toManito.refresh();
+  }, POLL_MS);
 })();

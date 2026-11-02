@@ -14,7 +14,13 @@ const store = (() => {
   // local 모드 전용 관리자 비밀번호 (firebase 모드는 Firebase Auth 이메일 로그인 사용)
   const LOCAL_ADMIN_PASSWORD = "ax2manitomato";
 
-  const DEFAULT_SETTINGS = { mode: "balanced", customPct: 50, revealAt: null, drawnAt: null };
+  const DEFAULT_SETTINGS = {
+    mode: "balanced",
+    customPct: 50,
+    revealAt: null,       // 참가자가 자기 마니띠를 볼 수 있는 시각 (ISO)
+    finalRevealAt: null,  // 누가 누구의 마니또였는지 정체 공개 시각 (ms)
+    drawnAt: null,
+  };
 
   async function sha256(text) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -23,7 +29,8 @@ const store = (() => {
 
   // 로그인 키: 이름 id + 개인 코드의 해시. 배정 문서의 id로 쓰이므로 코드를 모르면 찾을 수 없음
   const loginKey = (id, code) => sha256(`${id}:${code.trim().toUpperCase()}`);
-  const messageId = key => sha256(`msg:${key}`);
+
+  const isFinalRevealed = s => s.finalRevealAt != null && Date.now() >= s.finalRevealAt;
 
   /* ───────────── localStorage ───────────── */
 
@@ -32,15 +39,16 @@ const store = (() => {
   function lsLoad() {
     let db = null;
     try { db = JSON.parse(localStorage.getItem(LS_KEY)); } catch {}
-    return {
+    const merged = {
       people: PARTICIPANTS.map(p => ({ ...p })),
-      settings: { ...DEFAULT_SETTINGS },
-      keys: {},      // { loginKey: { id, receiverId } }
+      keys: {},      // { loginKey: { id, receiverId, threadId } }
       profiles: {},  // { id: { likes, dislikes, allergy, updatedAt } }
-      messages: {},  // { messageId: { toId, text, updatedAt } }
-      secret: { codes: {}, assignment: {} },
+      chats: {},     // { threadId: { receiverId, items: [{ from, text, at }] } }
       ...db,
     };
+    merged.settings = { ...DEFAULT_SETTINGS, ...db?.settings };
+    merged.secret = { codes: {}, assignment: {}, threads: {}, ...db?.secret };
+    return merged;
   }
 
   function lsSave(db) {
@@ -60,14 +68,22 @@ const store = (() => {
       lsSave(db);
     },
 
-    async getMessage(msgId) { return lsLoad().messages[msgId] ?? null; },
-    async saveMessage(msgId, data) {
+    async findThreadFor(receiverId) {
+      const entry = Object.entries(lsLoad().chats).find(([, c]) => c.receiverId === receiverId);
+      return entry?.[0] ?? null;
+    },
+    async getChat(threadId) { return lsLoad().chats[threadId]?.items ?? []; },
+    async sendChat(threadId, item) {
       const db = lsLoad();
-      db.messages[msgId] = { ...data, updatedAt: Date.now() };
+      const chat = db.chats[threadId];
+      if (!chat) throw new Error("쪽지함을 찾을 수 없어요.");
+      chat.items.push(item);
       lsSave(db);
     },
-    async getInbox(id) {
-      return Object.values(lsLoad().messages).filter(m => m.toId === id);
+
+    async getFinalReveal() {
+      const db = lsLoad();
+      return isFinalRevealed(db.settings) ? db.secret.assignment : null;
     },
 
     async adminLogin({ password }) {
@@ -84,11 +100,16 @@ const store = (() => {
       db.settings = { ...db.settings, ...patch };
       lsSave(db);
     },
-    async adminCommit({ codes, assignment, keys, clearMessages }) {
+    async adminCommit({ codes, assignment, threads, keys, resetChats }) {
       const db = lsLoad();
       db.keys = keys;
-      db.secret = { codes, assignment };
-      if (clearMessages) db.messages = {};
+      db.secret = { codes, assignment, threads };
+      if (resetChats) {
+        db.chats = {};
+        for (const [giverId, threadId] of Object.entries(threads)) {
+          db.chats[threadId] = { receiverId: assignment[giverId], items: [] };
+        }
+      }
       lsSave(db);
     },
   };
@@ -138,12 +159,25 @@ const store = (() => {
     getProfile: id => fbGet(`profiles/${id}`),
     saveProfile: (id, data) => fbSet(`profiles/${id}`, { ...data, updatedAt: Date.now() }),
 
-    getMessage: msgId => fbGet(`messages/${msgId}`),
-    saveMessage: (msgId, data) => fbSet(`messages/${msgId}`, { ...data, updatedAt: Date.now() }),
-    async getInbox(id) {
+    async findThreadFor(receiverId) {
       const { fs, db } = await fb();
-      const q = fs.query(fs.collection(db, "messages"), fs.where("toId", "==", id));
+      const q = fs.query(fs.collection(db, "chats"), fs.where("receiverId", "==", receiverId), fs.limit(1));
+      const snap = await fs.getDocs(q);
+      return snap.empty ? null : snap.docs[0].id;
+    },
+    async getChat(threadId) {
+      const { fs, db } = await fb();
+      const q = fs.query(fs.collection(db, `chats/${threadId}/items`), fs.orderBy("at"));
       return (await fs.getDocs(q)).docs.map(d => d.data());
+    },
+    async sendChat(threadId, item) {
+      const { fs, db } = await fb();
+      await fs.addDoc(fs.collection(db, `chats/${threadId}/items`), item);
+    },
+
+    // 보안 규칙이 공개 시각 전에는 읽기를 막음
+    async getFinalReveal() {
+      try { return (await fbGet("reveal/all"))?.assignment ?? null; } catch { return null; }
     },
 
     async adminLogin({ email, password }) {
@@ -151,7 +185,7 @@ const store = (() => {
       await auth.signInWithEmailAndPassword(authInst, email, password);
     },
     async adminLoadSecret() {
-      return (await fbGet("admin/secret")) ?? { codes: {}, assignment: {} };
+      return { codes: {}, assignment: {}, threads: {}, ...(await fbGet("admin/secret")) };
     },
     async adminSavePeople(people) {
       const { fs, db } = await fb();
@@ -160,15 +194,21 @@ const store = (() => {
       await batch.commit();
     },
     adminSaveSettings: patch => fbSet("settings/main", patch, true),
-    async adminCommit({ codes, assignment, keys, clearMessages }) {
+    async adminCommit({ codes, assignment, threads, keys, resetChats }) {
       const { fs, db } = await fb();
       const batch = fs.writeBatch(db);
-      const old = await fs.getDocs(fs.collection(db, "keys"));
-      old.forEach(d => batch.delete(d.ref));
+      (await fs.getDocs(fs.collection(db, "keys"))).forEach(d => batch.delete(d.ref));
       Object.entries(keys).forEach(([k, v]) => batch.set(fs.doc(db, `keys/${k}`), v));
-      batch.set(fs.doc(db, "admin/secret"), { codes, assignment });
-      if (clearMessages) {
-        (await fs.getDocs(fs.collection(db, "messages"))).forEach(d => batch.delete(d.ref));
+      batch.set(fs.doc(db, "admin/secret"), { codes, assignment, threads });
+      batch.set(fs.doc(db, "reveal/all"), { assignment });
+      if (resetChats) {
+        for (const chat of (await fs.getDocs(fs.collection(db, "chats"))).docs) {
+          (await fs.getDocs(fs.collection(db, `chats/${chat.id}/items`))).forEach(d => batch.delete(d.ref));
+          batch.delete(chat.ref);
+        }
+        for (const [giverId, threadId] of Object.entries(threads)) {
+          batch.set(fs.doc(db, `chats/${threadId}`), { receiverId: assignment[giverId] });
+        }
       }
       await batch.commit();
     },
@@ -181,8 +221,6 @@ const store = (() => {
   const getPeople = () => impl.getPeople();
   const getSettings = () => impl.getSettings();
   const getProfile = id => impl.getProfile(id);
-  const getInbox = async id =>
-    (await impl.getInbox(id)).filter(m => m.text).sort((a, b) => b.updatedAt - a.updatedAt);
 
   // 코드 확인 → 성공 시 세션 { id, key }
   async function login(id, code) {
@@ -191,49 +229,53 @@ const store = (() => {
     return doc && doc.id === id ? { id, key } : null;
   }
 
-  async function getMyReceiverId(session) {
+  // 내 배정: { receiverId, threadId } (배정 전이면 null 값)
+  async function getMyAssignment(session) {
     const doc = await impl.findKey(session.key);
-    return doc?.receiverId ?? null;
+    return { receiverId: doc?.receiverId ?? null, threadId: doc?.threadId ?? null };
   }
 
   const saveProfile = (session, data) => impl.saveProfile(session.id, data);
 
-  async function getMyMessage(session) {
-    return impl.getMessage(await messageId(session.key));
-  }
+  // 익명 쪽지: 쪽지함 하나 = 마니또(giver, 챙겨주는 사람) ↔ 마니띠(receiver, 챙김 받는 사람)
+  // 쪽지함 id는 무작위라 마니띠 쪽에서는 마니또가 누군지 알 수 없음
+  const findThreadFor = receiverId => impl.findThreadFor(receiverId);
+  const getChat = threadId => impl.getChat(threadId);
+  const sendChat = (threadId, from, text) => impl.sendChat(threadId, { from, text, at: Date.now() });
 
-  async function saveMyMessage(session, toId, text) {
-    await impl.saveMessage(await messageId(session.key), { toId, text });
-  }
+  const getFinalReveal = () => impl.getFinalReveal();
 
   const adminLogin = cred => impl.adminLogin(cred);
   const adminLoadSecret = () => impl.adminLoadSecret();
   const adminSavePeople = people => impl.adminSavePeople(people);
   const adminSaveSettings = patch => impl.adminSaveSettings(patch);
 
-  // 코드·배정을 저장하고 로그인 키 문서를 다시 만듦
-  async function adminCommit({ codes, assignment, clearMessages = false }) {
+  // 코드·배정을 저장하고 로그인 키 문서를 다시 만듦 (resetChats면 쪽지함도 새로 만듦)
+  async function adminCommit({ codes, assignment, threads, resetChats = false }) {
     const keys = {};
     for (const [id, code] of Object.entries(codes)) {
       keys[await loginKey(Number(id), code)] = {
         id: Number(id),
         receiverId: assignment[id] ?? null,
+        threadId: threads[id] ?? null,
       };
     }
-    await impl.adminCommit({ codes, assignment, keys, clearMessages });
+    await impl.adminCommit({ codes, assignment, threads, keys, resetChats });
   }
 
   return {
     STORE,
+    isFinalRevealed,
     getPeople,
     getSettings,
     getProfile,
-    getInbox,
     login,
-    getMyReceiverId,
+    getMyAssignment,
     saveProfile,
-    getMyMessage,
-    saveMyMessage,
+    findThreadFor,
+    getChat,
+    sendChat,
+    getFinalReveal,
     adminLogin,
     adminLoadSecret,
     adminSavePeople,

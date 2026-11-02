@@ -25,12 +25,25 @@ service cloud.firestore {
                    && request.resource.data.dislikes.size() <= 100;
     }
 
-    // 한마디: 문서 id가 보낸 사람 키의 해시라 보낸 사람이 드러나지 않음
-    match /messages/{id} {
+    // 익명 대화: 대화방 id가 무작위라 받는 사람 쪽에선 보낸 사람이 드러나지 않음
+    match /chats/{threadId} {
       allow read: if true;
-      allow delete: if isAdmin();
-      allow create, update: if request.resource.data.keys().hasOnly(['toId', 'text', 'updatedAt'])
-                            && request.resource.data.text.size() <= 200;
+      allow write: if isAdmin();
+      match /items/{itemId} {
+        allow read: if true;
+        allow delete: if isAdmin();
+        allow create: if request.resource.data.keys().hasOnly(['from', 'text', 'at'])
+                      && request.resource.data.from in ['giver', 'receiver']
+                      && request.resource.data.text is string
+                      && request.resource.data.text.size() <= 200;
+      }
+    }
+
+    // 전체 배정 공개본: 관리자가 정한 정체 공개 시각 이후에만 읽기 가능
+    match /reveal/{doc} {
+      allow read: if request.time.toMillis() >=
+        get(/databases/$(database)/documents/settings/main).data.finalRevealAt;
+      allow write: if isAdmin();
     }
   }
 }

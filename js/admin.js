@@ -1,11 +1,11 @@
-// 관리자 — 성별 입력, 배정 실행, 코드 발급, 공개 일시 설정
+// 관리자 — 성별 입력, 배정 실행, 코드 발급, 마니띠 확인 시작 · 정체 공개 일시 설정
 const $ = sel => document.querySelector(sel);
 const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // 헷갈리는 0/O, 1/I/L 제외
 const CODE_LEN = 6;
 
 let people = [];
 let settings = {};
-let secret = { codes: {}, assignment: {} };
+let secret = { codes: {}, assignment: {}, threads: {} };
 
 const pct = r => `${Math.round(r * 100)}%`;
 const hasAssignment = () => Object.keys(secret.assignment).length > 0;
@@ -24,6 +24,16 @@ function makeCodes() {
     codes[p.id] = code;
   }
   return codes;
+}
+
+// 쪽지함 id: 추측할 수 없는 무작위 값
+function makeThreads() {
+  const threads = {};
+  for (const p of people) {
+    threads[p.id] = Array.from(crypto.getRandomValues(new Uint8Array(16)),
+      b => b.toString(16).padStart(2, "0")).join("");
+  }
+  return threads;
 }
 
 async function copy(text, button) {
@@ -92,7 +102,7 @@ function renderMode() {
 
 async function runDraw() {
   if (hasAssignment() &&
-      !confirm("이미 배정된 결과가 있어요.\n다시 배정하면 기존 결과와 모든 한마디가 초기화됩니다. 계속할까요?")) return;
+      !confirm("이미 배정된 결과가 있어요.\n다시 배정하면 기존 결과와 모든 쪽지가 초기화됩니다. 계속할까요?")) return;
 
   const mode = currentMode();
   const customPct = Number($("#custom-pct").value);
@@ -102,10 +112,11 @@ async function runDraw() {
   try {
     const assignment = draw(people, targetFor(mode, people, customPct));
     const codes = hasCodes() ? secret.codes : makeCodes();
-    await store.adminCommit({ codes, assignment, clearMessages: hasAssignment() });
+    const threads = makeThreads();
+    await store.adminCommit({ codes, assignment, threads, resetChats: true });
     settings = { ...settings, mode, customPct, drawnAt: Date.now() };
     await store.adminSaveSettings({ mode, customPct, drawnAt: settings.drawnAt });
-    secret = { codes, assignment };
+    secret = { codes, assignment, threads };
     renderResult();
     renderCodes();
   } catch (err) {
@@ -142,7 +153,7 @@ function assignmentPairs() {
   return people.map(p => [p, byId[secret.assignment[p.id]]]);
 }
 
-// 전체 배정 현황: 챙겨주는 사람 → 마니또
+// 전체 배정 현황: 마니또(챙겨주는 사람) → 마니띠(챙김 받는 사람)
 function renderAssignment() {
   const ready = hasAssignment();
   $("#assign-empty").hidden = ready;
@@ -201,32 +212,56 @@ function renderCodes() {
 
 async function issueCodes() {
   if (hasCodes() &&
-      !confirm("코드를 재발급하면 기존 코드로는 들어올 수 없고, 남긴 한마디도 초기화됩니다. 계속할까요?")) return;
+      !confirm("코드를 재발급하면 기존 코드로는 들어올 수 없어요. (쪽지는 유지돼요) 계속할까요?")) return;
   const codes = makeCodes();
-  await store.adminCommit({ codes, assignment: secret.assignment, clearMessages: hasCodes() });
+  await store.adminCommit({ codes, assignment: secret.assignment, threads: secret.threads });
   secret = { ...secret, codes };
   renderCodes();
 }
 
-/* ───── 공개 일시 ───── */
+/* ───── 마니띠 확인 시작 ───── */
 
-function toLocalInput(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
+const fmt = t => new Date(t).toLocaleString("ko-KR");
+
+function toLocalInput(t) {
+  if (t == null) return "";
+  const d = new Date(t);
   return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 }
 
 function renderReveal() {
   $("#reveal-at").value = toLocalInput(settings.revealAt);
   $("#reveal-status").textContent = settings.revealAt
-    ? `${new Date(settings.revealAt).toLocaleString("ko-KR")}부터 공개`
-    : "설정 안 함 — 배정 즉시 공개";
+    ? `${fmt(settings.revealAt)}부터 참가자가 자기 마니띠를 볼 수 있어요`
+    : "설정 안 함 — 배정 즉시 볼 수 있어요";
 }
 
 async function saveReveal(value) {
   settings.revealAt = value ? new Date(value).toISOString() : null;
   await store.adminSaveSettings({ revealAt: settings.revealAt });
   renderReveal();
+}
+
+/* ───── 정체 공개 ───── */
+
+function renderFinal() {
+  const at = settings.finalRevealAt;
+  const done = store.isFinalRevealed(settings);
+  $("#final-at").value = done ? "" : toLocalInput(at);
+  $("#final-status").textContent =
+    at == null ? "아직 공개 안 함" :
+    done ? `🎉 ${fmt(at)}에 공개됐어요` :
+    `⏰ ${fmt(at)}에 공개 예약됨`;
+  $("#final-status").classList.toggle("is-done", done);
+  $("#final-now").disabled = done;
+  $("#final-cancel").hidden = at == null;
+}
+
+async function saveFinal(ms, message) {
+  if (message && !confirm(message)) return;
+  settings.finalRevealAt = ms;
+  await store.adminSaveSettings({ finalRevealAt: ms });
+  renderFinal();
 }
 
 /* ───── 시작 ───── */
@@ -247,6 +282,13 @@ async function openPanel() {
   renderResult();
   renderCodes();
   renderReveal();
+  renderFinal();
+
+  // 쪽지 기능 이전에 배정된 데이터면 쪽지함만 새로 만듦
+  if (hasAssignment() && !Object.keys(secret.threads ?? {}).length && hasCodes()) {
+    secret.threads = makeThreads();
+    await store.adminCommit({ ...secret, resetChats: true });
+  }
 
   $("#mode-group").addEventListener("change", renderMode);
   $("#draw-btn").addEventListener("click", runDraw);
@@ -254,9 +296,18 @@ async function openPanel() {
   $("#copy-all").addEventListener("click", e =>
     copy(people.map(p => `${p.name}: ${secret.codes[p.id]}`).join("\n"), e.currentTarget));
   $("#copy-assign").addEventListener("click", e =>
-    copy(assignmentPairs().map(([g, r]) => `${g.name} → ${r?.name ?? "?"}`).join("\n"), e.currentTarget));
+    copy("마니또 → 마니띠\n" + assignmentPairs().map(([g, r]) => `${g.name} → ${r?.name ?? "?"}`).join("\n"), e.currentTarget));
   $("#save-reveal").addEventListener("click", () => saveReveal($("#reveal-at").value));
   $("#clear-reveal").addEventListener("click", () => saveReveal(""));
+  $("#save-final").addEventListener("click", () => {
+    const v = $("#final-at").value;
+    if (!v) return alert("공개할 날짜와 시간을 골라주세요.");
+    saveFinal(new Date(v).getTime());
+  });
+  $("#final-now").addEventListener("click", () =>
+    saveFinal(Date.now(), "지금 바로 모든 참가자에게 누가 누구의 마니또였는지 공개할까요?"));
+  $("#final-cancel").addEventListener("click", () =>
+    saveFinal(null, "정체 공개를 취소할까요? (공개 예약도 지워져요)"));
 }
 
 const loginForm = $("#admin-login");

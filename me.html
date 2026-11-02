@@ -15,15 +15,27 @@
 <body class="page-me">
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <p class="topbar-title"><img src="assets/icons/heart.svg" alt="" width="22" height="22"> <span id="me-name"></span> 님의 마니또</p>
+      <p class="topbar-title"><img src="assets/icons/heart.svg" alt="" width="22" height="22"> <span id="me-name"></span> 님의 마니또 게임</p>
       <button id="logout" class="btn btn-ghost btn-sm" type="button">나가기</button>
     </div>
   </header>
 
   <main class="wrap grid">
-    <!-- 마니또 공개 -->
+    <!-- 정체 공개 -->
+    <section id="final" class="card final span-2" aria-labelledby="final-title" hidden>
+      <h2 id="final-title">🎉 마니또 정체 공개!</h2>
+      <p class="final-line">나를 몰래 챙겨준 마니또는 <strong id="final-giver" class="final-name"></strong> 님이었어요!</p>
+      <details class="final-all">
+        <summary>전체 결과 보기</summary>
+        <p class="muted legend">마니또 → 마니띠</p>
+        <ol id="final-list" class="assignment-list"></ol>
+      </details>
+    </section>
+
+    <!-- 마니띠 확인 -->
     <section class="card card-tilt-l span-2" aria-labelledby="manito-title">
-      <h2 id="manito-title">나의 마니또는?</h2>
+      <h2 id="manito-title">나의 마니띠는?</h2>
+      <p class="muted">마니띠는 내가 몰래 챙겨줄 사람이에요.</p>
       <p id="manito-status" class="notice">불러오는 중…</p>
 
       <div id="reveal" class="reveal" hidden>
@@ -34,7 +46,7 @@
             <span class="flip-hint">톡! 눌러서 열어보기</span>
           </span>
           <span class="flip-face flip-back">
-            <span class="flip-sub">당신의 마니또는</span>
+            <span class="flip-sub">당신의 마니띠는</span>
             <strong id="manito-name" class="flip-name"></strong>
             <span class="badge">쉿, 비밀이에요 🤫</span>
           </span>
@@ -53,7 +65,7 @@
     </section>
 
     <!-- 내 프로필 -->
-    <section class="card" aria-labelledby="profile-title">
+    <section class="card span-2" aria-labelledby="profile-title">
       <h2 id="profile-title">내 프로필</h2>
       <p class="muted">나를 챙겨줄 마니또가 볼 수 있어요. 쉼표(,)로 여러 개 적어주세요.</p>
       <form id="profile-form">
@@ -76,27 +88,32 @@
       </form>
     </section>
 
-    <!-- 한마디 -->
-    <section class="card card-tilt-r" aria-labelledby="message-title">
-      <h2 id="message-title">마니또에게 한마디</h2>
-      <p class="muted"><span id="message-to">마니또</span> 님에게 익명으로 전달돼요. 언제든 고칠 수 있어요.</p>
-      <form id="message-form">
-        <label class="field">
-          <span class="field-label">메시지 <span id="message-count" class="counter"></span></span>
-          <textarea name="message" rows="4" maxlength="200" placeholder="응원의 한마디를 남겨보세요!"></textarea>
-        </label>
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">보내기</button>
-          <span id="message-saved" class="saved" role="status" hidden>전달했어요 💌</span>
-        </div>
+    <!-- 익명 쪽지: 마니띠 (내가 챙겨주는 사람) -->
+    <section id="chat-giver" class="card card-tilt-r chat" aria-labelledby="chat-giver-title">
+      <h2 id="chat-giver-title">💌 내 마니띠 <span class="chat-title-name">○○○</span></h2>
+      <p class="muted">마니띠에게 나는 익명으로 보여요. 들키지 않게 조심!</p>
+      <div class="chat-body">
+        <ul class="chat-log" aria-live="polite"></ul>
+        <p class="chat-empty muted">마니띠에게 첫 쪽지를 보내보세요 💌</p>
+      </div>
+      <form class="chat-form">
+        <input name="text" type="text" maxlength="200" placeholder="쪽지 쓰기" autocomplete="off" aria-label="내 마니띠에게 보낼 쪽지">
+        <button class="btn btn-primary" type="submit">보내기</button>
       </form>
     </section>
 
-    <!-- 받은 편지함 -->
-    <section class="card span-2" aria-labelledby="inbox-title">
-      <h2 id="inbox-title">받은 편지함</h2>
-      <p id="inbox-empty" class="muted">아직 도착한 한마디가 없어요.</p>
-      <ul id="inbox" class="letters"></ul>
+    <!-- 익명 쪽지: 마니또 (나를 챙겨주는 사람) -->
+    <section id="chat-receiver" class="card chat" aria-labelledby="chat-receiver-title">
+      <h2 id="chat-receiver-title">🎁 내 마니또 <span class="chat-title-name">???</span></h2>
+      <p class="muted">나를 몰래 챙겨주는 사람이에요. 정체는 공개일에!</p>
+      <div class="chat-body">
+        <ul class="chat-log" aria-live="polite"></ul>
+        <p class="chat-empty muted">아직 쪽지가 없어요. 먼저 보내봐도 좋아요!</p>
+      </div>
+      <form class="chat-form">
+        <input name="text" type="text" maxlength="200" placeholder="쪽지 쓰기" autocomplete="off" aria-label="내 마니또에게 보낼 쪽지">
+        <button class="btn btn-primary" type="submit">보내기</button>
+      </form>
     </section>
   </main>
   <script src="js/participants.js"></script>
