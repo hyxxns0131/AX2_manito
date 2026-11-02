@@ -1,0 +1,162 @@
+/* 버튼, 카드, 폼, 배지 */
+
+/* 버튼 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4em;
+  min-height: 48px;
+  padding: 0 1.4em;
+  border: 0;
+  border-radius: 999px;
+  font-family: var(--font-title);
+  font-size: 1.05rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .12s, box-shadow .12s, background-color .15s;
+}
+.btn:active:not(:disabled) { transform: translateY(3px); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--pink-500);
+  color: var(--white);
+  box-shadow: 0 4px 0 var(--pink-700);
+}
+.btn-primary:active:not(:disabled) { box-shadow: 0 1px 0 var(--pink-700); }
+
+.btn-secondary {
+  background: var(--yellow);
+  color: var(--ink);
+  box-shadow: 0 4px 0 #d9ae1a;
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, .7);
+  color: var(--pink-700);
+  box-shadow: inset 0 0 0 2px var(--pink-300);
+}
+.btn-ghost:hover { background: var(--white); }
+
+.btn-sm { min-height: 44px; padding: 0 1em; font-size: .95rem; }
+.btn-block { width: 100%; }
+
+/* 카드 */
+.card {
+  position: relative;
+  padding: 24px 20px;
+  background: var(--pink-100);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card::after {             /* 하트 스티커 */
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 18px;
+  width: 28px;
+  height: 28px;
+  background: url("../assets/icons/heart.svg") center / contain no-repeat;
+  transform: rotate(12deg);
+}
+
+/* 폼 */
+.field { display: block; margin-bottom: 16px; }
+.field-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.field input:not([type="checkbox"]):not([type="radio"]),
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  background: var(--white);
+  border: 2px solid var(--pink-300);
+  border-radius: 14px;
+  transition: border-color .15s;
+}
+.field textarea { resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--pink-500);
+}
+.field-inline { display: flex; align-items: center; gap: 8px; }
+.field-inline .field-label { margin: 0; }
+.field-inline input { max-width: 100px; }
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.check input { width: 22px; height: 22px; accent-color: var(--pink-500); }
+
+.counter { font-weight: 400; font-size: .85rem; color: var(--ink-soft); }
+
+.form-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+.saved { color: var(--pink-700); font-weight: 700; }
+.error { color: #c0172f; font-weight: 700; }
+.muted { color: var(--ink-soft); font-size: .95rem; }
+
+/* 배지·칩 */
+.badge {
+  display: inline-block;
+  padding: 2px 12px;
+  background: var(--yellow);
+  border-radius: 999px;
+  font-family: var(--font-title);
+  font-size: .9rem;
+  color: var(--ink);
+  vertical-align: middle;
+}
+.badge-warn { background: #ffb4a8; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip {
+  padding: 4px 12px;
+  background: var(--white);
+  border: 2px solid var(--pink-300);
+  border-radius: 999px;
+  font-size: .95rem;
+}
+.chips-no .chip { border-style: dashed; }
+
+.notice {
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, .7);
+  border-radius: 14px;
+  text-align: center;
+}
+.notice-warn { background: #fff4c2; text-align: left; }
+
+/* 세그먼트 라디오 (남/여) */
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  background: var(--white);
+  border: 2px solid var(--pink-300);
+  border-radius: 999px;
+}
+.segmented label { position: relative; cursor: pointer; }
+.segmented input { position: absolute; opacity: 0; inset: 0; }
+.segmented span {
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 999px;
+  transition: background-color .15s, color .15s;
+}
+.segmented input:checked + span { background: var(--pink-500); color: var(--white); }
+.segmented input:focus-visible + span { outline: 3px solid var(--yellow); }

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>내 마니또</title>
+  <link rel="icon" href="assets/icons/gift.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="page-me">
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <p class="topbar-title"><img src="assets/icons/heart.svg" alt="" width="22" height="22"> <span id="me-name"></span> 님의 마니또</p>
+      <button id="logout" class="btn btn-ghost btn-sm" type="button">나가기</button>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <!-- 마니또 공개 -->
+    <section class="card card-tilt-l span-2" aria-labelledby="manito-title">
+      <h2 id="manito-title">나의 마니또는?</h2>
+      <p id="manito-status" class="notice">불러오는 중…</p>
+
+      <div id="reveal" class="reveal" hidden>
+        <button id="flip-card" class="flip-card" type="button" aria-pressed="false" aria-label="선물 상자 열기">
+          <span class="flip-face flip-front">
+            <img class="gift-box" src="assets/icons/gift.svg" alt="" width="120" height="120">
+            <img class="gift-ribbon" src="assets/icons/ribbon.svg" alt="" width="80" height="48">
+            <span class="flip-hint">톡! 눌러서 열어보기</span>
+          </span>
+          <span class="flip-face flip-back">
+            <span class="flip-sub">당신의 마니또는</span>
+            <strong id="manito-name" class="flip-name"></strong>
+            <span class="badge">쉿, 비밀이에요 🤫</span>
+          </span>
+        </button>
+
+        <div id="their-profile" class="their-profile" hidden>
+          <h3><span id="their-name"></span> 님은요</h3>
+          <p id="their-empty" class="muted">아직 프로필을 작성하지 않았어요.</p>
+          <p class="mini-label">😍 좋아하는 것</p>
+          <ul id="their-likes" class="chips"></ul>
+          <p class="mini-label">🙅 싫어하는 것 / 못 먹는 것
+            <span id="their-allergy" class="badge badge-warn" hidden>알레르기 있음</span></p>
+          <ul id="their-dislikes" class="chips chips-no"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 내 프로필 -->
+    <section class="card" aria-labelledby="profile-title">
+      <h2 id="profile-title">내 프로필</h2>
+      <p class="muted">나를 챙겨줄 마니또가 볼 수 있어요. 쉼표(,)로 여러 개 적어주세요.</p>
+      <form id="profile-form">
+        <label class="field">
+          <span class="field-label">😍 좋아하는 것 <span id="likes-count" class="counter"></span></span>
+          <input name="likes" type="text" maxlength="100" placeholder="예) 딸기 라떼, 고양이, 문구류">
+        </label>
+        <label class="field">
+          <span class="field-label">🙅 싫어하는 것 / 못 먹는 것 <span id="dislikes-count" class="counter"></span></span>
+          <input name="dislikes" type="text" maxlength="100" placeholder="예) 오이, 땅콩, 향 강한 것">
+        </label>
+        <label class="check">
+          <input name="allergy" type="checkbox">
+          <span>알레르기가 있어요</span>
+        </label>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">저장하기</button>
+          <span id="profile-saved" class="saved" role="status" hidden>저장했어요 ✓</span>
+        </div>
+      </form>
+    </section>
+
+    <!-- 한마디 -->
+    <section class="card card-tilt-r" aria-labelledby="message-title">
+      <h2 id="message-title">마니또에게 한마디</h2>
+      <p class="muted"><span id="message-to">마니또</span> 님에게 익명으로 전달돼요. 언제든 고칠 수 있어요.</p>
+      <form id="message-form">
+        <label class="field">
+          <span class="field-label">메시지 <span id="message-count" class="counter"></span></span>
+          <textarea name="message" rows="4" maxlength="200" placeholder="응원의 한마디를 남겨보세요!"></textarea>
+        </label>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit">보내기</button>
+          <span id="message-saved" class="saved" role="status" hidden>전달했어요 💌</span>
+        </div>
+      </form>
+    </section>
+
+    <!-- 받은 편지함 -->
+    <section class="card span-2" aria-labelledby="inbox-title">
+      <h2 id="inbox-title">받은 편지함</h2>
+      <p id="inbox-empty" class="muted">아직 도착한 한마디가 없어요.</p>
+      <ul id="inbox" class="letters"></ul>
+    </section>
+  </main>
+  <script src="js/participants.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/me.js"></script>
+</body>
+</html>

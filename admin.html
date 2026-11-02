@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마니또 관리자</title>
+  <link rel="icon" href="assets/icons/gift.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="page-admin">
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <p class="topbar-title"><img src="assets/icons/gift.svg" alt="" width="22" height="22"> 마니또 관리자</p>
+      <a class="btn btn-ghost btn-sm" href="index.html">입장 화면</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <form id="admin-login" class="card wrap-narrow">
+      <h2>관리자 로그인</h2>
+      <label class="field">
+        <span class="field-label">이메일</span>
+        <input name="email" type="email" autocomplete="username">
+      </label>
+      <label class="field">
+        <span class="field-label">관리자 비밀번호</span>
+        <input name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <p id="admin-error" class="error" role="alert" hidden></p>
+      <button class="btn btn-primary btn-block" type="submit">들어가기</button>
+    </form>
+
+    <div id="admin-panel" class="admin-grid" hidden>
+      <!-- 1. 성별 -->
+      <section class="card admin-gender" aria-labelledby="gender-title">
+        <div class="section-head">
+          <h2 id="gender-title"><span class="step">1</span> 성별 입력</h2>
+          <span id="gender-stats" class="badge"></span>
+        </div>
+        <p id="gender-notice" class="notice notice-warn" hidden></p>
+        <ol id="gender-list" class="gender-list"></ol>
+      </section>
+
+      <!-- 2~3. 모드 & 배정 -->
+      <section class="card" aria-labelledby="draw-title">
+        <h2 id="draw-title"><span class="step">2</span> 매칭 모드 & 배정</h2>
+        <fieldset id="mode-group" class="modes">
+          <legend class="sr-only">매칭 모드</legend>
+          <label class="mode"><input type="radio" name="mode" value="balanced" checked>
+            <span><b>balanced</b> 자연스러운 비율 <small id="balanced-hint"></small></span></label>
+          <label class="mode"><input type="radio" name="mode" value="same">
+            <span><b>same</b> 동성 매칭 최대화</span></label>
+          <label class="mode"><input type="radio" name="mode" value="mixed">
+            <span><b>mixed</b> 이성 매칭 최대화</span></label>
+          <label class="mode"><input type="radio" name="mode" value="custom">
+            <span><b>custom</b> 이성 매칭 비율 직접 지정</span></label>
+        </fieldset>
+        <label id="custom-wrap" class="field field-inline" hidden>
+          <span class="field-label">이성 매칭 목표</span>
+          <input id="custom-pct" type="number" min="0" max="100" step="5" value="50"> %
+        </label>
+        <button id="draw-btn" class="btn btn-primary btn-block" type="button" disabled>배정 실행</button>
+
+        <div id="draw-result" class="result" hidden>
+          <ul id="result-summary" class="result-summary"></ul>
+          <p id="result-time" class="muted"></p>
+        </div>
+      </section>
+
+      <!-- 전체 배정 현황 -->
+      <section class="card admin-wide" aria-labelledby="assign-title">
+        <div class="section-head">
+          <h2 id="assign-title">누가 누구의 마니또?</h2>
+          <button id="copy-assign" class="btn btn-ghost btn-sm" type="button" hidden>전체 복사</button>
+        </div>
+        <p id="assign-empty" class="muted">아직 배정 전이에요. 배정을 실행하면 여기에 전체 결과가 보여요.</p>
+        <ol id="assignment-list" class="assignment-list"></ol>
+      </section>
+
+      <!-- 4. 코드 -->
+      <section class="card" aria-labelledby="codes-title">
+        <div class="section-head">
+          <h2 id="codes-title"><span class="step">3</span> 개인 코드</h2>
+          <button id="copy-all" class="btn btn-ghost btn-sm" type="button" hidden>전체 복사</button>
+        </div>
+        <p id="codes-empty" class="muted">배정을 실행하면 코드가 자동으로 발급돼요. 미리 발급하면 배정 전에도 프로필을 쓸 수 있어요.</p>
+        <ul id="codes-list" class="codes-list"></ul>
+        <button id="issue-codes" class="btn btn-secondary btn-block" type="button">코드 발급</button>
+      </section>
+
+      <!-- 5. 공개 일시 -->
+      <section class="card" aria-labelledby="reveal-title">
+        <h2 id="reveal-title"><span class="step">4</span> 공개 일시</h2>
+        <p id="reveal-status" class="muted"></p>
+        <label class="field">
+          <span class="field-label">이 시간 전에는 마니또 카드가 잠겨요</span>
+          <input id="reveal-at" type="datetime-local">
+        </label>
+        <div class="form-actions">
+          <button id="save-reveal" class="btn btn-primary" type="button">저장</button>
+          <button id="clear-reveal" class="btn btn-ghost" type="button">지우기</button>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="js/participants.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
