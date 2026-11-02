@@ -60,6 +60,7 @@ const store = (() => {
     async getSettings() { return lsLoad().settings; },
 
     async findKey(key) { return lsLoad().keys[key] ?? null; },
+    async hasIssuedCodes() { return Object.keys(lsLoad().keys).length > 0; },
 
     async getProfile(id) { return lsLoad().profiles[id] ?? null; },
     async saveProfile(id, data) {
@@ -155,6 +156,7 @@ const store = (() => {
     },
 
     findKey: key => fbGet(`keys/${key}`),
+    hasIssuedCodes: async () => true, // 목록 조회가 막혀 있어 확인 불가
 
     getProfile: id => fbGet(`profiles/${id}`),
     saveProfile: (id, data) => fbSet(`profiles/${id}`, { ...data, updatedAt: Date.now() }),
@@ -235,6 +237,8 @@ const store = (() => {
     return { receiverId: doc?.receiverId ?? null, threadId: doc?.threadId ?? null };
   }
 
+  const hasIssuedCodes = () => impl.hasIssuedCodes();
+
   const saveProfile = (session, data) => impl.saveProfile(session.id, data);
 
   // 익명 쪽지: 쪽지함 하나 = 마니또(giver, 챙겨주는 사람) ↔ 마니띠(receiver, 챙김 받는 사람)
@@ -270,6 +274,7 @@ const store = (() => {
     getSettings,
     getProfile,
     login,
+    hasIssuedCodes,
     getMyAssignment,
     saveProfile,
     findThreadFor,

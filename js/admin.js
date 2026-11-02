@@ -36,19 +36,27 @@ function makeThreads() {
   return threads;
 }
 
-async function copy(text, button) {
+// 클립보드 API가 막힌 환경(file://, 일부 브라우저)에서는 execCommand로 대체
+// 그래도 실패하면 selectEl을 선택해 두어 Ctrl+C로 복사할 수 있게 함
+async function copy(text, button, selectEl) {
+  let ok = false;
   try {
     await navigator.clipboard.writeText(text);
+    ok = true;
   } catch {
-    const ta = Object.assign(document.createElement("textarea"), { value: text });
+    const ta = Object.assign(document.createElement("textarea"), { value: text, readOnly: true });
+    ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
     document.body.append(ta);
     ta.select();
-    document.execCommand("copy");
+    try { ok = document.execCommand("copy"); } catch {}
     ta.remove();
   }
-  const label = button.textContent;
-  button.textContent = "복사됨!";
-  setTimeout(() => (button.textContent = label), 1200);
+  if (!ok && selectEl) getSelection().selectAllChildren(selectEl);
+
+  clearTimeout(button._t);
+  button.dataset.label ??= button.textContent;
+  button.textContent = ok ? "복사됨!" : "Ctrl+C로 복사";
+  button._t = setTimeout(() => (button.textContent = button.dataset.label), 1500);
 }
 
 /* ───── 성별 ───── */
@@ -204,7 +212,7 @@ function renderCodes() {
     btn.type = "button";
     btn.className = "btn btn-ghost btn-sm";
     btn.textContent = "복사";
-    btn.addEventListener("click", () => copy(`${p.name}님의 마니또 코드: ${secret.codes[p.id]}`, btn));
+    btn.addEventListener("click", () => copy(secret.codes[p.id], btn, code));
     li.append(name, code, btn);
     return li;
   }));

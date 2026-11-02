@@ -307,7 +307,7 @@
 .code-row span { flex: 1; font-weight: 700; }
 .final-status.is-done { background: #fff4c2; font-weight: 700; }
 
-.code-row code { font-size: 1.05rem; letter-spacing: .12em; color: var(--pink-700); }
+.code-row code { font-size: 1.05rem; letter-spacing: .12em; color: var(--pink-700); user-select: all; }
 
 /* ───── Tablet ───── */
 @media (min-width: 600px) {
