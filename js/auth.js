@@ -48,7 +48,8 @@ async function initLoginPage(form) {
   const select = form.querySelector("#name");
   const codeInput = form.querySelector("#code");
   const error = form.querySelector("#login-error");
-  const button = form.querySelector("button");
+  const button = form.querySelector('button[type="submit"]');
+  const crt = document.querySelector(".crt");
 
   if (getSession()) return location.replace("me.html");
 
@@ -61,6 +62,31 @@ async function initLoginPage(form) {
   const tidy = () => (codeInput.value = normalizeCode(codeInput.value));
   codeInput.addEventListener("input", e => { if (!e.isComposing) tidy(); });
   codeInput.addEventListener("compositionend", tidy);
+
+  // 화면 속 키보드 (숫자 키, ⌫)
+  form.querySelectorAll("[data-key]").forEach(key => key.addEventListener("click", () => {
+    codeInput.value = normalizeCode(codeInput.value + key.dataset.key);
+  }));
+  form.querySelector("[data-del]")?.addEventListener("click", () => {
+    codeInput.value = codeInput.value.slice(0, -1);
+  });
+
+  // 입력칸 밖에서 쳐도 코드로 들어가게
+  document.addEventListener("keydown", e => {
+    if (e.target.closest?.("input, select, textarea") || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/^[0-9a-z]$/i.test(e.key)) codeInput.value = normalizeCode(codeInput.value + e.key);
+    else if (e.key === "Backspace") codeInput.value = codeInput.value.slice(0, -1);
+    else if (e.key === "Enter") form.requestSubmit();
+    else return;
+    e.preventDefault();
+  });
+
+  const glitch = () => {
+    if (!crt) return;
+    crt.classList.remove("is-glitch");
+    void crt.offsetWidth; // 애니메이션 다시 시작
+    crt.classList.add("is-glitch");
+  };
 
   form.addEventListener("submit", async e => {
     e.preventDefault();
@@ -75,10 +101,12 @@ async function initLoginPage(form) {
       }
       if (!session) throw new Error("이름 또는 코드가 맞지 않아요.");
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
-      location.href = "me.html";
+      document.body.classList.add("is-leaving"); // 브라운관 꺼지는 효과
+      setTimeout(() => (location.href = "me.html"), REDUCE_MOTION ? 0 : 650);
     } catch (err) {
       error.textContent = err.message;
       error.hidden = false;
+      glitch();
     } finally {
       button.disabled = false;
     }

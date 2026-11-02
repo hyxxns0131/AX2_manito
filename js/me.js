@@ -120,6 +120,11 @@ function createChat(root, role) {
 
   function render(items) {
     if (items.length === count) return;
+    if (count >= 0 && items.at(-1)?.from !== role) {   // 상대 쪽지 도착 → 통통
+      root.classList.remove("is-ping");
+      void root.offsetWidth;
+      root.classList.add("is-ping");
+    }
     const nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
     count = items.length;
     empty.hidden = items.length > 0;

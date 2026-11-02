@@ -1,17 +1,6 @@
-/* 버튼, 카드, 폼, 배지 */
+/* 버튼, 창(카드), 폼, 배지, 공통 모션 */
 
-/* ───── 보석 재질 ───── */
-:root {
-  --facet: linear-gradient(115deg,
-    rgba(255, 255, 255, .55) 0 14%, transparent 14% 38%,
-    rgba(255, 255, 255, .2) 38% 50%, transparent 50% 82%,
-    rgba(255, 255, 255, .25) 82%);
-  --gem-pink: linear-gradient(180deg, #ffc0dc 0%, #ff6aa8 46%, #ec3384 54%, #ff8cbe 100%);
-  --gem-gold: linear-gradient(180deg, #fff6c8 0%, #ffd75e 46%, #f0b52c 54%, #ffe08a 100%);
-  --gold-frame: linear-gradient(180deg, var(--gold-1), var(--gold-2) 45%, var(--gold-3) 55%, var(--gold-2));
-}
-
-/* ───── 버튼 ───── */
+/* ───── 젤리 버튼 ───── */
 .btn {
   position: relative;
   display: inline-flex;
@@ -19,92 +8,97 @@
   justify-content: center;
   gap: .4em;
   min-height: 48px;
-  padding: 0 1.4em;
-  border: 3px solid transparent;
+  padding: 0 1.5em;
+  border: 0;
   border-radius: 999px;
-  font-family: var(--font-pixel);
-  font-weight: 700;
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  letter-spacing: .01em;
   text-decoration: none;
   cursor: pointer;
-  transition: transform .12s, box-shadow .12s, filter .15s;
+  isolation: isolate;
+  transition: transform .15s var(--ease-bounce), filter .15s;
 }
-.btn:hover:not(:disabled) { filter: brightness(1.06) saturate(1.05); }
-.btn:active:not(:disabled) { transform: translateY(3px); }
-.btn:disabled { opacity: .45; cursor: not-allowed; filter: grayscale(.4); }
+.btn::after {               /* 위쪽 광택 */
+  content: "";
+  position: absolute;
+  inset: 4px 14px auto;
+  height: 40%;
+  border-radius: 999px;
+  background: linear-gradient(rgba(255, 255, 255, .85), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+.btn:hover:not(:disabled) { animation: jelly .5s; }
+.btn:active:not(:disabled) { transform: scale(.94); }
+.btn:disabled { opacity: .5; cursor: not-allowed; filter: grayscale(.3); }
+@keyframes jelly {
+  30% { transform: scale(1.07, .93); }
+  50% { transform: scale(.95, 1.05); }
+  70% { transform: scale(1.02, .98); }
+}
 
 .btn-primary {
   color: var(--white);
-  text-shadow: 0 2px 0 var(--pink-700);
-  background:
-    var(--facet) padding-box,
-    var(--gem-pink) padding-box,
-    var(--gold-frame) border-box;
-  box-shadow: 0 4px 0 var(--gold-3), 0 8px 16px rgba(110, 10, 50, .35);
+  text-shadow: 0 1px 0 var(--pink-700);
+  background: linear-gradient(180deg, #ffa9d4, var(--pink-500) 60%, var(--pink-600));
+  box-shadow: var(--plastic-lo), 0 4px 0 var(--pink-700), 0 10px 18px rgba(179, 51, 124, .3);
 }
-.btn-primary:active:not(:disabled) { box-shadow: 0 1px 0 var(--gold-3), 0 3px 8px rgba(110, 10, 50, .3); }
-
 .btn-secondary {
-  color: var(--ink);
-  background:
-    var(--facet) padding-box,
-    var(--gem-gold) padding-box,
-    linear-gradient(180deg, var(--pink-300), var(--pink-700)) border-box;
-  box-shadow: 0 4px 0 var(--pink-700), 0 8px 16px rgba(110, 10, 50, .3);
+  color: #285e56;
+  background: linear-gradient(180deg, #d5fbf3, var(--mint) 60%, #84d3c6);
+  box-shadow: inset 0 -5px 10px rgba(40, 120, 105, .2), 0 4px 0 var(--mint-700), 0 10px 18px rgba(40, 120, 105, .25);
 }
-
-/* 종이 스티커 버튼 */
 .btn-ghost {
-  background: var(--paper);
-  color: var(--ink);
-  border: 2px solid var(--ink);
-  border-radius: 10px;
-  box-shadow: var(--shadow-sticker);
+  color: var(--pink-700);
+  background: linear-gradient(180deg, var(--white), var(--pink-50));
+  box-shadow: inset 0 0 0 2px var(--pink-300), 0 3px 0 var(--pink-300);
 }
-.btn-ghost:active:not(:disabled) { box-shadow: 1px 1px 0 var(--ink); }
-
-.btn-sm { min-height: 44px; padding: 0 1em; font-size: .9rem; }
+.btn-sm { min-height: 44px; padding: 0 1.1em; font-size: .9rem; }
 .btn-block { width: 100%; }
 
-/* ───── 카드: 테이프 붙인 종이 ───── */
+/* ───── 창(카드): 레트로 OS 윈도우 ───── */
 .card {
   position: relative;
-  padding: 28px 20px 24px;
-  background: var(--paper);
-  border-radius: 6px;
-  box-shadow: var(--shadow-paper);
+  padding: 50px 20px 22px;
+  background: var(--pink-50);
+  border: 3px solid var(--pink-300);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 0 var(--pink-300), var(--drop);
 }
-.card::before {             /* 마스킹 테이프 */
-  content: "";
+.card::before {             /* 제목 표시줄 */
+  content: "✿ manito.exe";
   position: absolute;
-  top: -13px;
-  left: 50%;
-  width: 104px;
-  height: 28px;
-  background: rgba(255, 246, 220, .78);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
-  transform: translateX(-50%) rotate(-3deg);
-  clip-path: polygon(0 12%, 5% 0, 95% 0, 100% 14%, 97% 50%, 100% 86%, 95% 100%, 5% 100%, 0 88%, 3% 50%);
-  pointer-events: none;
-}
-.card:nth-of-type(even)::before { left: 22%; transform: translateX(-50%) rotate(5deg); }
-.card:nth-of-type(3n)::before { left: 80%; transform: translateX(-50%) rotate(-6deg); }
-
-/* 섹션 제목: 스티커 라벨 */
-.card h2 {
-  display: inline-block;
-  padding: 6px 12px 4px;
-  background: var(--ink);
+  inset: 0 0 auto;
+  height: 32px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(180deg, var(--pink-200), var(--pink-300));
+  border-bottom: 3px solid var(--pink-300);
+  border-radius: 14px 14px 0 0;
+  font-family: var(--font-retro);
+  font-size: .8rem;
+  font-weight: 700;
   color: var(--white);
-  box-shadow: 4px 4px 0 var(--pink-500);
-  transform: rotate(-1.5deg);
+  text-shadow: 0 1px 0 var(--pink-600);
 }
-.card:nth-of-type(even) h2 {
-  background: var(--pink-500);
-  box-shadow: 4px 4px 0 var(--ink);
-  transform: rotate(1deg);
+.card::after {              /* ─ □ ✕ 버튼 */
+  content: "─  □  ✕";
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  padding: 0 8px;
+  background: var(--white);
+  border-radius: 8px;
+  font-family: var(--font-retro);
+  font-size: .72rem;
+  line-height: 20px;
+  color: var(--pink-600);
+  white-space: pre;
 }
-.card h3 { color: var(--pink-700); }
+.card:nth-of-type(3n+2)::before { background: linear-gradient(180deg, #d9f7f1, var(--mint)); color: #2f7d71; text-shadow: none; }
+.card:nth-of-type(3n)::before { background: linear-gradient(180deg, #efe3ff, var(--lilac)); color: #6b4a9a; text-shadow: none; }
+.card h3 { color: var(--pink-600); }
 
 /* ───── 폼 ───── */
 .field { display: block; margin-bottom: 16px; }
@@ -114,10 +108,10 @@
   align-items: baseline;
   gap: 8px;
   margin-bottom: 6px;
-  font-family: var(--font-pixel);
   font-weight: 700;
   font-size: .95rem;
 }
+.field-label small { font-weight: 400; font-size: .78rem; color: var(--ink-soft); }
 .field input:not([type="checkbox"]):not([type="radio"]),
 .field select,
 .field textarea {
@@ -125,16 +119,16 @@
   min-height: 48px;
   padding: 10px 14px;
   background: var(--white);
-  border: 2px solid var(--ink);
-  border-radius: 10px;
-  box-shadow: inset 0 3px 0 rgba(31, 20, 25, .06);
+  border: 2px solid var(--pink-200);
+  border-radius: 14px;
+  box-shadow: inset 0 3px 6px rgba(179, 51, 124, .08);
   transition: border-color .15s, box-shadow .15s;
 }
 .field textarea { resize: vertical; }
 .field input:focus, .field select:focus, .field textarea:focus {
   outline: none;
   border-color: var(--pink-500);
-  box-shadow: 3px 3px 0 var(--pink-500);
+  box-shadow: inset 0 3px 6px rgba(179, 51, 124, .08), 0 0 0 4px rgba(236, 111, 180, .2);
 }
 .field-inline { display: flex; align-items: center; gap: 8px; }
 .field-inline .field-label { margin: 0; }
@@ -149,66 +143,70 @@
 }
 .check input { width: 22px; height: 22px; accent-color: var(--pink-500); }
 
-.counter { font-family: var(--font-mono); font-weight: 400; font-size: .8rem; color: var(--ink-soft); }
+.counter { font-family: var(--font-retro); font-weight: 400; font-size: .75rem; color: var(--ink-soft); }
 
 .form-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
-.saved { font-family: var(--font-pixel); color: var(--pink-700); font-weight: 700; }
+.saved { font-family: var(--font-display); color: var(--pink-600); animation: pop .4s var(--ease-bounce); }
 .error {
   padding: 8px 12px;
-  background: #fff0f0;
-  border: 2px solid #c0172f;
-  border-radius: 8px;
-  color: #a5122a;
+  background: #fff0f3;
+  border: 2px solid #f07a9a;
+  border-radius: 12px;
+  color: #b2244f;
   font-weight: 700;
+  font-size: .9rem;
+  animation: pop .35s var(--ease-bounce);
 }
 .muted { color: var(--ink-soft); font-size: .92rem; }
 
 /* ───── 배지·칩 ───── */
 .badge {
   display: inline-block;
-  padding: 2px 10px;
+  padding: 2px 12px;
   background: var(--yellow);
-  border: 2px solid var(--ink);
   border-radius: 999px;
-  font-family: var(--font-pixel);
-  font-weight: 700;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .08);
+  font-family: var(--font-display);
   font-size: .82rem;
   color: var(--ink);
   vertical-align: middle;
 }
-.badge-warn { background: #ffb4a8; }
+.badge-warn { background: #ffc0b5; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .chip {
   padding: 3px 12px;
   background: var(--white);
-  border: 2px solid var(--ink);
-  border-radius: 6px;
-  box-shadow: 2px 2px 0 var(--pink-500);
+  border: 2px solid var(--pink-200);
+  border-radius: 999px;
   font-size: .92rem;
-  transform: rotate(-1.5deg);
+  animation: pop .35s var(--ease-bounce) both;
 }
-.chip:nth-child(even) { transform: rotate(1.5deg); background: var(--pink-100); }
-.chips-no .chip { box-shadow: 2px 2px 0 var(--ink); background: #eef4ff; }
+.chip:nth-child(2) { animation-delay: .05s; }
+.chip:nth-child(3) { animation-delay: .1s; }
+.chip:nth-child(4) { animation-delay: .15s; }
+.chip:nth-child(n+5) { animation-delay: .2s; }
+.chip::before { content: "♡ "; color: var(--pink-500); }
+.chips-no .chip { border-color: var(--lilac); background: #f7f0ff; }
+.chips-no .chip::before { content: "✕ "; color: #8a63c4; }
 
 .notice {
   padding: 14px 16px;
-  background: var(--pink-100);
-  border: 2px dashed var(--pink-700);
-  border-radius: 10px;
-  font-family: var(--font-pixel);
+  background: var(--white);
+  border: 2px dashed var(--pink-300);
+  border-radius: 14px;
   text-align: center;
 }
-.notice-warn { background: #fff4c2; border-color: var(--gold-3); text-align: left; }
+.notice-warn { background: #fff8de; border-color: var(--star); text-align: left; }
 
-/* ───── 세그먼트 라디오 (남/여): 작은 보석 ───── */
+/* ───── 세그먼트 라디오 (남/여) ───── */
 .segmented {
   display: inline-flex;
   gap: 4px;
   padding: 3px;
-  background: var(--white);
-  border: 2px solid var(--ink);
+  background: var(--pink-50);
+  border: 2px solid var(--pink-200);
   border-radius: 999px;
 }
 .segmented label { position: relative; cursor: pointer; }
@@ -219,57 +217,39 @@
   min-width: 52px;
   min-height: 38px;
   padding: 0 12px;
-  border: 2px solid transparent;
   border-radius: 999px;
-  font-family: var(--font-pixel);
-  font-weight: 700;
-  transition: background .15s, color .15s;
+  font-family: var(--font-display);
+  transition: background .15s, color .15s, transform .2s var(--ease-bounce);
 }
 .segmented input:checked + span {
   color: var(--white);
-  text-shadow: 0 1px 0 var(--pink-700);
-  background:
-    var(--facet) padding-box,
-    var(--gem-pink) padding-box,
-    var(--gold-frame) border-box;
+  background: linear-gradient(180deg, #ffa9d4, var(--pink-500));
+  box-shadow: 0 2px 0 var(--pink-700);
+  transform: scale(1.05);
 }
-.segmented input:focus-visible + span { outline: 3px solid var(--yellow); }
+.segmented input:focus-visible + span { outline: 3px solid var(--lilac); }
 
-/* ───── 스티커 장식 ───── */
-.googly {
-  display: inline-flex;
-  gap: 4px;
+/* ───── 공통 모션 ───── */
+@keyframes pop {
+  from { transform: scale(.6); opacity: 0; }
 }
-.googly i {
-  position: relative;
-  width: 34px;
-  height: 34px;
-  background: var(--white);
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-  box-shadow: 2px 3px 0 rgba(0, 0, 0, .25);
+.will-reveal {
+  opacity: 0;
+  transform: translateY(40px) scale(.96);
 }
-.googly i::after {
-  content: "";
-  position: absolute;
-  width: 15px;
-  height: 15px;
-  left: 11px;
-  top: 12px;
-  background: var(--ink);
-  border-radius: 50%;
-  animation: look 4s ease-in-out infinite;
-}
-@keyframes look {
-  0%, 40%, 100% { transform: translate(0, 0); }
-  50%, 70% { transform: translate(-6px, -4px); }
-  80% { transform: translate(5px, 2px); }
+.will-reveal.is-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity .5s ease var(--delay, 0ms),
+    transform .7s var(--ease-bounce) var(--delay, 0ms);
 }
 
 .barcode {
   display: block;
-  height: 34px;
+  height: 30px;
   background: repeating-linear-gradient(90deg,
-    var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px,
-    var(--ink) 8px 11px, transparent 11px 12px, var(--ink) 12px 13px, transparent 13px 16px);
+    var(--pink-600) 0 2px, transparent 2px 4px, var(--pink-600) 4px 5px, transparent 5px 8px,
+    var(--pink-600) 8px 11px, transparent 11px 12px, var(--pink-600) 12px 13px, transparent 13px 16px);
+  opacity: .75;
 }

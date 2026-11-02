@@ -1,6 +1,6 @@
 // 관리자 — 성별 입력, 배정 실행, 코드 발급, 마니띠 확인 시작 · 정체 공개 일시 설정
 const $ = sel => document.querySelector(sel);
-const CODE_CHARS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // 헷갈리는 0/O, 1/I/L 제외
+const CODE_CHARS = "0123456789"; // 입장 화면 폰 키패드로 누를 수 있게 숫자만
 const CODE_LEN = 6;
 
 let people = [];
