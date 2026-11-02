@@ -7,7 +7,8 @@
   <link rel="icon" href="assets/icons/gift.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/pages.css">
@@ -22,14 +23,21 @@
 
   <main class="wrap grid">
     <!-- 정체 공개 -->
-    <section id="final" class="card final span-2" aria-labelledby="final-title" hidden>
-      <h2 id="final-title">🎉 마니또 정체 공개!</h2>
-      <p class="final-line">나를 몰래 챙겨준 마니또는 <strong id="final-giver" class="final-name"></strong> 님이었어요!</p>
-      <details class="final-all">
-        <summary>전체 결과 보기</summary>
-        <p class="muted legend">마니또 → 마니띠</p>
-        <ol id="final-list" class="assignment-list"></ol>
-      </details>
+    <section id="final" class="final span-2" aria-labelledby="final-title" hidden>
+      <div class="receipt">
+        <p class="receipt-head">MANITO<br>RECEIPT</p>
+        <p class="receipt-meta">AX2 TEAM · NO.0001 · TOP SECRET</p>
+        <h2 id="final-title">🎉 마니또 정체 공개!</h2>
+        <p class="final-line">나를 몰래 챙겨준 마니또는</p>
+        <strong id="final-giver" class="final-name"></strong>
+        <p>님이었어요!</p>
+        <details class="final-all">
+          <summary>▼ 전체 결과 보기</summary>
+          <p class="muted legend">마니또 → 마니띠</p>
+          <ol id="final-list" class="receipt-list"></ol>
+        </details>
+        <span class="barcode" aria-hidden="true"></span>
+      </div>
     </section>
 
     <!-- 마니띠 확인 -->
@@ -43,12 +51,15 @@
           <span class="flip-face flip-front">
             <img class="gift-box" src="assets/icons/gift.svg" alt="" width="120" height="120">
             <img class="gift-ribbon" src="assets/icons/ribbon.svg" alt="" width="80" height="48">
-            <span class="flip-hint">톡! 눌러서 열어보기</span>
+            <span class="flip-hint"><b>TAP!</b> 눌러서 열어보기</span>
           </span>
-          <span class="flip-face flip-back">
+          <span class="flip-face flip-back id-card">
+            <span class="id-head">MANITTI ID <small>TOP SECRET</small></span>
+            <span class="id-photo" aria-hidden="true">?</span>
             <span class="flip-sub">당신의 마니띠는</span>
             <strong id="manito-name" class="flip-name"></strong>
             <span class="badge">쉿, 비밀이에요 🤫</span>
+            <span class="barcode" aria-hidden="true"></span>
           </span>
         </button>
 

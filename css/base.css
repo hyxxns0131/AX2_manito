@@ -1,19 +1,37 @@
-/* 리셋, 변수, 폰트 */
+/* 리셋, 변수, 폰트 — 테마: 핑크 사물함 × Y2K 콜라주 × 핑크 보석 */
 :root {
-  --sky-1: #5fa8e0;      /* 배경 위 */
-  --sky-2: #a9d4f5;      /* 배경 아래 */
-  --pink-100: #fde3ef;   /* 카드 배경 */
-  --pink-300: #f6a6c8;
-  --pink-500: #e83f8a;   /* 버튼·강조 */
-  --pink-700: #b8236a;   /* 제목 텍스트 */
-  --yellow: #ffd84d;     /* 배지·하이라이트 */
-  --ink: #3b2a3a;
-  --ink-soft: #7a5f73;
+  /* 사물함 */
+  --locker: #ea4c89;
+  --locker-dark: #c12f6a;
+  --locker-light: #f77bab;
+
+  /* 핑크 */
+  --pink-100: #ffe3f0;
+  --pink-300: #ff9cc8;
+  --pink-500: #ff4f9a;
+  --pink-700: #c0185f;
+
+  /* 금테 */
+  --gold-1: #fff2b0;
+  --gold-2: #f2c14e;
+  --gold-3: #b9831c;
+
+  /* 기타 */
+  --paper: #fffdf7;
+  --paper-line: #f4d9e6;
+  --ink: #1f1419;
+  --ink-soft: #6f5864;
+  --yellow: #ffd84d;
+  --blue: #4f8fd6;
   --white: #fff;
-  --radius: 20px;
-  --shadow: 0 8px 0 rgba(184, 35, 106, .15);
-  --font-title: "Jua", system-ui, sans-serif;
-  --font-body: "Gowun Dodum", system-ui, sans-serif;
+
+  --radius: 14px;
+  --shadow-paper: 0 10px 0 rgba(110, 10, 50, .22), 0 18px 30px rgba(110, 10, 50, .18);
+  --shadow-sticker: 3px 3px 0 var(--ink);
+
+  --font-pixel: "Galmuri11", "Galmuri9", monospace;
+  --font-mono: "GalmuriMono11", "Galmuri11", monospace;
+  --font-body: "Noto Sans KR", system-ui, sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -27,26 +45,33 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--ink);
-  background-color: var(--sky-2);
+  background-color: var(--locker);
   background-image:
-    radial-gradient(rgba(255, 255, 255, .35) 3px, transparent 3.5px),
-    radial-gradient(rgba(255, 255, 255, .2) 2px, transparent 2.5px),
-    linear-gradient(180deg, var(--sky-1), var(--sky-2));
-  background-size: 48px 48px, 48px 48px, 100% 100%;
-  background-position: 0 0, 24px 24px, 0 0;
+    /* 비스듬한 그림자 */
+    linear-gradient(115deg, rgba(60, 0, 25, .18) 0 18%, transparent 18% 70%, rgba(255, 255, 255, .06) 70%),
+    /* 사물함 문짝 이음선 */
+    repeating-linear-gradient(90deg,
+      transparent 0 calc(50% - 3px),
+      var(--locker-dark) calc(50% - 3px) calc(50% - 1px),
+      var(--locker-light) calc(50% - 1px) 50%,
+      transparent 50% 100%),
+    /* 철판 질감 */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .14 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 100% 100%, min(720px, 100%) 100%, 160px 160px;
+  background-position: 0 0, center 0, 0 0;
   background-attachment: fixed;
 }
 
 h1, h2, h3 {
   margin: 0 0 .5em;
-  font-family: var(--font-title);
-  font-weight: 400;
+  font-family: var(--font-pixel);
+  font-weight: 700;
   line-height: 1.25;
-  color: var(--pink-700);
+  letter-spacing: -.01em;
 }
-h1 { font-size: clamp(2rem, 7vw, 2.75rem); }
-h2 { font-size: 1.4rem; }
-h3 { font-size: 1.15rem; }
+h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); }
+h2 { font-size: 1.2rem; }
+h3 { font-size: 1.05rem; }
 
 p { margin: 0 0 .75em; }
 img { display: block; max-width: 100%; }
@@ -56,6 +81,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 button, input, select, textarea { font: inherit; color: inherit; }
 
 :focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; }
+
+::selection { background: var(--yellow); color: var(--ink); }
 
 [hidden] { display: none !important; }
 

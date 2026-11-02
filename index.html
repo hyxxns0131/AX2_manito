@@ -7,7 +7,8 @@
   <link rel="icon" href="assets/icons/gift.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/pages.css">
@@ -15,30 +16,37 @@
 <body class="page-login">
   <main class="wrap wrap-narrow">
     <header class="hero">
-      <img class="hero-icon" src="assets/icons/gift.svg" alt="" width="96" height="96">
-      <h1>우리 팀 마니또</h1>
-      <p>내 코드로 들어와서 비밀 친구를 확인해요</p>
+      <span class="deco-star s1" aria-hidden="true">★</span>
+      <span class="deco-star s2" aria-hidden="true">★</span>
+      <span class="googly hero-eyes" aria-hidden="true"><i></i><i></i></span>
+      <img class="sticker-star" src="assets/icons/star.svg" alt="" width="78" height="78">
+
+      <span class="label">AX2 TEAM</span><br>
+      <h1 class="title-sticker">마니또<span class="excl">!</span></h1>
+      <div class="tiles" aria-hidden="true"><b>M</b><b>A</b><b>N</b><b>I</b><b>T</b><b>O</b></div>
+      <p class="hero-sub">내 코드로 들어와서<br>비밀 친구를 확인해요 🤫</p>
     </header>
 
-    <form id="login-form" class="card" autocomplete="off">
+    <form id="login-form" class="gem-panel" autocomplete="off">
+      <h2 class="gem-title">LOGIN</h2>
       <label class="field">
-        <span class="field-label">이름</span>
+        <span class="field-label">NAME <small>이름</small></span>
         <select id="name" required>
           <option value="">이름을 선택하세요</option>
         </select>
       </label>
       <label class="field">
-        <span class="field-label">개인 코드</span>
+        <span class="field-label">CODE <small>개인 코드</small></span>
         <input id="code" type="text" inputmode="text" lang="en" spellcheck="false"
                placeholder="받은 코드 6자리" autocapitalize="characters" required>
       </label>
       <p id="login-error" class="error" role="alert" hidden></p>
       <div class="sticky-action">
-        <button class="btn btn-primary btn-block" type="submit">입장하기</button>
+        <button class="btn btn-secondary btn-block" type="submit">OK! 입장하기</button>
       </div>
     </form>
 
-    <p class="footer-link"><a href="admin.html">관리자</a></p>
+    <p class="footer-link"><a class="oval-sticker" href="admin.html">✦ admin ✦</a></p>
   </main>
   <script src="js/participants.js"></script>
   <script src="js/store.js"></script>
