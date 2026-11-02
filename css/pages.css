@@ -71,7 +71,8 @@
 
 .flip-card {
   position: relative;
-  width: min(100%, 300px);
+  width: 100%;
+  max-width: 300px;
   aspect-ratio: 3 / 4;
   padding: 0;
   border: 0;
@@ -127,6 +128,10 @@
 }
 .flip-sub { color: var(--ink-soft); }
 .flip-name {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: var(--font-title);
   font-weight: 400;
   font-size: clamp(2.2rem, 10vw, 3rem);
@@ -317,16 +322,16 @@
   .page-login .wrap { padding-bottom: 40px; }
   .sticky-action { position: static; padding: 8px 0 0; background: none; }
 
-  .grid { grid-template-columns: 1fr 1fr; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .span-2 { grid-column: span 2; }
-  .reveal { grid-template-columns: auto 1fr; align-items: center; }
+  .reveal { grid-template-columns: 260px minmax(0, 1fr); align-items: center; }
 
-  .admin-grid { grid-template-columns: 1fr 1fr; }
+  .admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .admin-gender, .admin-wide { grid-column: span 2; }
-  .gender-list, .assignment-list { grid-template-columns: 1fr 1fr; }
+  .gender-list, .assignment-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* ───── Desktop ───── */
 @media (min-width: 1024px) {
-  .gender-list, .assignment-list { grid-template-columns: repeat(3, 1fr); }
+  .gender-list, .assignment-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
