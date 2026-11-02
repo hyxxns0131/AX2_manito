@@ -2,7 +2,7 @@
 // 마니또 = 나를 챙겨주는 사람, 마니띠 = 내가 챙겨주는 사람
 const session = requireSession();
 const $ = sel => document.querySelector(sel);
-const POLL_MS = store.STORE === "firebase" ? 5000 : 2000;
+const POLL_MS = store.STORE === "local" ? 2000 : 5000;
 
 function chips(text) {
   const frag = document.createDocumentFragment();
@@ -66,13 +66,14 @@ async function initManito(people, settings, receiverId) {
   const receiver = people.find(p => p.id === receiverId);
   const revealAt = settings.revealAt ? new Date(settings.revealAt).getTime() : null;
 
-  if (!receiver) {
-    $("#manito-status").textContent = "아직 배정 전이에요. 조금만 기다려 주세요!";
-    return { receiver: null, lockedUntil: null };
-  }
+  // supabase 모드는 확인 시작 전에 receiverId 자체를 안 내려주므로 잠금부터 확인
   if (revealAt && Date.now() < revealAt) {
     $("#manito-status").textContent = `${formatDate(revealAt)}에 공개돼요 🔒`;
     return { receiver: null, lockedUntil: revealAt };
+  }
+  if (!receiver) {
+    $("#manito-status").textContent = "아직 배정 전이에요. 조금만 기다려 주세요!";
+    return { receiver: null, lockedUntil: null };
   }
 
   $("#manito-status").hidden = true;
@@ -136,7 +137,7 @@ function createChat(root, role) {
   }
 
   async function refresh() {
-    if (threadId) render(await store.getChat(threadId));
+    if (threadId) render(await store.getChat(session, threadId));
   }
 
   form.addEventListener("submit", async e => {
@@ -144,7 +145,7 @@ function createChat(root, role) {
     const text = form.text.value.trim();
     if (!text || !threadId) return;
     form.text.value = "";
-    await store.sendChat(threadId, role, text);
+    await store.sendChat(session, threadId, role, text);
     await refresh();
     form.text.focus();
   });
@@ -216,7 +217,7 @@ if (session) (async () => {
   if (receiver) {
     toManitti.setTitle(receiver.name);
     await toManitti.open(mine.threadId);
-    const inThread = await store.findThreadFor(session.id);
+    const inThread = await store.findThreadFor(session);
     if (inThread) await toManito.open(inThread);
     else toManito.lock("쪽지함이 아직 준비되지 않았어요.");
   } else {
