@@ -6,8 +6,8 @@ const store = (() => {
   // Supabase 대시보드 > Project Settings > API 의 Project URL과 anon(public) 키
   // anon 키는 공개돼도 괜찮아요. 권한은 supabase/schema.sql 의 함수들이 서버에서 확인합니다.
   const supabaseConfig = {
-    url: "",
-    anonKey: "",
+    url: "https://uwvqpigynrkrhwaqrzae.supabase.co",
+    anonKey: "sb_publishable_-zYksklDdnCiYMHhGYgc1Q_7ghFz5Cm",
   };
 
   // Firebase 사용 시 콘솔의 웹 앱 설정값을 입력하세요
