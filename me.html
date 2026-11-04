@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>내 마니또</title>
-  <link rel="icon" href="assets/icons/heart.svg?v=1.3.0" type="image/svg+xml">
+  <link rel="icon" href="assets/icons/heart.svg?v=1.4.0" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+KR:wght@400;700&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
-  <link rel="stylesheet" href="css/base.css?v=1.3.0">
-  <link rel="stylesheet" href="css/components.css?v=1.3.0">
-  <link rel="stylesheet" href="css/pages.css?v=1.3.0">
+  <link rel="stylesheet" href="css/base.css?v=1.4.0">
+  <link rel="stylesheet" href="css/components.css?v=1.4.0">
+  <link rel="stylesheet" href="css/pages.css?v=1.4.0">
 </head>
 <body class="page-me">
   <header class="topbar">
@@ -75,6 +75,62 @@
       </div>
     </section>
 
+    <!-- 힌트 뽑기: 클로 머신 -->
+    <section id="hint-game" class="card span-2" aria-labelledby="hint-title">
+      <h2 id="hint-title">🕹️ 힌트 뽑기</h2>
+      <p class="muted"><span id="hint-target">마니띠</span> 님이 직접 쓴 힌트가 캡슐에 들어 있어요. 무엇이 나올지는 랜덤!</p>
+      <p id="hint-status" class="notice" role="status">불러오는 중…</p>
+
+      <div id="hint-play" class="claw-layout" hidden>
+        <div class="machine">
+          <div class="machine-top">
+            <span class="machine-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="machine-marquee">HINT CATCHER</span>
+            <span class="machine-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+          </div>
+
+          <div class="machine-glass">
+            <span class="machine-rail" aria-hidden="true"></span>
+            <span class="machine-chute" aria-hidden="true">OUT</span>
+            <div class="claw" aria-hidden="true">
+              <span class="claw-cable"></span>
+              <span class="claw-head"></span>
+              <span class="claw-arm claw-arm-l"></span>
+              <span class="claw-arm claw-arm-r"></span>
+              <span class="claw-grip"></span>
+            </div>
+          </div>
+
+          <div class="machine-panel">
+            <button id="claw-left" class="claw-move" type="button" aria-label="집게 왼쪽으로">◀</button>
+            <span class="machine-stick" aria-hidden="true"><i></i></span>
+            <button id="claw-right" class="claw-move" type="button" aria-label="집게 오른쪽으로">▶</button>
+            <button id="claw-go" class="claw-go" type="button">뽑기!</button>
+          </div>
+
+          <div class="machine-base" aria-hidden="true">
+            <span class="machine-star">★</span>
+            <span class="machine-slot"><i></i></span>
+            <span class="machine-star">★</span>
+          </div>
+        </div>
+
+        <div class="hint-box">
+          <h3>뽑은 힌트</h3>
+          <p id="claw-message" class="claw-message" role="status"></p>
+          <p id="hint-list-empty" class="muted">아직 뽑은 힌트가 없어요.</p>
+          <ol id="hint-list" class="hint-list"></ol>
+        </div>
+      </div>
+
+      <dialog id="hint-dialog" class="hint-dialog" aria-labelledby="hint-dialog-title">
+        <span class="hint-capsule" aria-hidden="true"><i></i><i></i></span>
+        <h3 id="hint-dialog-title">힌트 획득!</h3>
+        <p id="hint-dialog-text" class="hint-dialog-text"></p>
+        <button id="hint-dialog-close" class="btn btn-primary" type="button">확인</button>
+      </dialog>
+    </section>
+
     <!-- 내 프로필 -->
     <section class="card span-2" aria-labelledby="profile-title">
       <h2 id="profile-title">내 프로필</h2>
@@ -92,9 +148,26 @@
           <input name="allergy" type="checkbox">
           <span>알레르기가 있어요</span>
         </label>
+        <fieldset id="hints-fields" class="hint-fields">
+          <legend>🔮 나에 대한 힌트 3가지</legend>
+          <p class="muted">내 마니또가 뽑기 게임으로 하나씩 받아요. 뽑기 전에는 아무도 볼 수 없어요.</p>
+          <label class="field">
+            <span class="field-label">힌트 1 <span id="hint1-count" class="counter"></span></span>
+            <input name="hint" type="text" maxlength="100" placeholder="예) 아침마다 아이스 아메리카노를 마셔요">
+          </label>
+          <label class="field">
+            <span class="field-label">힌트 2 <span id="hint2-count" class="counter"></span></span>
+            <input name="hint" type="text" maxlength="100" placeholder="예) 주말엔 집에서 게임을 해요">
+          </label>
+          <label class="field">
+            <span class="field-label">힌트 3 <span id="hint3-count" class="counter"></span></span>
+            <input name="hint" type="text" maxlength="100" placeholder="예) 요즘 키링 모으는 재미에 빠졌어요">
+          </label>
+        </fieldset>
         <div class="form-actions">
           <button class="btn btn-primary" type="submit">저장하기</button>
           <span id="profile-saved" class="saved" role="status" hidden>저장했어요 ✓</span>
+          <span id="profile-error" class="error" role="alert" hidden></span>
         </div>
       </form>
     </section>
@@ -127,10 +200,11 @@
       </form>
     </section>
   </main>
-  <script src="js/motion.js?v=1.3.0"></script>
-  <script src="js/participants.js?v=1.3.0"></script>
-  <script src="js/store.js?v=1.3.0"></script>
-  <script src="js/auth.js?v=1.3.0"></script>
-  <script src="js/me.js?v=1.3.0"></script>
+  <script src="js/motion.js?v=1.4.0"></script>
+  <script src="js/participants.js?v=1.4.0"></script>
+  <script src="js/store.js?v=1.4.0"></script>
+  <script src="js/auth.js?v=1.4.0"></script>
+  <script src="js/claw.js?v=1.4.0"></script>
+  <script src="js/me.js?v=1.4.0"></script>
 </body>
 </html>

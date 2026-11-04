@@ -49,6 +49,23 @@ create table chat_items (
 );
 create index on chat_items (thread_id, at);
 
+-- 자기 힌트 3개. 뽑기 전에는 누구도 읽을 수 없음
+create table hints (
+  person_id int not null references people(id),
+  slot int not null check (slot between 1 and 3),
+  text text not null check (char_length(text) between 1 and 100),
+  primary key (person_id, slot)
+);
+
+-- 마니또(drawer)가 마니띠(owner)의 어떤 힌트를 뽑았는지
+create table hint_draws (
+  drawer_id int not null references people(id),
+  owner_id int not null references people(id),
+  slot int not null,
+  drawn_at bigint not null,
+  primary key (drawer_id, owner_id, slot)
+);
+
 -- 관리자 비밀번호(bcrypt) + 코드·전체 배정 원본
 create table admin_secret (
   id int primary key default 1 check (id = 1),
@@ -64,6 +81,8 @@ alter table login_keys enable row level security;
 alter table profiles enable row level security;
 alter table chats enable row level security;
 alter table chat_items enable row level security;
+alter table hints enable row level security;
+alter table hint_draws enable row level security;
 alter table admin_secret enable row level security;
 
 /* ───────────── 초기 데이터 ───────────── */
@@ -165,6 +184,87 @@ begin
         allergy = excluded.allergy, updated_at = excluded.updated_at;
 end $$;
 
+-- 힌트를 뽑을 대상(내 마니띠). 마니띠 확인 시작 전에는 null
+create function hint_target(p_key text) returns int
+language sql stable security definer set search_path = public as $$
+  select receiver_id from login_keys where key = p_key and is_revealed();
+$$;
+
+-- 내가 쓴 힌트 3칸 (빈칸은 '')
+create function get_own_hints(p_key text) returns json
+language plpgsql stable security definer set search_path = public as $$
+declare
+  me int := key_owner(p_key);
+begin
+  if me is null then raise exception '다시 로그인해 주세요.'; end if;
+  return (
+    select json_agg(coalesce(h.text, '') order by s.slot)
+    from generate_series(1, 3) as s(slot)
+    left join hints h on h.person_id = me and h.slot = s.slot
+  );
+end $$;
+
+-- 본인 힌트만 저장 가능, 빈칸은 지움
+create function save_hints(p_key text, p_hints text[]) returns void
+language plpgsql security definer set search_path = public as $$
+declare
+  me int := key_owner(p_key);
+  v text;
+begin
+  if me is null then raise exception '다시 로그인해 주세요.'; end if;
+  for i in 1..3 loop
+    v := left(btrim(coalesce(p_hints[i], '')), 100);
+    if v = '' then
+      delete from hints where person_id = me and slot = i;
+    else
+      insert into hints (person_id, slot, text) values (me, i, v)
+      on conflict (person_id, slot) do update set text = excluded.text;
+    end if;
+  end loop;
+end $$;
+
+-- 내 마니띠의 힌트 개수와 내가 이미 뽑은 힌트 (안 뽑은 힌트의 내용은 내려주지 않음)
+create function get_hint_game(p_key text) returns json
+language plpgsql stable security definer set search_path = public as $$
+declare
+  me int := key_owner(p_key);
+  target int := hint_target(p_key);
+begin
+  if me is null then raise exception '다시 로그인해 주세요.'; end if;
+  return json_build_object(
+    'total', (select count(*) from hints where person_id = target),
+    'drawn', coalesce((
+      select json_agg(h.text order by d.drawn_at, d.slot)
+      from hint_draws d
+      join hints h on h.person_id = d.owner_id and h.slot = d.slot
+      where d.drawer_id = me and d.owner_id = target
+    ), '[]'::json)
+  );
+end $$;
+
+-- 아직 안 뽑은 힌트 중 하나를 서버에서 무작위로 고름. 남은 게 없으면 null
+create function draw_hint(p_key text) returns json
+language plpgsql security definer set search_path = public as $$
+declare
+  me int := key_owner(p_key);
+  target int := hint_target(p_key);
+  picked record;
+begin
+  if me is null or target is null then raise exception '아직 뽑을 수 없어요.'; end if;
+  select h.slot, h.text into picked
+    from hints h
+   where h.person_id = target
+     and not exists (select 1 from hint_draws d
+                      where d.drawer_id = me and d.owner_id = target and d.slot = h.slot)
+   order by random()
+   limit 1;
+  if not found then return null; end if;
+  insert into hint_draws (drawer_id, owner_id, slot, drawn_at)
+  values (me, target, picked.slot, now_ms())
+  on conflict do nothing;
+  return json_build_object('text', picked.text);
+end $$;
+
 -- 나를 챙겨주는 마니또와의 쪽지함
 create function find_thread_for(p_key text) returns text
 language sql stable security definer set search_path = public as $$
@@ -246,6 +346,7 @@ begin
 
   if p_reset_chats then
     delete from chats where true;   -- 쪽지(chat_items)도 같이 지워짐
+    delete from hint_draws where true; -- 새 마니띠의 힌트를 처음부터 뽑도록
     insert into chats (thread_id, receiver_id)
     select t.value, (p_assignment->>t.key)::int
       from jsonb_each_text(p_threads) t;
@@ -264,6 +365,7 @@ grant execute on function
   get_people(), get_settings(), find_key(text), get_profile(int),
   save_profile(text, text, text, boolean), find_thread_for(text),
   get_chat(text, text), send_chat(text, text, text), get_final_reveal(),
+  get_own_hints(text), save_hints(text, text[]), get_hint_game(text), draw_hint(text),
   admin_login(text), admin_load_secret(text), admin_save_people(text, jsonb),
   admin_save_settings(text, jsonb),
   admin_commit(text, jsonb, jsonb, jsonb, jsonb, boolean)

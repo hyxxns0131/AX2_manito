@@ -1,4 +1,4 @@
-// 마이페이지 — 내 프로필, 마니띠 확인, 익명 쪽지, 정체 공개
+// 마이페이지 — 내 프로필·힌트, 마니띠 확인, 힌트 뽑기, 익명 쪽지, 정체 공개
 // 마니또 = 나를 챙겨주는 사람, 마니띠 = 내가 챙겨주는 사람
 const session = requireSession();
 const $ = sel => document.querySelector(sel);
@@ -50,14 +50,32 @@ async function initProfile() {
   bindCounter(form.likes, $("#likes-count"));
   bindCounter(form.dislikes, $("#dislikes-count"));
 
+  // 불러오지 못했을 때 저장하면 빈칸으로 덮어쓰므로 입력을 막음
+  const hintFields = $("#hints-fields");
+  const hintInputs = [...hintFields.querySelectorAll("input")];
+  try {
+    (await store.getOwnHints(session)).forEach((h, i) => (hintInputs[i].value = h));
+  } catch {
+    hintFields.disabled = true;
+  }
+  hintInputs.forEach((input, i) => bindCounter(input, $(`#hint${i + 1}-count`)));
+
   form.addEventListener("submit", async e => {
     e.preventDefault();
-    await store.saveProfile(session, {
-      likes: form.likes.value.trim(),
-      dislikes: form.dislikes.value.trim(),
-      allergy: form.allergy.checked,
-    });
-    flash($("#profile-saved"));
+    const error = $("#profile-error");
+    error.hidden = true;
+    try {
+      await store.saveProfile(session, {
+        likes: form.likes.value.trim(),
+        dislikes: form.dislikes.value.trim(),
+        allergy: form.allergy.checked,
+      });
+      if (!hintFields.disabled) await store.saveHints(session, hintInputs.map(i => i.value.trim()));
+      flash($("#profile-saved"));
+    } catch (err) {
+      error.textContent = `저장하지 못했어요: ${err.message}`;
+      error.hidden = false;
+    }
   });
 }
 
@@ -218,8 +236,10 @@ if (session) (async () => {
   const { receiver, lockedUntil } = await initManito(people, settings, mine.receiverId);
   const toManitti = createChat($("#chat-giver"), "giver");   // 내가 마니또 → 마니띠에게 익명
   const toManito = createChat($("#chat-receiver"), "receiver"); // 익명의 내 마니또와
+  const clawGame = createClawGame($("#hint-game"), session);
 
   if (receiver) {
+    await clawGame.open(receiver.name);
     toManitti.setTitle(receiver.name);
     await toManitti.open(mine.threadId);
     const inThread = await store.findThreadFor(session);
@@ -231,6 +251,9 @@ if (session) (async () => {
       : "배정 후에 쪽지를 주고받을 수 있어요.";
     toManitti.lock(msg);
     toManito.lock(msg);
+    clawGame.lock(lockedUntil
+      ? `${formatDate(lockedUntil)}부터 뽑을 수 있어요 🔒`
+      : "배정 후에 뽑을 수 있어요.");
   }
 
   let revealed = false;
@@ -249,5 +272,6 @@ if (session) (async () => {
     if (store.isFinalRevealed(s) !== revealed) await checkFinal();
     toManitti.refresh();
     toManito.refresh();
+    clawGame.refresh();
   }, POLL_MS);
 })();

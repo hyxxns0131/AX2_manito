@@ -51,6 +51,8 @@ const store = (() => {
       keys: {},      // { loginKey: { id, receiverId, threadId } }
       profiles: {},  // { id: { likes, dislikes, allergy, updatedAt } }
       chats: {},     // { threadId: { receiverId, items: [{ from, text, at }] } }
+      hints: {},     // { id: [힌트1, 힌트2, 힌트3] }
+      hintDraws: {}, // { "마니또id:마니띠id": [뽑은 칸 번호] }
       ...db,
     };
     merged.settings = { ...DEFAULT_SETTINGS, ...db?.settings };
@@ -60,6 +62,12 @@ const store = (() => {
 
   function lsSave(db) {
     localStorage.setItem(LS_KEY, JSON.stringify(db));
+  }
+
+  function lsHintState(db, session) {
+    const target = db.keys[session.key]?.receiverId;
+    const drawKey = `${session.id}:${target}`;
+    return { hints: db.hints[target] ?? [], drawn: db.hintDraws[drawKey] ?? [], drawKey };
   }
 
   const local = {
@@ -89,6 +97,27 @@ const store = (() => {
       lsSave(db);
     },
 
+    async getOwnHints(session) { return lsLoad().hints[session.id] ?? ["", "", ""]; },
+    async saveHints(session, hints) {
+      const db = lsLoad();
+      db.hints[session.id] = hints.map(h => h.trim().slice(0, 100));
+      lsSave(db);
+    },
+    async getHintGame(session) {
+      const { hints, drawn } = lsHintState(lsLoad(), session);
+      return { total: hints.filter(Boolean).length, drawn: drawn.map(i => hints[i]).filter(Boolean) };
+    },
+    async drawHint(session) {
+      const db = lsLoad();
+      const { hints, drawn, drawKey } = lsHintState(db, session);
+      const left = hints.flatMap((h, i) => (h && !drawn.includes(i) ? [i] : []));
+      if (!left.length) return null;
+      const pick = left[Math.floor(Math.random() * left.length)];
+      db.hintDraws[drawKey] = [...drawn, pick];
+      lsSave(db);
+      return { text: hints[pick] };
+    },
+
     async getFinalReveal() {
       const db = lsLoad();
       return isFinalRevealed(db.settings) ? db.secret.assignment : null;
@@ -114,6 +143,7 @@ const store = (() => {
       db.secret = { codes, assignment, threads };
       if (resetChats) {
         db.chats = {};
+        db.hintDraws = {};
         for (const [giverId, threadId] of Object.entries(threads)) {
           db.chats[threadId] = { receiverId: assignment[giverId], items: [] };
         }
@@ -151,6 +181,9 @@ const store = (() => {
     await fs.setDoc(fs.doc(db, path), data, { merge });
   }
 
+  // 힌트를 뽑기 전까지 숨기려면 서버 함수가 필요해서 firebase 모드는 지원하지 않음
+  const hintsUnsupported = async () => { throw new Error("힌트 뽑기는 supabase 모드에서만 쓸 수 있어요."); };
+
   const firebase = {
     async getPeople() {
       const { fs, db } = await fb();
@@ -183,6 +216,11 @@ const store = (() => {
       const { fs, db } = await fb();
       await fs.addDoc(fs.collection(db, `chats/${threadId}/items`), item);
     },
+
+    getOwnHints: hintsUnsupported,
+    saveHints: hintsUnsupported,
+    getHintGame: hintsUnsupported,
+    drawHint: hintsUnsupported,
 
     // 보안 규칙이 공개 시각 전에는 읽기를 막음
     async getFinalReveal() {
@@ -267,6 +305,11 @@ const store = (() => {
     sendChat: (session, threadId, item) =>
       rpc("send_chat", { p_key: session.key, p_thread: threadId, p_text: item.text }),
 
+    getOwnHints: session => rpc("get_own_hints", { p_key: session.key }),
+    saveHints: (session, hints) => rpc("save_hints", { p_key: session.key, p_hints: hints }),
+    getHintGame: session => rpc("get_hint_game", { p_key: session.key }),
+    drawHint: session => rpc("draw_hint", { p_key: session.key }),
+
     getFinalReveal: () => rpc("get_final_reveal"),
 
     async adminLogin({ password }) {
@@ -315,6 +358,12 @@ const store = (() => {
   const sendChat = (session, threadId, from, text) =>
     impl.sendChat(session, threadId, { from, text, at: Date.now() });
 
+  // 힌트 뽑기: 안 뽑은 힌트의 내용은 drawHint로만 받을 수 있음
+  const getOwnHints = session => impl.getOwnHints(session);
+  const saveHints = (session, hints) => impl.saveHints(session, hints);
+  const getHintGame = session => impl.getHintGame(session);
+  const drawHint = session => impl.drawHint(session);
+
   const getFinalReveal = () => impl.getFinalReveal();
 
   const adminLogin = cred => impl.adminLogin(cred);
@@ -348,6 +397,10 @@ const store = (() => {
     findThreadFor,
     getChat,
     sendChat,
+    getOwnHints,
+    saveHints,
+    getHintGame,
+    drawHint,
     getFinalReveal,
     adminLogin,
     adminLoadSecret,
