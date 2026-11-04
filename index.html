@@ -4,127 +4,93 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>우리 팀 마니또</title>
-  <script src="js/theme.js?v=1.6.0"></script>
-  <link rel="icon" href="assets/icons/heart.svg?v=1.6.0" type="image/svg+xml">
+  <script src="js/theme.js?v=2.0.0"></script>
+  <link rel="icon" href="assets/icons/heart.svg?v=2.0.0" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+KR:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Dancing+Script:wght@700&family=Gowun+Dodum&family=Jua&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
-  <link rel="stylesheet" href="css/base.css?v=1.6.0">
-  <link rel="stylesheet" href="css/components.css?v=1.6.0">
-  <link rel="stylesheet" href="css/pages.css?v=1.6.0">
-  <link rel="stylesheet" href="css/fx.css?v=1.6.0">
+  <link rel="stylesheet" href="css/base.css?v=2.0.0">
+  <link rel="stylesheet" href="css/components.css?v=2.0.0">
+  <link rel="stylesheet" href="css/pages.css?v=2.0.0">
+  <link rel="stylesheet" href="css/fx.css?v=2.0.0">
+  <link rel="stylesheet" href="css/hompy.css?v=2.0.0">
 </head>
 <body class="page-login">
-  <div class="ticker" data-ticker="SECRET MANITO ✿ AX2 TEAM ✿ WHO IS YOUR MANITO?" aria-hidden="true"></div>
+  <div class="sparkles" data-sparkles aria-hidden="true"></div>
 
-  <form id="login-form" class="console" autocomplete="off">
-    <div class="console-vents" aria-hidden="true"><i></i><i class="vent-wide"></i><i></i></div>
+  <div class="hompy">
+    <header class="hompy-bar">
+      <p class="hompy-title"><img src="assets/icons/heart.svg" alt="" width="20" height="20"> AX2 마니또 미니홈피</p>
+      <div class="hompy-actions"><div data-theme-picker></div></div>
+    </header>
 
-    <!-- 왼쪽: 십자 버튼, 코드 버튼판, 전원 -->
-    <div class="console-left">
-      <span class="dpad" aria-hidden="true"><i></i></span>
-
-      <div class="numpad" role="group" aria-label="코드 입력 버튼">
-        <button class="num-btn" type="button" data-key="1" data-k="1">1</button>
-        <button class="num-btn" type="button" data-key="2" data-k="2">2</button>
-        <button class="num-btn" type="button" data-key="3" data-k="3">3</button>
-        <button class="num-btn" type="button" data-key="4" data-k="4">4</button>
-        <button class="num-btn" type="button" data-key="5" data-k="5">5</button>
-        <button class="num-btn" type="button" data-key="6" data-k="6">6</button>
-        <button class="num-btn" type="button" data-key="7" data-k="7">7</button>
-        <button class="num-btn" type="button" data-key="8" data-k="8">8</button>
-        <button class="num-btn" type="button" data-key="9" data-k="9">9</button>
-        <button class="num-btn num-del" type="button" data-del data-k="backspace" aria-label="한 글자 지우기">⌫</button>
-        <button class="num-btn" type="button" data-key="0" data-k="0">0</button>
-        <button class="num-btn num-ok" type="submit" data-k="enter" aria-label="입장하기">OK</button>
-      </div>
-
-      <div class="power">
-        <span class="power-label" aria-hidden="true">ON <i></i> OFF</span>
-        <a class="mini-link" href="admin.html">ADMIN</a>
-      </div>
-    </div>
-
-    <!-- 가운데: 게임 화면 -->
-    <div class="bezel-frame">
-      <div class="crt">
-        <div class="scene" aria-hidden="true">
-          <i class="cloud c1"></i><i class="cloud c2"></i><i class="cloud c3"></i>
-          <img class="scene-item s-gift" src="assets/icons/gift.svg?v=1.6.0" alt="" width="84" height="84">
-          <img class="scene-item s-heart" src="assets/icons/heart.svg?v=1.6.0" alt="" width="48" height="48">
-          <img class="scene-item s-star" src="assets/icons/star.svg?v=1.6.0" alt="" width="56" height="56">
-          <i class="grass"></i>
+    <div class="hompy-body hompy-body-login">
+      <aside class="hompy-side">
+        <p class="side-count">TODAY <b data-today></b> · 멤버 <b data-members>-</b></p>
+        <figure class="side-photo side-poster"><img src="assets/img/poster.jpg" alt="" width="520" height="711"></figure>
+        <p class="side-status">마니또 파티시에 모집 중</p>
+        <p class="side-dday" data-dday></p>
+        <div class="side-room">
+          <p class="side-label">♡ 미니룸</p>
+          <img src="assets/img/house.jpg" alt="" width="520" height="413">
         </div>
-
-        <div class="hud hud-top" aria-hidden="true">
-          <span>♥ X3</span><span>★ X29</span><span class="hud-gold">SCORE 00029</span>
+        <div class="side-room">
+          <p class="side-label">♡ 일촌 요정</p>
+          <img src="assets/img/spirit-vanilla.jpg" alt="" width="240" height="441">
         </div>
+      </aside>
 
-        <div class="crt-content">
-          <div class="start-panel">
-            <h1 class="logo" data-kinetic>마니또<span class="logo-heart">♥</span></h1>
-            <p class="logo-sub" data-scramble>AX2 TEAM · SECRET GAME</p>
+      <main class="hompy-main login-main">
+        <form id="login-form" class="card login-card" autocomplete="off">
+          <h2>로그인</h2>
+          <h1 class="logo" data-kinetic>마니또<span class="logo-heart">♥</span></h1>
+          <p class="sign-sub" data-scramble>빼빼로데이 스페셜 · 11.11</p>
+          <label class="field">
+            <span class="field-label">이름</span>
+            <select id="name" required>
+              <option value="">♡ 내 이름 고르기</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="field-label">개인 코드</span>
+            <input id="code" type="text" inputmode="numeric" spellcheck="false"
+                   placeholder="● ● ● ● ● ●" autocapitalize="characters" required>
+          </label>
+          <p id="login-error" class="error" role="alert" hidden></p>
+          <button class="btn btn-primary btn-block" type="submit">♡ 미니홈피 들어가기</button>
+          <p class="login-foot"><a href="admin.html">관리자</a> · v2.0.0</p>
+        </form>
 
-            <label class="field">
-              <span class="field-label">PLAYER <small>이름</small></span>
-              <select id="name" required>
-                <option value="">♡ 내 이름 고르기</option>
-              </select>
-            </label>
-            <label class="field">
-              <span class="field-label">CODE <small>키보드로 쳐도 돼요</small></span>
-              <input id="code" type="text" inputmode="numeric" spellcheck="false"
-                     placeholder="● ● ● ● ● ●" autocapitalize="characters" required>
-            </label>
-            <p id="login-error" class="error" role="alert" hidden></p>
-            <button class="btn btn-primary btn-block" type="submit">▶ PRESS START</button>
-          </div>
-        </div>
+        <section class="card gacha-card" aria-labelledby="gacha-title">
+          <h2 id="gacha-title">오늘의 뽑기</h2>
+          <p class="muted">손잡이를 돌려 보세요! 힌트를 모아 내 마니또를 맞혀요 🍫</p>
+          <div data-gacha></div>
+        </section>
 
-        <div class="hud hud-bottom" aria-hidden="true">
-          <span>1P ▮▮▮▮▮▮</span><span class="brand">MANITO v1.6.0</span><span class="hud-gold">WORLD 1-1</span>
-        </div>
-      </div>
+        <section class="card album-card" aria-labelledby="album-title">
+          <h2 id="album-title">사진첩 · 오늘의 디저트</h2>
+          <ul class="shelf">
+            <li><img src="assets/img/dessert-heart.jpg" alt="" width="420" height="420">딸기 하트 마카롱</li>
+            <li><img src="assets/img/dessert-gold.jpg" alt="" width="420" height="420">우정의 케이크</li>
+            <li><img src="assets/img/dessert-rose.jpg" alt="" width="420" height="420">장미 수플레</li>
+            <li><img src="assets/img/dessert-star.jpg" alt="" width="420" height="420">별빛 플레이트</li>
+            <li><img src="assets/img/house.jpg" alt="" width="520" height="413">과자의 집</li>
+          </ul>
+        </section>
+      </main>
     </div>
+  </div>
 
-    <!-- 오른쪽: 조이스틱, 색 다이얼, 동전 투입구 -->
-    <div class="console-right">
-      <span class="joystick" aria-hidden="true"><i></i></span>
+  <div class="ticker" data-ticker="HAPPY 빼빼로데이 ♡ 11.11 ♡ SWEET MANITO" aria-hidden="true"></div>
+  <p class="credit">이미지: 꿈빛 파티시엘 © Natsumi Matsumoto / Shueisha · Yumeiro Patissiere Project</p>
+  <div class="page-wipe" aria-hidden="true"></div>
 
-      <div class="dial-row">
-        <button class="dial" type="button" data-theme-next aria-label="콘솔 색 바꾸기"><i></i></button>
-        <div data-theme-picker></div>
-      </div>
-
-      <div class="coin-box">
-        <span class="coin-title">GAME START</span>
-        <span class="coin-arrow" aria-hidden="true">▼</span>
-        <button class="coin-slot" type="submit" aria-label="입장하기"><i></i></button>
-      </div>
-    </div>
-  </form>
-
-  <!-- 메인 가챠 무대 -->
-  <section class="gacha-stage" aria-label="오늘의 뽑기">
-    <div>
-      <h2 class="kinetic-title">
-        <span class="line" data-kinetic>WHO IS</span>
-        <span class="line" data-kinetic>YOUR</span>
-        <span class="line" data-kinetic>MANITO?</span>
-      </h2>
-      <p class="kinetic-sub">손잡이를 돌려 보세요! 힌트를 모아 내 마니또를 맞혀요 🎁</p>
-    </div>
-    <div data-gacha></div>
-  </section>
-
-  <div class="ticker ticker-alt" data-ticker="SECRET MANITO ✿ AX2 TEAM ✿ WHO IS YOUR MANITO?" aria-hidden="true"></div>
-  <div class="zoom-tunnel" aria-hidden="true"><i class="zoom-ring" style="--n:0"></i><i class="zoom-ring" style="--n:1"></i><i class="zoom-ring" style="--n:2"></i><i class="zoom-ring" style="--n:3"></i></div>
-
-  <script src="js/motion.js?v=1.6.0"></script>
-  <script src="js/fx.js?v=1.6.0"></script>
-  <script src="js/participants.js?v=1.6.0"></script>
-  <script src="js/store.js?v=1.6.0"></script>
-  <script src="js/auth.js?v=1.6.0"></script>
+  <script src="js/motion.js?v=2.0.0"></script>
+  <script src="js/fx.js?v=2.0.0"></script>
+  <script src="js/participants.js?v=2.0.0"></script>
+  <script src="js/store.js?v=2.0.0"></script>
+  <script src="js/auth.js?v=2.0.0"></script>
+  <script src="js/hompy.js?v=2.0.0"></script>
 </body>
 </html>

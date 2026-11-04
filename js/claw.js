@@ -1,5 +1,5 @@
 // 힌트 뽑기 — 마니띠가 클로 머신을 조종해 자기 마니또가 쓴 정체 힌트를 뽑음
-// 캡슐을 집으면 어떤 힌트가 나올지는 서버가 무작위로 정함 (캡슐 위치·색은 장식)
+// 마카롱을 집으면 어떤 힌트가 나올지는 서버가 무작위로 정함 (마카롱 위치·색은 장식)
 const CLAW_HOME = 50;      // 아래 값은 모두 유리창 너비 기준 %
 const CLAW_MIN = 14;
 const CLAW_MAX = 90;
@@ -24,6 +24,7 @@ function createClawGame(root, session) {
   const list = $in("#hint-list");
   const listEmpty = $in("#hint-list-empty");
   const dialog = $in("#hint-dialog");
+  const face = $in("#claw-face");
 
   let game = { total: 0, drawn: [] };
   let x = CLAW_HOME;
@@ -67,12 +68,12 @@ function createClawGame(root, session) {
 
   function render() {
     const left = remaining();
-    marquee.textContent = game.total ? `남은 캡슐 ${left}개` : "HINT CATCHER";
+    marquee.textContent = game.total ? `남은 마카롱 ${left}개` : "SWEET CATCHER";
     status.hidden = false;
     status.textContent =
-      !game.total ? "내 마니또가 아직 힌트를 쓰지 않았어요. 쓰면 캡슐이 들어와요!" :
+      !game.total ? "내 마니또가 아직 힌트를 쓰지 않았어요. 쓰면 마카롱이 들어와요!" :
       !left ? "힌트를 전부 뽑았어요! 내 마니또는 누구일까요? 🎉" :
-      "◀ ▶ 로 집게를 캡슐 위에 맞추고 빨간 버튼을 눌러요.";
+      "◀ ▶ 로 집게를 마카롱 위에 맞추고 빨간 버튼을 눌러요.";
     fillCapsules();
     setBusy(busy);
 
@@ -88,6 +89,13 @@ function createClawGame(root, session) {
   async function load() {
     game = await store.getHintGame(session);
     render();
+  }
+
+  function react(mood) {
+    face.src = `assets/img/ichigo-${mood}.jpg`;
+    face.classList.remove("is-react");
+    void face.offsetWidth;
+    face.classList.add("is-react");
   }
 
   function say(text) {
@@ -106,7 +114,8 @@ function createClawGame(root, session) {
     if (busy || !remaining()) return;
     setBusy(true);
     say("");
-    const reach = glass.clientHeight - 118;   // 집게 끝이 캡슐에 닿는 길이
+    react("smile");
+    const reach = glass.clientHeight - 118;   // 집게 끝이 마카롱에 닿는 길이
 
     setCable(reach, 900);
     await wait(950);
@@ -130,7 +139,8 @@ function createClawGame(root, session) {
 
     if (!hit) {
       claw.classList.remove("is-closed");
-      say("아깝다! 캡슐 바로 위에서 다시 해봐요.");
+      react("shock");
+      say("아깝다! 마카롱 바로 위에서 다시 해봐요.");
       setBusy(false);
       return;
     }
@@ -146,6 +156,7 @@ function createClawGame(root, session) {
       const result = await drawing;
       if (result) {
         game.drawn = [...game.drawn, result.text];
+        react("laugh");
         await playGacha();
         showHint(result.text);
       } else {
@@ -215,7 +226,7 @@ function createClawGame(root, session) {
     lock(text) {
       status.textContent = text;
     },
-    // 마니또가 힌트를 새로 쓰면 캡슐이 들어옴
+    // 마니또가 힌트를 새로 쓰면 마카롱이 들어옴
     async refresh() {
       if (!ready || busy || dialog.open) return;
       const next = await store.getHintGame(session).catch(() => null);

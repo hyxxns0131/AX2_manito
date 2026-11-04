@@ -1,4 +1,4 @@
-// 장식용 모션 — 창 등장, 콘솔 버튼 눌림 (데이터와 무관)
+// 장식용 모션 — 카드 등장 (데이터와 무관)
 const REDUCE_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 (() => {
@@ -16,12 +16,4 @@ const REDUCE_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
       io.observe(el);
     });
   }
-
-  // 2) 실제 키보드를 누르면 콘솔 버튼도 눌림
-  document.addEventListener("keydown", e => {
-    const el = document.querySelector(`.num-btn[data-k="${CSS.escape(e.key.toLowerCase())}"]`);
-    if (!el) return;
-    el.classList.add("is-down");
-    setTimeout(() => el.classList.remove("is-down"), 140);
-  });
 })();

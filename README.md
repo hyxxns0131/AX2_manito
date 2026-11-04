@@ -1,6 +1,6 @@
 # 🎁 우리 팀 마니또 (Manito Picker)
 
-29명 팀원을 위한 **마니또 뽑기 웹사이트**입니다.
+28명 팀원을 위한 **마니또 뽑기 웹사이트**입니다.
 HTML · CSS · Vanilla JavaScript로 만들고, 모바일부터 데스크톱까지 반응형으로 동작합니다.
 
 > **용어** — **마니또**: 나를 몰래 챙겨주는 사람 · **마니띠**: 내가 몰래 챙겨주는 사람
@@ -23,7 +23,7 @@ HTML · CSS · Vanilla JavaScript로 만들고, 모바일부터 데스크톱까�
 
 ---
 
-## 👥 참가자 명단 (29명)
+## 👥 참가자 명단 (28명)
 
 > `gender`는 이름만으로 판단하지 않고 **관리자가 직접 입력**합니다. (`M` / `F`)
 
@@ -39,7 +39,6 @@ HTML · CSS · Vanilla JavaScript로 만들고, 모바일부터 데스크톱까�
 | 8 | 권혁주 | |
 | 9 | 김민서 | |
 | 10 | 유정현 | |
-| 11 | 이정빈 | |
 | 12 | 장희주 | |
 | 13 | 소준희 | |
 | 14 | 문승호 | |
@@ -73,7 +72,6 @@ export const PARTICIPANTS = [
   { id: 8,  name: "권혁주", gender: "" },
   { id: 9,  name: "김민서", gender: "" },
   { id: 10, name: "유정현", gender: "" },
-  { id: 11, name: "이정빈", gender: "" },
   { id: 12, name: "장희주", gender: "" },
   { id: 13, name: "소준희", gender: "" },
   { id: 14, name: "문승호", gender: "" },
@@ -112,7 +110,7 @@ export const PARTICIPANTS = [
 섞은 순서: 이나원 → 문승호 → 김민정 → … → 홍은주 → (다시 이나원)
 ```
 
-- 원의 길이가 29이므로 자기 자신이 나올 수 없고 (규칙 1)
+- 원의 길이가 28이므로 자기 자신이 나올 수 없고 (규칙 1)
 - 3명 이상인 원에서는 A→B, B→A가 동시에 생길 수 없음 (규칙 2)
 - 별도의 재시도 없이 **항상** 두 규칙을 만족합니다.
 
@@ -213,14 +211,14 @@ function draw(people, target, tries = 3000) {
 
 ## 🎨 테마
 
-참고 이미지의 분위기만 가져온 오리지널 **파스텔 게임기 콘솔** 테마입니다.
+빼빼로데이(11.11) 기념 **핑크 미니홈피** 테마입니다. 2000년대 미니홈피·메신저 구성에 꿈빛 파티시엘 이미지를 입혔습니다. 사진은 `images/` 원본을 잘라 `assets/img/`에 넣어 사용하며, 저작권은 원저작자에게 있습니다 (팀 내부 행사용).
 
-- **입장 화면**: 콘솔 그대로. 가운데 게임 화면(픽셀 HUD), 왼쪽 버튼판으로 코드 입력, 오른쪽 동전 투입구 `GAME START`로 입장
-- **나머지 화면**: 각 칸이 테두리 있는 게임 화면이고 위에 `WORLD 1-n`, `1P` HUD 표시
-- **콘솔 색**: 다이얼을 돌리거나 🎨 버튼에서 프리셋 6가지·직접 고르기. `js/theme.js`가 이 브라우저에 사람별로 저장 (다른 기기와는 공유되지 않음)
-- **폰트**: HUD·제목 [Galmuri11](https://github.com/quiple/galmuri) (jsDelivr), 로고·버튼 `Bagel Fat One`, 본문 `Noto Sans KR` (Google Fonts)
-- **가챠 머신**: 메인 화면에서 손잡이를 돌릴 수 있고, 힌트를 뽑으면 마이페이지의 머신도 함께 돌아감
-- **애니메이션** (`css/fx.css`, `js/fx.js`, `prefers-reduced-motion` 시 생략): Halftone·Grainy 배경, 흐르는 띠와 큰 글자(Kinetic Typography), Y2K Chrome 로고, Text Scramble, Claymorphism 가챠, Liquid·Shape Morph, Holographic 캡슐, Line Animation, Squash and Stretch, Memphis 컨페티, Infinite Zoom
+- **구성**: 왼쪽 프로필, 가운데 내용, 오른쪽 탭(홈·마니띠·힌트·쪽지·프로필). 폰에서는 탭이 아래 고정 (`js/hompy.js`, `css/hompy.css`)
+- **쪽지**: 메신저 대화창. 마니띠·마니또 쪽지함을 위쪽 탭으로 전환하고, 새 쪽지가 오면 탭에 N 표시
+- **맛 고르기**: 🍓 버튼에서 딸기·민트초코·말차·블루베리·레몬·초코 또는 직접 고르기. `js/theme.js`가 이 브라우저에 사람별로 저장 (다른 기기와는 공유되지 않음)
+- **힌트 뽑기**: 집게로 마카롱을 집으면 내 마니또의 힌트가 나오고, 이치고 표정이 결과에 따라 바뀜
+- **폰트**: 창·탭 [Galmuri11](https://github.com/quiple/galmuri) (jsDelivr), 로고 `Bagel Fat One`, 제목 `Jua`, 본문 `Gowun Dodum` (Google Fonts)
+- **애니메이션** (`css/fx.css`, `js/fx.js`, `prefers-reduced-motion` 시 생략): Text Scramble, 말랑한 가챠, Shape Morph, Line Animation, Squash and Stretch, 스프링클, 크림 화면 전환
 
 ---
 
@@ -256,15 +254,17 @@ manito/
 │  ├─ auth.js          # 코드 로그인
 │  ├─ me.js
 │  ├─ claw.js          # 힌트 뽑기 게임
-│  ├─ theme.js         # 콘솔 색
+│  ├─ theme.js         # 맛(색 테마)
 │  ├─ motion.js        # 장식 모션
+│  ├─ fx.js            # 가챠·스크램블 등 효과
+│  ├─ hompy.js         # 탭 전환·날짜·새 쪽지 표시
 │  └─ admin.js
 ├─ supabase/
 │  ├─ schema.sql       # 테이블 + RLS + 함수 (SQL Editor에서 한 번 실행)
 │  └─ reset.sql        # 테스트 후 초기화
 ├─ firestore.rules     # Firestore 보안 규칙
 └─ assets/
-   └─ icons/           # 선물상자, 리본, 하트, 별 SVG
+   └─ icons/           # 선물상자, 리본, 하트, 별, 케이크, 초코 스틱 SVG
 ```
 
 ---
@@ -294,7 +294,7 @@ admin/secret      = { codes, assignment, threads }    // 관리자 전용
 
 ## 💾 저장소 선택 (중요)
 
-순수 HTML/CSS/JS만으로는 **29명이 각자 폰에서** 같은 데이터를 공유할 수 없습니다. 아래 중 하나를 고르세요.
+순수 HTML/CSS/JS만으로는 **28명이 각자 폰에서** 같은 데이터를 공유할 수 없습니다. 아래 중 하나를 고르세요.
 
 | 방식 | 장점 | 단점 |
 |---|---|---|
@@ -345,7 +345,7 @@ npx serve .
 ## 🛠 관리자 진행 순서
 
 1. `admin.html` 접속 (관리자 비밀번호)
-2. 29명 **성별 입력**
+2. 28명 **성별 입력**
 3. 매칭 **모드 선택** (`balanced` 기본)
 4. **배정 실행** → 결과 검증(본인 0건, 쌍방 0건, 이성 매칭 비율) 표시
    + "누가 누구의 마니또?" 전체 배정표 표시 (복사 가능)
@@ -357,7 +357,7 @@ npx serve .
 
 ## ✅ 체크리스트
 
-- [ ] 29명 모두 정확히 1명씩 배정되는가
+- [ ] 28명 모두 정확히 1명씩 배정되는가
 - [ ] 본인 배정 0건 / 쌍방 배정 0건
 - [ ] 성별 미입력 시 배정 차단
 - [ ] 타인 코드로 다른 사람 결과 조회 불가

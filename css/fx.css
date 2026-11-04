@@ -1,117 +1,58 @@
-/* 생동감 효과 — 배경, 흐르는 띠, 크롬 로고, 가챠 머신, 뽑기 연출 */
+/* 생동감 효과 — 반짝임, 리본 띠, 로고, 가챠 머신, 뽑기 연출 */
 
-/* ───── 배경: Halftone + Grainy Gradient ───── */
-body::before {
-  content: "";
-  position: fixed;
-  inset: -28px;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(closest-side, #fff, #000) 0 0 / 14px 14px,
-    linear-gradient(180deg, #000 18%, #fff 105%);
-  background-blend-mode: multiply;
-  filter: contrast(22);
-  mix-blend-mode: screen;
-  opacity: .2;
-  animation: halftone 5s linear infinite;
+/* ───── 떠다니는 반짝임 ───── */
+.sparkles { position: fixed; inset: 0; z-index: 0; overflow: hidden; contain: strict; pointer-events: none; }
+.sparkle {
+  position: absolute;
+  top: -30px;
+  color: var(--accent);
+  opacity: .55;
+  animation: snow linear infinite;
 }
-@keyframes halftone { to { transform: translate(14px, 14px); } }
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-  opacity: .38;
+@keyframes snow {
+  to { transform: translateY(calc(100vh + 60px)) rotate(240deg); }
 }
 
-/* ───── 흐르는 띠: Kinetic Typography + Neubrutalism ───── */
+/* ───── 리본 띠: Kinetic Typography ───── */
 .ticker {
   overflow: hidden;
-  background: var(--ink);
-  border-block: 3px solid var(--yellow);
-  font-family: var(--font-display);
-  font-size: 1.05rem;
+  background: var(--accent);
+  border-block: 3px dashed #fffdf8;
+  font-family: var(--font-round);
+  font-size: 1.02rem;
   line-height: 2;
-  color: var(--yellow);
+  color: #fffdf8;
   white-space: nowrap;
 }
-.ticker-track { display: inline-flex; animation: ticker 40s linear infinite; }
+.ticker-track { display: inline-flex; animation: ticker 50s linear infinite; }
 .ticker-track span { padding-right: .4em; }
-.ticker-alt { background: var(--bezel); color: var(--white); border-color: var(--ink); }
-.ticker-alt .ticker-track { animation-direction: reverse; }
 @keyframes ticker { to { transform: translateX(-50%); } }
 
-/* ───── 로고: Y2K Chrome + Kinetic ───── */
-.logo { text-shadow: none; }
+/* ───── 로고: 사탕처럼 말랑한 글자 ───── */
 .k-char { display: inline-block; }
 .logo .k-char {
-  background: linear-gradient(180deg, #fff 0 18%, #ffb3dc 38%, #d72d8c 52%, #ffe3f3 64%, #a35be8 100%);
-  background-size: 100% 220%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 2px 0 #fff) drop-shadow(2px 3px 0 var(--ink));
-  animation: chrome 3.2s ease-in-out infinite, letter-hop 2.6s var(--ease-bounce) infinite;
-  animation-delay: calc(var(--i) * .12s);
+  color: var(--accent);
+  -webkit-text-stroke: 8px #fff;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 4px 0 var(--accent-dark));
+  animation: letter-hop 2.8s var(--ease-bounce) infinite;
+  animation-delay: calc(var(--i) * .14s);
 }
-@keyframes chrome { 50% { background-position: 0 100%; } }
 @keyframes letter-hop {
   0%, 70%, 100% { transform: none; }
-  78% { transform: translateY(-9px) scale(.92, 1.1); }
+  78% { transform: translateY(-10px) scale(.92, 1.1); }
   88% { transform: translateY(0) scale(1.12, .88); }
 }
 
-/* ───── 메인 가챠 무대 ───── */
-.gacha-stage {
-  position: relative;
-  overflow-x: clip;
-  display: grid;
-  gap: 18px;
-  justify-items: center;
-  max-width: 1100px;
-  margin: 26px auto 34px;
-  padding: 0 16px;
-}
-.kinetic-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(2.6rem, 12vw, 5.6rem);
-  line-height: 1;
-  text-align: center;
-  color: var(--white);
-  -webkit-text-stroke: 2px var(--ink);
-  paint-order: stroke fill;
-  text-shadow: 5px 5px 0 var(--bezel);
-}
-.kinetic-title .k-char { animation: wave 2.2s ease-in-out infinite; animation-delay: calc(var(--i) * .08s); }
-.kinetic-title span.line { display: block; }
-.kinetic-sub {
-  display: inline-block;
-  margin: 10px 0 0;
-  padding: 6px 14px;
-  background: var(--yellow);
-  border: 3px solid var(--ink);
-  box-shadow: 5px 5px 0 var(--ink);
-  font-weight: 700;
-  transform: rotate(-1.5deg);
-}
-@keyframes wave {
-  50% { transform: translateY(-12px) rotate(-3deg); }
-}
-
-/* ───── 가챠 머신: Claymorphism ───── */
+/* ───── 가챠 머신: 말랑한 디저트 머신 ───── */
 .gacha-wrap { position: relative; display: grid; place-items: center; width: 300px; height: 400px; }
-.gacha-blob {             /* Liquid + Shape Morph */
+.gacha-blob {
   position: absolute;
   inset: 26px 0 16px;
-  background: conic-gradient(from 0deg, #ff7fc8, #b97dff, #7fe3e8, #ffe27a, #ff7fc8);
-  filter: blur(6px);
-  opacity: .85;
-  animation: blob 9s ease-in-out infinite, spin 22s linear infinite;
+  background: conic-gradient(from 0deg, #ffc2d4, #ffe6a3, #bfead8, #dcc8f5, #ffc2d4);
+  filter: blur(8px);
+  opacity: .9;
+  animation: blob 9s ease-in-out infinite;
 }
 @keyframes blob {
   0%, 100% { border-radius: 58% 42% 46% 54% / 46% 56% 44% 54%; }
@@ -121,15 +62,14 @@ body::after {
 @keyframes spin { to { rotate: 360deg; } }
 
 .gacha-lines { position: absolute; inset: 20px 0 auto; z-index: 2; width: 100%; pointer-events: none; }
-.gacha-lines path {       /* Line Animation */
+.gacha-lines path {
   fill: none;
-  stroke: var(--white);
+  stroke: var(--accent);
   stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  filter: drop-shadow(1px 2px 0 var(--ink));
   animation: draw-line 5s ease-in-out infinite;
 }
 .gacha-lines path:nth-child(2) { animation-delay: -1.2s; }
@@ -141,19 +81,14 @@ body::after {
   100% { stroke-dashoffset: -1; }
 }
 
-.gacha {
-  position: relative;
-  z-index: 1;
-  width: 206px;
-  animation: gacha-float 4s ease-in-out infinite;
-}
+.gacha { position: relative; z-index: 1; width: 206px; animation: gacha-float 4s ease-in-out infinite; }
 @keyframes gacha-float { 50% { transform: translateY(-8px) rotate(-1deg); } }
 .gacha-roof, .gacha-body, .gacha-base {
-  background: linear-gradient(150deg, #ffb3e4, #e77bdc 55%, #b96be8);
+  background: linear-gradient(150deg, #ffd3df, #ffb0c6 55%, #f08fad);
   box-shadow:
-    inset 8px 8px 16px rgba(255, 255, 255, .6),
-    inset -8px -10px 18px rgba(106, 26, 160, .35),
-    0 10px 18px rgba(80, 20, 120, .28);
+    inset 8px 8px 16px rgba(255, 255, 255, .65),
+    inset -8px -10px 18px rgba(190, 70, 110, .28),
+    0 10px 18px rgba(180, 90, 110, .28);
 }
 .gacha-roof {
   position: relative;
@@ -165,57 +100,51 @@ body::after {
 }
 .gacha-roof span {
   padding: 3px 14px;
-  background: linear-gradient(180deg, #fff, #ffd2ee);
+  background: #fffdf8;
   border-radius: 12px;
-  box-shadow: inset 0 -3px 0 rgba(160, 60, 180, .35);
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  color: #a02fb8;
+  font-family: var(--font-script);
+  font-size: 1.3rem;
+  color: #d9587d;
 }
 .gacha-dome {
   position: relative;
   height: 142px;
   margin: -6px 8px;
   overflow: hidden;
-  background: linear-gradient(120deg, rgba(255, 255, 255, .55), rgba(255, 225, 250, .22) 60%, rgba(214, 170, 255, .4));
-  border-inline: 5px solid rgba(255, 255, 255, .75);
-  box-shadow: inset 0 0 22px rgba(160, 60, 200, .3);
+  background: linear-gradient(120deg, rgba(255, 255, 255, .7), rgba(255, 240, 245, .3) 60%, rgba(255, 220, 232, .5));
+  border-inline: 5px solid rgba(255, 255, 255, .85);
+  box-shadow: inset 0 0 22px rgba(220, 110, 140, .28);
 }
 .gacha-ball {
-  --cap: #ff9fd2;
+  --cap: #ffb0c6;
   position: absolute;
   width: 56px;
   height: 56px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 32% 26%, rgba(255, 255, 255, .95) 0 11%, transparent 26%),
-    linear-gradient(180deg, var(--cap) 0 50%, rgba(255, 255, 255, .9) 50%);
-  box-shadow: inset -5px -7px 11px rgba(90, 30, 140, .28);
+    linear-gradient(180deg, var(--cap) 0 50%, #fffdf8 50%);
+  box-shadow: inset -5px -7px 11px rgba(170, 70, 100, .22);
   animation: ball-bob 3s ease-in-out infinite;
   animation-delay: calc(var(--i) * -.4s);
 }
-.ball-mint { --cap: #8ee6dc; }
-.ball-lilac { --cap: #c8a6ff; }
-.ball-lemon { --cap: #ffe27a; }
+.ball-mint { --cap: #a8e0cc; }
+.ball-lilac { --cap: #dcc8f5; }
+.ball-lemon { --cap: #ffe6a3; }
 @keyframes ball-bob { 50% { transform: translateY(-4px) rotate(8deg); } }
 .is-turning .gacha-ball { animation: ball-shake .16s linear infinite; }
 @keyframes ball-shake {
   25% { transform: translate(-5px, -7px) rotate(-16deg); }
   75% { transform: translate(5px, 3px) rotate(16deg); }
 }
-.gacha-glare {            /* Holographic */
+.gacha-glare {
   position: absolute;
   inset: -40%;
-  background: conic-gradient(from 90deg, transparent, rgba(255, 120, 220, .4), rgba(120, 240, 255, .4), rgba(255, 240, 130, .4), transparent 60%);
+  background: conic-gradient(from 90deg, transparent, rgba(255, 190, 215, .4), rgba(190, 240, 225, .4), rgba(255, 240, 170, .4), transparent 60%);
   mix-blend-mode: screen;
   animation: spin 7s linear infinite;
 }
-.gacha-body {
-  position: relative;
-  z-index: 2;
-  height: 124px;
-  border-radius: 14px 14px 22px 22px;
-}
+.gacha-body { position: relative; z-index: 2; height: 124px; border-radius: 14px 14px 22px 22px; }
 .gacha-knob {
   position: absolute;
   left: 18px;
@@ -223,10 +152,10 @@ body::after {
   width: 70px;
   height: 70px;
   padding: 0;
-  background: radial-gradient(circle at 34% 28%, #fff, #e5e3ee 55%, #b5b0c9);
+  background: radial-gradient(circle at 34% 28%, #fff, #fff1d8 55%, #eec48f);
   border: 0;
   border-radius: 50%;
-  box-shadow: 0 5px 0 rgba(90, 30, 140, .35), inset -4px -5px 8px rgba(70, 50, 110, .3);
+  box-shadow: 0 5px 0 rgba(190, 90, 120, .35), inset -4px -5px 8px rgba(190, 130, 80, .3);
 }
 button.gacha-knob { cursor: pointer; }
 .gacha-knob i {
@@ -236,7 +165,7 @@ button.gacha-knob { cursor: pointer; }
   width: 15px;
   height: 54px;
   margin-left: -7px;
-  background: linear-gradient(90deg, #c7c3d8, #fff 50%, #aaa5c0);
+  background: linear-gradient(90deg, #eec48f, #fff 50%, #e2b37a);
   border-radius: 8px;
 }
 .is-turning .gacha-knob { animation: knob-turn .62s var(--ease-bounce); }
@@ -247,10 +176,10 @@ button.gacha-knob { cursor: pointer; }
   bottom: 12px;
   width: 82px;
   height: 92px;
-  background: radial-gradient(ellipse at 50% 88%, #d479ea, #7b2bb0 72%);
-  border: 6px solid #f6b2ea;
+  background: radial-gradient(ellipse at 50% 88%, #f6a6bd, #b84a6e 72%);
+  border: 6px solid #fff1f5;
   border-radius: 44px 44px 12px 12px;
-  box-shadow: inset 0 8px 12px rgba(50, 10, 90, .55);
+  box-shadow: inset 0 8px 12px rgba(120, 30, 60, .45);
 }
 .gacha-out {
   position: absolute;
@@ -262,10 +191,10 @@ button.gacha-knob { cursor: pointer; }
   border-radius: 50%;
   background:
     radial-gradient(circle at 32% 26%, rgba(255, 255, 255, .95) 0 11%, transparent 26%),
-    linear-gradient(180deg, #ff9fd2 0 50%, #fff 50%);
+    linear-gradient(180deg, #ffb0c6 0 50%, #fffdf8 50%);
   opacity: 0;
 }
-/* Squash and Stretch: 캡슐이 떨어져 튕김 */
+/* Squash and Stretch: 떨어져 튕김 */
 .is-dropping .gacha-out { animation: capsule-drop 1.1s linear both; }
 @keyframes capsule-drop {
   0% { opacity: 1; transform: translateY(-76px) scale(.72, 1.25); }
@@ -281,19 +210,15 @@ button.gacha-knob { cursor: pointer; }
   left: 28px;
   bottom: 3px;
   font-size: 1.2rem;
-  color: var(--white);
-  text-shadow: 1px 1px 0 #a02fb8;
+  color: #fff;
+  text-shadow: 1px 1px 0 #d9587d;
   animation: beat 1.4s ease-in-out infinite;
 }
-.gacha-base {
-  height: 26px;
-  margin: 6px -9px 0;
-  border-radius: 12px 12px 18px 18px;
-}
+.gacha-base { height: 26px; margin: 6px -9px 0; border-radius: 12px 12px 18px 18px; }
 
-/* 컨페티: Memphis */
+/* 컨페티: 스프링클 */
 .confetti {
-  --c: #ff4fa0;
+  --c: #ee5f7f;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -305,8 +230,8 @@ button.gacha-knob { cursor: pointer; }
   animation: confetti 1s cubic-bezier(.1, .7, .3, 1) forwards;
 }
 .confetti-dot { border-radius: 50%; }
-.confetti-tri { clip-path: polygon(50% 0, 100% 100%, 0 100%); }
-.confetti-bar { width: 24px; height: 8px; }
+.confetti-tri { clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.confetti-bar { width: 22px; height: 7px; border-radius: 4px; }
 .confetti-ring { background: none; border: 4px solid var(--c); border-radius: 50%; }
 @keyframes confetti {
   from { transform: translate(-50%, -50%) scale(.3); opacity: 1; }
@@ -316,13 +241,13 @@ button.gacha-knob { cursor: pointer; }
 
 /* ───── 뽑기 결과 창 ───── */
 .hint-dialog { position: relative; overflow: visible; isolation: isolate; }
-.hint-rays {              /* Infinite Zoom */
+.hint-rays {
   position: absolute;
   inset: 0;
   z-index: -1;
   overflow: hidden;
   border-radius: 18px;
-  background: var(--pink-50);
+  background: #fffdf8;
 }
 .zoom-ring {
   position: absolute;
@@ -331,7 +256,7 @@ button.gacha-knob { cursor: pointer; }
   width: 60px;
   height: 60px;
   margin: -30px 0 0 -30px;
-  border: 10px solid var(--c, var(--pink-200));
+  border: 10px solid var(--c, var(--pink-100));
   border-radius: 50%;
   opacity: 0;
   animation: zoom-out 2.4s linear infinite;
@@ -350,21 +275,9 @@ button.gacha-knob { cursor: pointer; }
   84% { transform: scale(1.1, .9); }
   100% { transform: none; }
 }
-.hint-capsule i {
-  position: relative;
-  overflow: hidden;
-}
-.hint-capsule i::after {  /* Holographic */
-  content: "";
-  position: absolute;
-  inset: -60%;
-  background: conic-gradient(rgba(255, 120, 220, .5), rgba(120, 240, 255, .55), rgba(255, 240, 130, .5), rgba(255, 120, 220, .5));
-  animation: spin 3s linear infinite;
-}
-.hint-capsule i:first-child { animation: half-up .5s var(--ease-bounce) .75s both; }
-.hint-capsule i:last-child { animation: half-down .5s var(--ease-bounce) .75s both; }
-@keyframes half-up { from { transform: none; } }
-@keyframes half-down { from { transform: none; } }
+.hint-capsule i:first-child { animation: half-open .5s var(--ease-bounce) .75s both; }
+.hint-capsule i:last-child { animation: half-open .5s var(--ease-bounce) .75s both; }
+@keyframes half-open { from { transform: none; } }
 .hint-dialog-text { min-height: 1.6em; }
 
 /* 뽑기 옆 작은 가챠 */
@@ -373,38 +286,18 @@ button.gacha-knob { cursor: pointer; }
   .gacha-mini { display: grid; margin-bottom: -60px; }
 }
 
-/* 마니띠 카드 뒷면 사진: Holographic */
-.id-photo { position: relative; overflow: hidden; }
-.id-photo::after {
-  content: "";
-  position: absolute;
-  inset: -40%;
-  background: conic-gradient(rgba(255, 120, 220, .45), rgba(120, 240, 255, .5), rgba(255, 240, 130, .45), rgba(255, 120, 220, .45));
-  mix-blend-mode: screen;
-  animation: spin 4s linear infinite;
-}
-
-/* ───── 입장할 때: Infinite Zoom 터널 ───── */
-.zoom-tunnel {
+/* ───── 입장할 때: 크림이 화면을 덮음 ───── */
+.page-wipe {
   position: fixed;
   inset: 0;
   z-index: 50;
   display: none;
-  overflow: hidden;
   pointer-events: none;
-  background: radial-gradient(circle, var(--bezel), var(--console-dark));
+  background: #fffdf8;
 }
-.is-leaving .zoom-tunnel { display: block; animation: tunnel-in .65s ease-in both; }
-@keyframes tunnel-in { from { opacity: 0; } }
-.zoom-tunnel .zoom-ring {
-  --c: var(--yellow);
-  top: 50%;
-  border-width: 18px;
-  animation-duration: .9s;
-  animation-delay: calc(var(--n) * -.22s);
+.is-leaving .page-wipe { display: block; animation: cream-wipe .65s ease-in both; }
+@keyframes cream-wipe {
+  from { clip-path: circle(0 at 50% 50%); }
+  to { clip-path: circle(120% at 50% 50%); }
 }
 
-@media (min-width: 900px) {
-  .gacha-stage { grid-template-columns: minmax(0, 1fr) 320px; align-items: center; justify-items: start; }
-  .kinetic-title { text-align: left; }
-}

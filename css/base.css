@@ -1,22 +1,20 @@
-/* 리셋, 변수, 폰트 — 테마: 파스텔 게임기 콘솔 (색은 js/theme.js에서 사람별로 바뀜) */
+/* 리셋, 변수, 폰트 — 테마: 핑크 미니홈피 (맛은 js/theme.js에서 사람별로 바뀜) */
 :root {
-  /* 콘솔 (theme.js가 --console, --bezel, --on-console을 덮어씀) */
-  --console: #3fb7c4;
-  --bezel: #f0639f;
-  --on-console: #2b1c28;
-  --console-light: color-mix(in srgb, var(--console), #fff 22%);
-  --console-dark: color-mix(in srgb, var(--console), #000 24%);
-  --bezel-light: color-mix(in srgb, var(--bezel), #fff 35%);
-  --bezel-dark: color-mix(in srgb, var(--bezel), #000 24%);
+  /* 맛 (theme.js가 --flavor, --accent를 덮어씀) */
+  --flavor: #ffd9e3;
+  --accent: #ee6f8f;
+  --accent-dark: color-mix(in srgb, var(--accent), #5a2a20 32%);
+  --accent-soft: color-mix(in srgb, var(--accent), #fff 55%);
+  --accent-pale: color-mix(in srgb, var(--accent), #fff 85%);
 
   /* 플라스틱 핑크 */
-  --pink-50: #fff4f9;
-  --pink-100: #ffe1ef;
-  --pink-200: #ffc6e2;
-  --pink-300: #f9a3cf;
-  --pink-500: #ec6fb4;
-  --pink-600: #d9529c;
-  --pink-700: #b3337c;
+  --pink-50: #fff6f4;
+  --pink-100: #ffe6ea;
+  --pink-200: #ffcfda;
+  --pink-300: #f9afc1;
+  --pink-500: #ee6f8f;
+  --pink-600: #d9587d;
+  --pink-700: #b23a5a;
 
   /* 포인트 */
   --mint: #a6e6dc;
@@ -26,8 +24,8 @@
   --lilac: #d8bdf5;
   --yellow: #ffe27a;
 
-  --ink: #5b2a4b;
-  --ink-soft: #94647f;
+  --ink: #6b3f2a;
+  --ink-soft: #a0735b;
   --white: #fff;
 
   --radius: 18px;
@@ -35,9 +33,11 @@
   --plastic-lo: inset 0 -6px 12px rgba(179, 51, 124, .25);
   --drop: 0 16px 30px rgba(179, 51, 124, .22);
 
-  --font-display: "Bagel Fat One", "Noto Sans KR", sans-serif;
-  --font-retro: "Galmuri11", monospace;
-  --font-body: "Noto Sans KR", system-ui, sans-serif;
+  --font-display: "Bagel Fat One", "Jua", sans-serif;
+  --font-round: "Jua", "Gowun Dodum", sans-serif;
+  --font-script: "Dancing Script", "Jua", cursive;
+  --font-retro: "Galmuri11", var(--font-round);
+  --font-body: "Gowun Dodum", system-ui, sans-serif;
 
   --ease-bounce: cubic-bezier(.3, 1.5, .5, 1);
 }
@@ -47,7 +47,6 @@
 html { -webkit-text-size-adjust: 100%; }
 
 body {
-  counter-reset: stage;
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
@@ -55,11 +54,11 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--ink);
-  background-color: var(--console);
+  background-color: var(--flavor);
   background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, .2), transparent 280px),
-    radial-gradient(var(--console-dark) 1.2px, transparent 1.6px);
-  background-size: 100% 100%, 24px 24px;
+    linear-gradient(90deg, rgba(255, 255, 255, .5) 50%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, .5) 50%, transparent 50%);
+  background-size: 44px 44px;
   background-attachment: fixed;
 }
 

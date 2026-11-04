@@ -107,6 +107,7 @@ async function initManito(people, settings, receiverId) {
     $("#their-allergy").hidden = !prof.allergy;
     $("#their-empty").hidden = !!(prof.likes || prof.dislikes);
     $("#their-profile").hidden = false;
+    $("#reveal-tip").hidden = true;
   };
 
   // 재배정되면 새 마니띠는 다시 뒤집어 보도록 receiverId까지 키에 포함
@@ -145,6 +146,7 @@ function createChat(root, role) {
       root.classList.remove("is-ping");
       void root.offsetWidth;
       root.classList.add("is-ping");
+      document.dispatchEvent(new CustomEvent("manito:ping", { detail: root.id }));
     }
     const nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
     count = items.length;
@@ -234,7 +236,9 @@ if (session) (async () => {
   const [people, settings, mine] = await Promise.all([
     store.getPeople(), store.getSettings(), store.getMyAssignment(session),
   ]);
-  $("#me-name").textContent = people.find(p => p.id === session.id)?.name ?? "";
+  const myName = people.find(p => p.id === session.id)?.name ?? "";
+  $("#me-name").textContent = myName;
+  $("#banner-name").textContent = myName;
   initProfile();
 
   const { receiver, lockedUntil } = await initManito(people, settings, mine.receiverId);

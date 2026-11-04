@@ -1,4 +1,4 @@
-// 생동감 효과 — 텍스트 스크램블, 컨페티, 가챠 머신, 흐르는 띠 (motion.js 다음에 로드)
+// 생동감 효과 — 텍스트 스크램블, 스프링클, 가챠 머신, 리본 띠, 반짝임 (motion.js 다음에 로드)
 const SCRAMBLE_CHARS = "마니또띠비밀선물쪽지힌트?!★♥#%";
 
 function scrambleText(el, text, ms = 700) {
@@ -16,10 +16,10 @@ function scrambleText(el, text, ms = 700) {
   el._scramble = requestAnimationFrame(tick);
 }
 
-// Memphis 도형이 터지는 컨페티. host 가운데에서 퍼짐
+// 스프링클이 터지는 효과. host 가운데에서 퍼짐
 function burstConfetti(host, count = 26) {
   if (REDUCE_MOTION) return;
-  const colors = ["#ff4fa0", "#ffd84d", "#3fb7c4", "#a892e6", "#2d2340"];
+  const colors = ["#ee5f7f", "#ffd27a", "#8fdcc4", "#c7a8f0", "#8a5233"];
   const shapes = ["dot", "tri", "bar", "ring"];
   for (let i = 0; i < count; i++) {
     const el = document.createElement("i");
@@ -58,7 +58,7 @@ function buildGacha(host) {
       <path pathLength="1" d="M214 292c16-22 30 22 46 0s30 22 36 6"/>
     </svg>
     <div class="gacha">
-      <div class="gacha-roof"><span>MANITO</span></div>
+      <div class="gacha-roof"><span>Sweets</span></div>
       <div class="gacha-dome" aria-hidden="true">${balls}<span class="gacha-glare"></span></div>
       <div class="gacha-body">
         ${knob}
@@ -122,8 +122,24 @@ async function playGacha() {
     node.replaceWith(frag);
   });
 
+  // 천천히 내려오는 반짝임과 하트
+  document.querySelectorAll("[data-sparkles]").forEach(host => {
+    if (REDUCE_MOTION) return;
+    for (let i = 0; i < 16; i++) {
+      const s = document.createElement("i");
+      s.className = "sparkle";
+      s.textContent = "✦♡✧♥"[i % 4];
+      s.style.left = `${Math.random() * 94}%`;
+      s.style.fontSize = `${12 + Math.random() * 16}px`;
+      s.style.fontStyle = "normal";
+      s.style.animationDuration = `${11 + Math.random() * 12}s`;
+      s.style.animationDelay = `${-Math.random() * 20}s`;
+      host.append(s);
+    }
+  });
+
   document.querySelectorAll("[data-scramble]").forEach(el => {
     const text = el.textContent;
-    setTimeout(() => scrambleText(el, text, 900), 1100);
+    setTimeout(() => scrambleText(el, text, 900), 500);
   });
 })();

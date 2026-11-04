@@ -39,9 +39,9 @@
 
 .btn-primary {
   color: var(--white);
-  text-shadow: 0 1px 0 var(--pink-700);
-  background: linear-gradient(180deg, #ffa9d4, var(--pink-500) 60%, var(--pink-600));
-  box-shadow: var(--plastic-lo), 0 4px 0 var(--pink-700), 0 10px 18px rgba(179, 51, 124, .3);
+  text-shadow: 0 1px 0 var(--accent-dark);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent), #fff 40%), var(--accent) 60%);
+  box-shadow: 0 4px 0 var(--accent-dark), 0 10px 18px rgba(180, 90, 110, .28);
 }
 .btn-secondary {
   color: #285e56;
@@ -55,50 +55,6 @@
 }
 .btn-sm { min-height: 44px; padding: 0 1.1em; font-size: .9rem; }
 .btn-block { width: 100%; }
-
-/* ───── 카드: 핑크 테두리 게임 화면 + HUD ───── */
-.card {
-  counter-increment: stage;
-  position: relative;
-  padding: 54px 16px 22px;
-  background:
-    radial-gradient(rgba(0, 0, 0, .05) 1px, transparent 1.2px) 0 0 / 4px 4px,
-    #fffdf5;
-  border: 10px solid var(--bezel);
-  border-radius: 24px;
-  box-shadow:
-    inset 0 0 0 3px rgba(0, 0, 0, .12),
-    0 6px 0 var(--bezel-dark),
-    0 16px 28px rgba(0, 0, 0, .22);
-}
-.card::before {             /* HUD 왼쪽: 스테이지 */
-  content: "WORLD 1-" counter(stage);
-  position: absolute;
-  inset: 0 0 auto;
-  height: 34px;
-  padding: 0 14px;
-  display: flex;
-  align-items: center;
-  background: #2d2340;
-  border-radius: 12px 12px 0 0;
-  font-family: var(--font-retro);
-  font-size: .82rem;
-  font-weight: 700;
-  color: var(--yellow);
-}
-.card::after {              /* HUD 오른쪽: 체력 */
-  content: "1P ▮▮▮▮▮";
-  position: absolute;
-  top: 0;
-  right: 14px;
-  font-family: var(--font-retro);
-  font-size: .78rem;
-  font-weight: 700;
-  line-height: 34px;
-  color: var(--white);
-}
-.card h2 { font-family: var(--font-retro); font-weight: 700; color: var(--ink); }
-.card h3 { font-family: var(--font-retro); font-weight: 700; color: var(--pink-600); }
 
 /* ───── 폼 ───── */
 .field { display: block; margin-bottom: 16px; }
@@ -243,13 +199,4 @@
   transition:
     opacity .5s ease var(--delay, 0ms),
     transform .7s var(--ease-bounce) var(--delay, 0ms);
-}
-
-.barcode {
-  display: block;
-  height: 30px;
-  background: repeating-linear-gradient(90deg,
-    var(--pink-600) 0 2px, transparent 2px 4px, var(--pink-600) 4px 5px, transparent 5px 8px,
-    var(--pink-600) 8px 11px, transparent 11px 12px, var(--pink-600) 12px 13px, transparent 13px 16px);
-  opacity: .75;
 }
