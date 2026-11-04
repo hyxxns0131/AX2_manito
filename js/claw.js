@@ -8,6 +8,8 @@ const CATCH_RANGE = 9;
 const CLAW_SPEED = 45;     // 초당 %
 const CLAW_STEP = 6;       // 키보드로 한 번 움직이는 거리
 const CAPSULE_COLORS = ["pink", "mint", "lilac"];
+const DUD_COUNT = 2;        // 힌트 캡슐 사이에 섞어 두는 꽝 캡슐 수 (겉모습은 똑같음)
+const DUD_TEXT = "꽝! 바부💩";
 
 function createClawGame(root, session) {
   const $in = sel => root.querySelector(sel);
@@ -52,28 +54,35 @@ function createClawGame(root, session) {
     goBtn.disabled = value || !remaining();
   }
 
+  // 힌트가 남아 있으면 꽝 캡슐을 섞어서 다시 놓음. 어느 게 꽝인지는 놓을 때마다 무작위
   function fillCapsules() {
-    const want = remaining();
+    const real = remaining();
+    const duds = real ? DUD_COUNT : 0;
     const have = capsules();
-    have.slice(want).forEach(c => c.remove());
-    for (let i = have.length; i < want; i++) {
+    const haveDuds = have.filter(c => c.dataset.dud).length;
+    if (have.length - haveDuds === real && haveDuds === duds) return;
+    have.forEach(c => c.remove());
+    const kinds = [...Array(real).fill(false), ...Array(duds).fill(true)].sort(() => Math.random() - .5);
+    const gap = kinds.length > 1 ? 62 / (kinds.length - 1) : 0;
+    kinds.forEach((dud, i) => {
       const c = document.createElement("span");
       c.className = `capsule capsule-${CAPSULE_COLORS[i % CAPSULE_COLORS.length]}`;
-      // 칸을 나눠 겹치지 않게 놓고, 칸 안에서만 무작위
-      c.dataset.x = String(28 + i * 26 + Math.random() * 8);
+      if (dud) c.dataset.dud = "1";
+      // 칸을 나눠 겹치지 않게 놓고, 칸 안에서만 조금 흔듦
+      c.dataset.x = String(28 + i * gap + (Math.random() - .5) * Math.min(4, gap / 3));
       c.style.left = `${c.dataset.x}%`;
       glass.append(c);
-    }
+    });
   }
 
   function render() {
     const left = remaining();
-    marquee.textContent = game.total ? `남은 캡슐 ${left}개` : "HINT CATCHER";
+    marquee.textContent = game.total ? `남은 힌트 ${left}개` : "HINT CATCHER";
     status.hidden = false;
     status.textContent =
       !game.total ? "내 마니또가 아직 힌트를 쓰지 않았어요. 쓰면 캡슐이 들어와요!" :
       !left ? "힌트를 전부 뽑았어요! 내 마니또는 누구일까요? 🎉" :
-      "◀ ▶ 로 집게를 캡슐 위에 맞추고 빨간 버튼을 눌러요.";
+      "◀ ▶ 로 집게를 캡슐 위에 맞추고 빨간 버튼을 눌러요. 꽝도 섞여 있어요!";
     fillCapsules();
     setBusy(busy);
 
@@ -102,11 +111,15 @@ function createClawGame(root, session) {
     message.textContent = text;
   }
 
-  function showHint(text) {
+  function showHint(text, dud = false) {
     const out = $in("#hint-dialog-text");
     out.textContent = "";
+    $in("#hint-dialog-title").textContent = dud ? "꽝!" : "힌트 획득!";
+    const sticker = $in(".hint-sticker");
+    if (sticker) sticker.src = `assets/minimi/${dud ? "shock" : "laugh"}.svg`;
+    dialog.classList.toggle("is-dud", dud);
     dialog.showModal();
-    burstConfetti(dialog);
+    if (!dud) burstConfetti(dialog);
     setTimeout(() => scrambleText(out, text, 900), REDUCE_MOTION ? 0 : 700);
   }
 
@@ -131,7 +144,8 @@ function createClawGame(root, session) {
       hit.style.left = "";
       grip.append(hit);
     }
-    const drawing = hit ? store.drawHint(session) : null;
+    const isDud = !!hit?.dataset.dud;
+    const drawing = hit && !isDud ? store.drawHint(session) : null;
     drawing?.catch(() => {});                 // 실패는 아래 await에서 처리
 
     setCable(24, 900);
@@ -151,6 +165,17 @@ function createClawGame(root, session) {
     hit.classList.add("is-falling");
     await wait(520);
     hit.remove();
+
+    if (isDud) {
+      react("shock");
+      say(DUD_TEXT);
+      showHint(DUD_TEXT, true);
+      render();   // 꽝 캡슐을 다시 채워 섞음
+      setX(CLAW_HOME, 700);
+      await wait(720);
+      setBusy(false);
+      return;
+    }
 
     try {
       const result = await drawing;

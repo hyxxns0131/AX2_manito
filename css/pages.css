@@ -610,3 +610,7 @@
   .login-row { grid-template-columns: 1fr; gap: 2px; }
 }
 
+
+/* 꽝 */
+.hint-dialog.is-dud .hint-dialog-text { color: #8a5a3e; font-size: 18px; }
+.hint-dialog.is-dud .hint-capsule i:first-child { background: #c9c9c9; }

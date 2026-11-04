@@ -519,3 +519,34 @@
   .page-admin .hompy { margin-bottom: 28px; }
   .page-admin .credit { margin: -14px 0 24px; }
 }
+
+/* ───── 이용 방법 ───── */
+.guide { counter-reset: guide; display: grid; gap: 0; }
+.guide li {
+  display: grid;
+  grid-template-columns: 26px 78px 1fr;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 2px;
+  border-bottom: 1px dotted var(--line-soft);
+  font-size: 12.5px;
+}
+.guide li::before {
+  counter-increment: guide;
+  content: counter(guide);
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  border-radius: 2px;
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+}
+.guide b { color: var(--accent-dark); font-family: var(--font-pixel); font-size: 12px; }
+.guide span { color: var(--ink-soft); }
+@media (max-width: 480px) {
+  .guide li { grid-template-columns: 26px 1fr; }
+  .guide span { grid-column: 2; }
+}
