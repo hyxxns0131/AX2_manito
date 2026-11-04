@@ -1,4 +1,4 @@
-// 힌트 뽑기 — 마니또가 클로 머신을 조종해 마니띠가 쓴 힌트를 뽑음
+// 힌트 뽑기 — 마니띠가 클로 머신을 조종해 자기 마니또가 쓴 정체 힌트를 뽑음
 // 캡슐을 집으면 어떤 힌트가 나올지는 서버가 무작위로 정함 (캡슐 위치·색은 장식)
 const CLAW_HOME = 50;      // 아래 값은 모두 유리창 너비 기준 %
 const CLAW_MIN = 14;
@@ -26,7 +26,6 @@ function createClawGame(root, session) {
   const dialog = $in("#hint-dialog");
 
   let game = { total: 0, drawn: [] };
-  let name = "";
   let x = CLAW_HOME;
   let busy = false;
   let ready = false;
@@ -71,8 +70,8 @@ function createClawGame(root, session) {
     marquee.textContent = game.total ? `남은 캡슐 ${left}개` : "HINT CATCHER";
     status.hidden = false;
     status.textContent =
-      !game.total ? `${name} 님이 아직 힌트를 쓰지 않았어요. 쓰면 캡슐이 들어와요!` :
-      !left ? "힌트를 전부 뽑았어요! 🎉" :
+      !game.total ? "내 마니또가 아직 힌트를 쓰지 않았어요. 쓰면 캡슐이 들어와요!" :
+      !left ? "힌트를 전부 뽑았어요! 내 마니또는 누구일까요? 🎉" :
       "◀ ▶ 로 집게를 캡슐 위에 맞추고 빨간 버튼을 눌러요.";
     fillCapsules();
     setBusy(busy);
@@ -198,9 +197,7 @@ function createClawGame(root, session) {
   });
 
   return {
-    async open(receiverName) {
-      name = receiverName;
-      $in("#hint-target").textContent = receiverName;
+    async open() {
       try {
         await load();
         setX(CLAW_HOME);
@@ -214,7 +211,7 @@ function createClawGame(root, session) {
     lock(text) {
       status.textContent = text;
     },
-    // 마니띠가 힌트를 새로 쓰면 캡슐이 들어옴
+    // 마니또가 힌트를 새로 쓰면 캡슐이 들어옴
     async refresh() {
       if (!ready || busy || dialog.open) return;
       const next = await store.getHintGame(session).catch(() => null);

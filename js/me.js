@@ -239,7 +239,7 @@ if (session) (async () => {
   const clawGame = createClawGame($("#hint-game"), session);
 
   if (receiver) {
-    await clawGame.open(receiver.name);
+    await clawGame.open();
     toManitti.setTitle(receiver.name);
     await toManitti.open(mine.threadId);
     const inThread = await store.findThreadFor(session);

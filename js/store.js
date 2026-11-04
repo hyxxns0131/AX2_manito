@@ -52,7 +52,7 @@ const store = (() => {
       profiles: {},  // { id: { likes, dislikes, allergy, updatedAt } }
       chats: {},     // { threadId: { receiverId, items: [{ from, text, at }] } }
       hints: {},     // { id: [힌트1, 힌트2, 힌트3] }
-      hintDraws: {}, // { "마니또id:마니띠id": [뽑은 칸 번호] }
+      hintDraws: {}, // { "마니띠id:마니또id": [뽑은 칸 번호] }
       ...db,
     };
     merged.settings = { ...DEFAULT_SETTINGS, ...db?.settings };
@@ -65,7 +65,8 @@ const store = (() => {
   }
 
   function lsHintState(db, session) {
-    const target = db.keys[session.key]?.receiverId;
+    // 뽑는 대상은 나를 챙겨주는 내 마니또
+    const target = Object.values(db.keys).find(k => k.receiverId === session.id)?.id;
     const drawKey = `${session.id}:${target}`;
     return { hints: db.hints[target] ?? [], drawn: db.hintDraws[drawKey] ?? [], drawKey };
   }

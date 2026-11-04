@@ -49,7 +49,7 @@ create table chat_items (
 );
 create index on chat_items (thread_id, at);
 
--- 자기 힌트 3개. 뽑기 전에는 누구도 읽을 수 없음
+-- 마니또가 자기 정체에 대해 쓴 힌트 3개. 뽑기 전에는 누구도 읽을 수 없음
 create table hints (
   person_id int not null references people(id),
   slot int not null check (slot between 1 and 3),
@@ -57,7 +57,7 @@ create table hints (
   primary key (person_id, slot)
 );
 
--- 마니또(drawer)가 마니띠(owner)의 어떤 힌트를 뽑았는지
+-- 마니띠(drawer)가 자기 마니또(owner)의 어떤 힌트를 뽑았는지
 create table hint_draws (
   drawer_id int not null references people(id),
   owner_id int not null references people(id),
@@ -184,10 +184,14 @@ begin
         allergy = excluded.allergy, updated_at = excluded.updated_at;
 end $$;
 
--- 힌트를 뽑을 대상(내 마니띠). 마니띠 확인 시작 전에는 null
+-- 힌트를 뽑을 대상(나를 챙겨주는 내 마니또). 마니띠 확인 시작 전에는 null
+-- 뽑는 사람에게 이 id는 내려주지 않음 (정체는 공개일까지 비밀)
 create function hint_target(p_key text) returns int
 language sql stable security definer set search_path = public as $$
-  select receiver_id from login_keys where key = p_key and is_revealed();
+  select g.person_id
+    from login_keys me
+    join login_keys g on g.receiver_id = me.person_id
+   where me.key = p_key and is_revealed();
 $$;
 
 -- 내가 쓴 힌트 3칸 (빈칸은 '')
@@ -223,7 +227,7 @@ begin
   end loop;
 end $$;
 
--- 내 마니띠의 힌트 개수와 내가 이미 뽑은 힌트 (안 뽑은 힌트의 내용은 내려주지 않음)
+-- 내 마니또의 힌트 개수와 내가 이미 뽑은 힌트 (안 뽑은 힌트의 내용은 내려주지 않음)
 create function get_hint_game(p_key text) returns json
 language plpgsql stable security definer set search_path = public as $$
 declare
@@ -346,7 +350,7 @@ begin
 
   if p_reset_chats then
     delete from chats where true;   -- 쪽지(chat_items)도 같이 지워짐
-    delete from hint_draws where true; -- 새 마니띠의 힌트를 처음부터 뽑도록
+    delete from hint_draws where true; -- 새 배정에서는 힌트를 처음부터 뽑도록
     insert into chats (thread_id, receiver_id)
     select t.value, (p_assignment->>t.key)::int
       from jsonb_each_text(p_threads) t;
