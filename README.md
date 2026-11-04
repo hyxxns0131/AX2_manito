@@ -213,32 +213,13 @@ function draw(people, target, tries = 3000) {
 
 ## 🎨 테마
 
-참고 이미지(핑크 보석 게임 UI, 핑크 사물함 콜라주 포스터)는 다른 사람의 저작물이라 그대로 옮기지 않고, **분위기만 참고한 오리지널 테마**로 만들었습니다.
+참고 이미지의 분위기만 가져온 오리지널 **파스텔 게임기 콘솔** 테마입니다.
 
-- **콘셉트**: "핑크 사물함 × Y2K 콜라주 × 핑크 보석"
-- **배경**: 핫핑크 사물함 철판 질감 + 문짝 이음선 + 비스듬한 그림자
-- **카드**: 마스킹 테이프로 붙인 흰 종이, 섹션 제목은 픽셀 글씨 스티커 라벨
-- **버튼·입력**: 금테 두른 핑크/골드 보석 (입장·관리자 로그인은 보석 패널)
-- **장식**: 랜섬 노트 글자 타일, 움직이는 눈알 스티커, 웃는 별 스티커
-- **마니띠 카드**: 앞면 보석 선물 상자 → 뒷면 "MANITTI ID" 학생증
-- **정체 공개**: 지그재그 끝의 영수증 "MANITO RECEIPT"
-- **쪽지**: 줄 노트 위에 내 쪽지는 보석 말풍선, 상대 쪽지는 종이 스티커
-
-```css
-:root {
-  --locker: #ea4c89;     /* 사물함 배경 */
-  --pink-500: #ff4f9a;   /* 보석·강조 */
-  --pink-700: #c0185f;
-  --gold-2: #f2c14e;     /* 금테 */
-  --paper: #fffdf7;      /* 종이 카드 */
-  --ink: #1f1419;        /* 글자·외곽선 */
-  --yellow: #ffd84d;     /* 하이라이트 */
-  --blue: #4f8fd6;       /* 별 스티커 */
-}
-```
-
-- **폰트**: 제목·라벨 [Galmuri11](https://github.com/quiple/galmuri) (한글 픽셀 폰트, jsDelivr), 본문 `Noto Sans KR` (Google Fonts)
-- **애니메이션**: 선물 상자 흔들림 → 리본이 날아가며 카드가 뒤집힘, 영수증 출력 효과 (`prefers-reduced-motion` 시 생략)
+- **입장 화면**: 콘솔 그대로. 가운데 게임 화면(픽셀 HUD), 왼쪽 버튼판으로 코드 입력, 오른쪽 동전 투입구 `GAME START`로 입장
+- **나머지 화면**: 각 칸이 테두리 있는 게임 화면이고 위에 `WORLD 1-n`, `1P` HUD 표시
+- **콘솔 색**: 다이얼을 돌리거나 🎨 버튼에서 프리셋 6가지·직접 고르기. `js/theme.js`가 이 브라우저에 사람별로 저장 (다른 기기와는 공유되지 않음)
+- **폰트**: HUD·제목 [Galmuri11](https://github.com/quiple/galmuri) (jsDelivr), 로고·버튼 `Bagel Fat One`, 본문 `Noto Sans KR` (Google Fonts)
+- **애니메이션**: 화면 켜짐·꺼짐, 틀렸을 때 지지직, 조이스틱·다이얼, 구름과 소품 (`prefers-reduced-motion` 시 생략)
 
 ---
 
@@ -273,6 +254,9 @@ manito/
 │  ├─ store.js         # 데이터 저장소 (Supabase / Firebase / localStorage)
 │  ├─ auth.js          # 코드 로그인
 │  ├─ me.js
+│  ├─ claw.js          # 힌트 뽑기 게임
+│  ├─ theme.js         # 콘솔 색
+│  ├─ motion.js        # 장식 모션
 │  └─ admin.js
 ├─ supabase/
 │  ├─ schema.sql       # 테이블 + RLS + 함수 (SQL Editor에서 한 번 실행)

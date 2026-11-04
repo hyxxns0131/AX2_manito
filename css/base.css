@@ -1,9 +1,13 @@
-/* 리셋, 변수, 폰트 — 테마: Y2K 핑크 책상 (광택 플라스틱 × 액체 화면) */
+/* 리셋, 변수, 폰트 — 테마: 파스텔 게임기 콘솔 (색은 js/theme.js에서 사람별로 바뀜) */
 :root {
-  /* 방 */
-  --wall: #f9dbe6;
-  --wall-2: #f6cddd;
-  --desk: #f7c9d8;
+  /* 콘솔 (theme.js가 --console, --bezel, --on-console을 덮어씀) */
+  --console: #3fb7c4;
+  --bezel: #f0639f;
+  --on-console: #2b1c28;
+  --console-light: color-mix(in srgb, var(--console), #fff 22%);
+  --console-dark: color-mix(in srgb, var(--console), #000 24%);
+  --bezel-light: color-mix(in srgb, var(--bezel), #fff 35%);
+  --bezel-dark: color-mix(in srgb, var(--bezel), #000 24%);
 
   /* 플라스틱 핑크 */
   --pink-50: #fff4f9;
@@ -43,6 +47,7 @@
 html { -webkit-text-size-adjust: 100%; }
 
 body {
+  counter-reset: stage;
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
@@ -50,12 +55,11 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--ink);
-  background-color: var(--wall);
+  background-color: var(--console);
   background-image:
-    radial-gradient(circle at 20% 0%, rgba(255, 255, 255, .7), transparent 45%),
-    radial-gradient(rgba(255, 255, 255, .55) 1.5px, transparent 2px),
-    linear-gradient(180deg, var(--wall), var(--wall-2));
-  background-size: 100% 100%, 26px 26px, 100% 100%;
+    linear-gradient(180deg, rgba(255, 255, 255, .2), transparent 280px),
+    radial-gradient(var(--console-dark) 1.2px, transparent 1.6px);
+  background-size: 100% 100%, 24px 24px;
   background-attachment: fixed;
 }
 

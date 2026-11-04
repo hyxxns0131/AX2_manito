@@ -63,7 +63,7 @@ async function initLoginPage(form) {
   codeInput.addEventListener("input", e => { if (!e.isComposing) tidy(); });
   codeInput.addEventListener("compositionend", tidy);
 
-  // 화면 속 키보드 (숫자 키, ⌫)
+  // 콘솔 버튼판 (숫자, ⌫)
   form.querySelectorAll("[data-key]").forEach(key => key.addEventListener("click", () => {
     codeInput.value = normalizeCode(codeInput.value + key.dataset.key);
   }));
