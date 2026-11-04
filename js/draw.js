@@ -23,7 +23,9 @@ function makeCycle(people) {
 }
 
 function crossRatio(assign, byId) {
-  const pairs = Object.entries(assign);
+  // 명단에서 빠진 사람이 예전 배정에 남아 있어도 관리자 화면이 멈추지 않도록 건너뜀
+  const pairs = Object.entries(assign).filter(([g, r]) => byId[g] && byId[r]);
+  if (!pairs.length) return 0;
   const cross = pairs.filter(([g, r]) => byId[g].gender !== byId[r].gender).length;
   return cross / pairs.length;
 }
