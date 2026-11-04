@@ -11,6 +11,18 @@ const pct = r => `${Math.round(r * 100)}%`;
 const hasAssignment = () => Object.keys(secret.assignment).length > 0;
 const hasCodes = () => people.every(p => secret.codes[p.id]);
 
+// 명단에서 빠진 사람의 코드·배정이 서버에 남아 있어도 화면과 저장이 깨지지 않게 걸러냄
+function pruneSecret() {
+  const known = new Set(people.map(p => String(p.id)));
+  const keep = obj => Object.fromEntries(Object.entries(obj ?? {}).filter(([id]) => known.has(id)));
+  secret = {
+    codes: keep(secret.codes),
+    threads: keep(secret.threads),
+    assignment: Object.fromEntries(
+      Object.entries(keep(secret.assignment)).filter(([, receiver]) => known.has(String(receiver)))),
+  };
+}
+
 function makeCodes() {
   const used = new Set();
   const codes = {};
@@ -148,8 +160,9 @@ function renderResult() {
     <li><span>본인 배정</span><b>${v.self}건</b></li>
     <li><span>쌍방 배정</span><b>${v.mutual}건</b></li>
     <li><span>이성 매칭</span><b>${pct(v.cross)} <small>(목표 ${pct(target)})</small></b></li>`;
-  $("#result-time").textContent = settings.drawnAt
-    ? `${new Date(settings.drawnAt).toLocaleString("ko-KR")} 배정` : "";
+  $("#result-time").textContent = !v.oneToOne
+    ? "명단이 바뀌어 배정이 맞지 않아요. 배정을 다시 실행해 주세요."
+    : settings.drawnAt ? `${new Date(settings.drawnAt).toLocaleString("ko-KR")} 배정` : "";
 
   renderAssignment();
 }
@@ -222,9 +235,13 @@ async function issueCodes() {
   if (hasCodes() &&
       !confirm("코드를 재발급하면 기존 코드로는 들어올 수 없어요. (쪽지는 유지돼요) 계속할까요?")) return;
   const codes = makeCodes();
-  await store.adminCommit({ codes, assignment: secret.assignment, threads: secret.threads });
-  secret = { ...secret, codes };
-  renderCodes();
+  try {
+    await store.adminCommit({ codes, assignment: secret.assignment, threads: secret.threads });
+    secret = { ...secret, codes };
+    renderCodes();
+  } catch (err) {
+    alert(`코드 발급에 실패했어요: ${err.message}`);
+  }
 }
 
 /* ───── 마니띠 확인 시작 ───── */
@@ -274,30 +291,7 @@ async function saveFinal(ms, message) {
 
 /* ───── 시작 ───── */
 
-async function openPanel() {
-  [people, settings, secret] = await Promise.all([
-    store.getPeople(), store.getSettings(), store.adminLoadSecret(),
-  ]);
-  $("#admin-login").hidden = true;
-  $("#admin-panel").hidden = false;
-
-  const modeInput = document.querySelector(`input[name="mode"][value="${settings.mode}"]`);
-  if (modeInput) modeInput.checked = true;
-  $("#custom-pct").value = settings.customPct ?? 50;
-
-  renderGender();
-  renderMode();
-  renderResult();
-  renderCodes();
-  renderReveal();
-  renderFinal();
-
-  // 쪽지 기능 이전에 배정된 데이터면 쪽지함만 새로 만듦
-  if (hasAssignment() && !Object.keys(secret.threads ?? {}).length && hasCodes()) {
-    secret.threads = makeThreads();
-    await store.adminCommit({ ...secret, resetChats: true });
-  }
-
+function bindPanel() {
   $("#mode-group").addEventListener("change", renderMode);
   $("#draw-btn").addEventListener("click", runDraw);
   $("#issue-codes").addEventListener("click", issueCodes);
@@ -318,6 +312,33 @@ async function openPanel() {
     saveFinal(null, "정체 공개를 취소할까요? (공개 예약도 지워져요)"));
 }
 
+async function openPanel() {
+  [people, settings, secret] = await Promise.all([
+    store.getPeople(), store.getSettings(), store.adminLoadSecret(),
+  ]);
+  pruneSecret();
+  bindPanel();
+  $("#admin-login").hidden = true;
+  $("#admin-panel").hidden = false;
+
+  const modeInput = document.querySelector(`input[name="mode"][value="${settings.mode}"]`);
+  if (modeInput) modeInput.checked = true;
+  $("#custom-pct").value = settings.customPct ?? 50;
+
+  renderGender();
+  renderMode();
+  renderResult();
+  renderCodes();
+  renderReveal();
+  renderFinal();
+
+  // 쪽지 기능 이전에 배정된 데이터면 쪽지함만 새로 만듦
+  if (hasAssignment() && !Object.keys(secret.threads ?? {}).length && hasCodes()) {
+    secret.threads = makeThreads();
+    await store.adminCommit({ ...secret, resetChats: true });
+  }
+}
+
 const loginForm = $("#admin-login");
 if (store.STORE !== "firebase") loginForm.email.closest(".field").hidden = true;
 else loginForm.email.required = true;
@@ -330,6 +351,7 @@ loginForm.addEventListener("submit", async e => {
     await store.adminLogin({ email: loginForm.email.value, password: loginForm.password.value });
     await openPanel();
   } catch (ex) {
+    if (!$("#admin-panel").hidden) return alert(`관리자 화면 오류: ${ex.message}`);
     err.textContent = ex.message || "로그인에 실패했어요.";
     err.hidden = false;
   }

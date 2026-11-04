@@ -1,57 +1,46 @@
-/* 생동감 효과 — 반짝임, 리본 띠, 로고, 가챠 머신, 뽑기 연출 */
+/* 움직임 — 반짝임, BGM 띠, 로고, 말랑한 가챠, 스프링클, 화면 전환 (색만 미니홈피에 맞춤) */
 
 /* ───── 떠다니는 반짝임 ───── */
 .sparkles { position: fixed; inset: 0; z-index: 0; overflow: hidden; contain: strict; pointer-events: none; }
 .sparkle {
   position: absolute;
   top: -30px;
-  color: var(--accent);
-  opacity: .55;
+  color: #fff;
+  opacity: .8;
+  text-shadow: 0 0 2px color-mix(in srgb, var(--skin) 50%, #333);
   animation: snow linear infinite;
 }
-@keyframes snow {
-  to { transform: translateY(calc(100vh + 60px)) rotate(240deg); }
-}
+@keyframes snow { to { transform: translateY(calc(100vh + 60px)) rotate(240deg); } }
 
-/* ───── 리본 띠: Kinetic Typography ───── */
-.ticker {
-  overflow: hidden;
-  background: var(--accent);
-  border-block: 3px dashed #fffdf8;
-  font-family: var(--font-round);
-  font-size: 1.02rem;
-  line-height: 2;
-  color: #fffdf8;
-  white-space: nowrap;
-}
-.ticker-track { display: inline-flex; animation: ticker 50s linear infinite; }
+/* ───── 흐르는 글자 (BGM 제목) ───── */
+.ticker { overflow: hidden; white-space: nowrap; color: var(--ink-soft); }
+.ticker-track { display: inline-flex; animation: ticker 40s linear infinite; }
 .ticker-track span { padding-right: .4em; }
 @keyframes ticker { to { transform: translateX(-50%); } }
 
-/* ───── 로고: 사탕처럼 말랑한 글자 ───── */
+/* ───── 로고: 글자가 하나씩 통통 ───── */
 .k-char { display: inline-block; }
 .logo .k-char {
   color: var(--accent);
-  -webkit-text-stroke: 8px #fff;
-  paint-order: stroke fill;
-  filter: drop-shadow(0 4px 0 var(--accent-dark));
+  text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--accent-dark);
   animation: letter-hop 2.8s var(--ease-bounce) infinite;
   animation-delay: calc(var(--i) * .14s);
 }
 @keyframes letter-hop {
   0%, 70%, 100% { transform: none; }
-  78% { transform: translateY(-10px) scale(.92, 1.1); }
+  78% { transform: translateY(-8px) scale(.92, 1.1); }
   88% { transform: translateY(0) scale(1.12, .88); }
 }
 
-/* ───── 가챠 머신: 말랑한 디저트 머신 ───── */
+/* ───── 말랑한 가챠 ───── */
 .gacha-wrap { position: relative; display: grid; place-items: center; width: 300px; height: 400px; }
+/* Shape Morph: 뒤에서 일렁이는 얼룩 */
 .gacha-blob {
   position: absolute;
   inset: 26px 0 16px;
-  background: conic-gradient(from 0deg, #ffc2d4, #ffe6a3, #bfead8, #dcc8f5, #ffc2d4);
-  filter: blur(8px);
-  opacity: .9;
+  background: conic-gradient(from 0deg, var(--skin), #ffd1dd, #fff2a8, #c9f0e1, var(--skin));
+  filter: blur(6px);
+  opacity: .75;
   animation: blob 9s ease-in-out infinite;
 }
 @keyframes blob {
@@ -61,11 +50,12 @@
 }
 @keyframes spin { to { rotate: 360deg; } }
 
+/* Line Animation: 그려졌다 사라지는 선 */
 .gacha-lines { position: absolute; inset: 20px 0 auto; z-index: 2; width: 100%; pointer-events: none; }
 .gacha-lines path {
   fill: none;
   stroke: var(--accent);
-  stroke-width: 4;
+  stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
@@ -84,53 +74,51 @@
 .gacha { position: relative; z-index: 1; width: 206px; animation: gacha-float 4s ease-in-out infinite; }
 @keyframes gacha-float { 50% { transform: translateY(-8px) rotate(-1deg); } }
 .gacha-roof, .gacha-body, .gacha-base {
-  background: linear-gradient(150deg, #ffd3df, #ffb0c6 55%, #f08fad);
-  box-shadow:
-    inset 8px 8px 16px rgba(255, 255, 255, .65),
-    inset -8px -10px 18px rgba(190, 70, 110, .28),
-    0 10px 18px rgba(180, 90, 110, .28);
+  background: linear-gradient(color-mix(in srgb, var(--accent) 55%, #fff), color-mix(in srgb, var(--accent) 85%, #fff));
+  border: 2px solid #333;
+  box-shadow: inset 4px 4px 0 rgba(255, 255, 255, .45), inset -4px -4px 0 rgba(0, 0, 0, .1);
 }
 .gacha-roof {
   position: relative;
   z-index: 2;
   display: grid;
   place-items: center;
-  height: 58px;
-  border-radius: 26px 26px 12px 12px;
+  height: 52px;
+  border-radius: 18px 18px 6px 6px;
 }
 .gacha-roof span {
-  padding: 3px 14px;
-  background: #fffdf8;
-  border-radius: 12px;
-  font-family: var(--font-script);
-  font-size: 1.3rem;
-  color: #d9587d;
+  padding: 1px 12px;
+  background: #fff;
+  border: 2px solid #333;
+  border-radius: 3px;
+  font-family: var(--font-pixel);
+  font-size: 15px;
+  color: var(--accent-dark);
 }
 .gacha-dome {
   position: relative;
   height: 142px;
-  margin: -6px 8px;
+  margin: -2px 8px;
   overflow: hidden;
-  background: linear-gradient(120deg, rgba(255, 255, 255, .7), rgba(255, 240, 245, .3) 60%, rgba(255, 220, 232, .5));
-  border-inline: 5px solid rgba(255, 255, 255, .85);
-  box-shadow: inset 0 0 22px rgba(220, 110, 140, .28);
+  background: linear-gradient(120deg, rgba(255, 255, 255, .85), rgba(255, 255, 255, .45) 60%, rgba(255, 255, 255, .7));
+  border-inline: 2px solid #333;
 }
 .gacha-ball {
-  --cap: #ffb0c6;
+  --cap: #ff9fb6;
   position: absolute;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
+  border: 2px solid #333;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, .95) 0 11%, transparent 26%),
-    linear-gradient(180deg, var(--cap) 0 50%, #fffdf8 50%);
-  box-shadow: inset -5px -7px 11px rgba(170, 70, 100, .22);
+    radial-gradient(circle at 32% 26%, #fff 0 11%, transparent 13%),
+    linear-gradient(180deg, var(--cap) 0 50%, #fff 50%);
   animation: ball-bob 3s ease-in-out infinite;
   animation-delay: calc(var(--i) * -.4s);
 }
-.ball-mint { --cap: #a8e0cc; }
-.ball-lilac { --cap: #dcc8f5; }
-.ball-lemon { --cap: #ffe6a3; }
+.ball-mint { --cap: #8fdcc4; }
+.ball-lilac { --cap: #c9b6f2; }
+.ball-lemon { --cap: #ffe27a; }
 @keyframes ball-bob { 50% { transform: translateY(-4px) rotate(8deg); } }
 .is-turning .gacha-ball { animation: ball-shake .16s linear infinite; }
 @keyframes ball-shake {
@@ -140,33 +128,34 @@
 .gacha-glare {
   position: absolute;
   inset: -40%;
-  background: conic-gradient(from 90deg, transparent, rgba(255, 190, 215, .4), rgba(190, 240, 225, .4), rgba(255, 240, 170, .4), transparent 60%);
+  background: conic-gradient(from 90deg, transparent, rgba(255, 255, 255, .5), transparent 40%);
   mix-blend-mode: screen;
   animation: spin 7s linear infinite;
 }
-.gacha-body { position: relative; z-index: 2; height: 124px; border-radius: 14px 14px 22px 22px; }
+.gacha-body { position: relative; z-index: 2; height: 124px; border-radius: 6px 6px 14px 14px; }
 .gacha-knob {
   position: absolute;
   left: 18px;
   top: 26px;
-  width: 70px;
-  height: 70px;
+  width: 66px;
+  height: 66px;
   padding: 0;
-  background: radial-gradient(circle at 34% 28%, #fff, #fff1d8 55%, #eec48f);
-  border: 0;
+  background: radial-gradient(circle at 34% 28%, #fff, #eee 60%, #ccc);
+  border: 2px solid #333;
   border-radius: 50%;
-  box-shadow: 0 5px 0 rgba(190, 90, 120, .35), inset -4px -5px 8px rgba(190, 130, 80, .3);
+  box-shadow: 0 3px 0 #333;
 }
 button.gacha-knob { cursor: pointer; }
 .gacha-knob i {
   position: absolute;
   left: 50%;
-  top: 8px;
-  width: 15px;
-  height: 54px;
+  top: 7px;
+  width: 14px;
+  height: 48px;
   margin-left: -7px;
-  background: linear-gradient(90deg, #eec48f, #fff 50%, #e2b37a);
-  border-radius: 8px;
+  background: linear-gradient(90deg, #bbb, #fff 50%, #bbb);
+  border: 2px solid #333;
+  border-radius: 7px;
 }
 .is-turning .gacha-knob { animation: knob-turn .62s var(--ease-bounce); }
 @keyframes knob-turn { to { transform: rotate(360deg); } }
@@ -174,24 +163,25 @@ button.gacha-knob { cursor: pointer; }
   position: absolute;
   right: 18px;
   bottom: 12px;
-  width: 82px;
-  height: 92px;
-  background: radial-gradient(ellipse at 50% 88%, #f6a6bd, #b84a6e 72%);
-  border: 6px solid #fff1f5;
-  border-radius: 44px 44px 12px 12px;
-  box-shadow: inset 0 8px 12px rgba(120, 30, 60, .45);
+  width: 80px;
+  height: 90px;
+  background: radial-gradient(ellipse at 50% 88%, #555, #222 72%);
+  border: 2px solid #333;
+  box-shadow: 0 0 0 4px #fff;
+  border-radius: 40px 40px 8px 8px;
 }
 .gacha-out {
   position: absolute;
   left: 50%;
   bottom: 4px;
-  width: 54px;
-  height: 54px;
-  margin-left: -27px;
+  width: 52px;
+  height: 52px;
+  margin-left: -26px;
+  border: 2px solid #333;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, .95) 0 11%, transparent 26%),
-    linear-gradient(180deg, #ffb0c6 0 50%, #fffdf8 50%);
+    radial-gradient(circle at 32% 26%, #fff 0 11%, transparent 13%),
+    linear-gradient(180deg, #ff9fb6 0 50%, #fff 50%);
   opacity: 0;
 }
 /* Squash and Stretch: 떨어져 튕김 */
@@ -207,14 +197,14 @@ button.gacha-knob { cursor: pointer; }
 }
 .gacha-sticker {
   position: absolute;
-  left: 28px;
-  bottom: 3px;
-  font-size: 1.2rem;
-  color: #fff;
-  text-shadow: 1px 1px 0 #d9587d;
+  left: 30px;
+  bottom: 4px;
+  font-size: 18px;
+  color: var(--new);
+  text-shadow: 1px 1px 0 #fff;
   animation: beat 1.4s ease-in-out infinite;
 }
-.gacha-base { height: 26px; margin: 6px -9px 0; border-radius: 12px 12px 18px 18px; }
+.gacha-base { height: 24px; margin: 4px -9px 0; border-radius: 6px 6px 12px 12px; }
 
 /* 컨페티: 스프링클 */
 .confetti {
@@ -240,14 +230,13 @@ button.gacha-knob { cursor: pointer; }
 }
 
 /* ───── 뽑기 결과 창 ───── */
-.hint-dialog { position: relative; overflow: visible; isolation: isolate; }
+.hint-dialog-inner { isolation: isolate; overflow: hidden; }
 .hint-rays {
   position: absolute;
   inset: 0;
   z-index: -1;
   overflow: hidden;
-  border-radius: 18px;
-  background: #fffdf8;
+  background: #fff;
 }
 .zoom-ring {
   position: absolute;
@@ -256,7 +245,7 @@ button.gacha-knob { cursor: pointer; }
   width: 60px;
   height: 60px;
   margin: -30px 0 0 -30px;
-  border: 10px solid var(--c, var(--pink-100));
+  border: 8px solid var(--accent-soft);
   border-radius: 50%;
   opacity: 0;
   animation: zoom-out 2.4s linear infinite;
@@ -281,10 +270,8 @@ button.gacha-knob { cursor: pointer; }
 .hint-dialog-text { min-height: 1.6em; }
 
 /* 뽑기 옆 작은 가챠 */
-.gacha-mini { display: none; margin: 8px auto 0; transform: scale(.82); transform-origin: top center; }
-@media (min-width: 760px) {
-  .gacha-mini { display: grid; margin-bottom: -60px; }
-}
+.gacha-mini { display: none; margin: 4px auto -70px; transform: scale(.7); transform-origin: top center; }
+@media (min-width: 900px) { .gacha-mini { display: grid; } }
 
 /* ───── 입장할 때: 크림이 화면을 덮음 ───── */
 .page-wipe {
@@ -293,7 +280,7 @@ button.gacha-knob { cursor: pointer; }
   z-index: 50;
   display: none;
   pointer-events: none;
-  background: #fffdf8;
+  background: #fff;
 }
 .is-leaving .page-wipe { display: block; animation: cream-wipe .65s ease-in both; }
 @keyframes cream-wipe {
@@ -301,3 +288,10 @@ button.gacha-knob { cursor: pointer; }
   to { clip-path: circle(120% at 50% 50%); }
 }
 
+
+/* 움직임 줄이기 설정을 켠 사람에게는 장식 모션을 멈춤 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .will-reveal { opacity: 1; transform: none; }
+  .sparkles { display: none; }
+}

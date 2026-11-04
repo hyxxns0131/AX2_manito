@@ -4,33 +4,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>마니또 관리자</title>
-  <script src="js/theme.js?v=2.0.0"></script>
-  <link rel="icon" href="assets/icons/heart.svg?v=2.0.0" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Dancing+Script:wght@700&family=Gowun+Dodum&family=Jua&display=swap">
+  <script src="js/theme.js?v=2.1.0"></script>
+  <link rel="icon" href="assets/icons/heart.svg?v=2.1.0" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
-  <link rel="stylesheet" href="css/base.css?v=2.0.0">
-  <link rel="stylesheet" href="css/components.css?v=2.0.0">
-  <link rel="stylesheet" href="css/pages.css?v=2.0.0">
-  <link rel="stylesheet" href="css/fx.css?v=2.0.0">
-  <link rel="stylesheet" href="css/hompy.css?v=2.0.0">
+  <link rel="stylesheet" href="css/base.css?v=2.1.0">
+  <link rel="stylesheet" href="css/components.css?v=2.1.0">
+  <link rel="stylesheet" href="css/pages.css?v=2.1.0">
+  <link rel="stylesheet" href="css/fx.css?v=2.1.0">
+  <link rel="stylesheet" href="css/hompy.css?v=2.1.0">
 </head>
 <body class="page-admin">
   <div class="sparkles" data-sparkles aria-hidden="true"></div>
-  <header class="topbar">
-    <div class="wrap topbar-inner">
-      <p class="topbar-title"><img src="assets/icons/gift.svg" alt="" width="22" height="22"> 마니또 관리자 <small class="version-tag">v2.0.0</small></p>
-      <div class="topbar-actions">
-        <div data-theme-picker></div>
-        <a class="btn btn-ghost btn-sm" href="index.html">입장 화면</a>
+  <div class="hompy hompy-admin">
+    <header class="hompy-top">
+      <p class="hompy-count">ADMIN <i>|</i>MEMBER <b data-members>-</b></p>
+      <div class="hompy-headline">
+        <h1 class="hompy-title">마니또 관리실 <span class="hompy-url">http://ax2.manito/admin · v2.1.0</span></h1>
+        <div class="hompy-actions">
+          <div data-theme-picker></div>
+          <a class="btn btn-ghost btn-sm" href="index.html">입장 화면</a>
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <main class="wrap">
-    <form id="admin-login" class="card wrap-narrow">
-      <h2>관리자 로그인 ♡</h2>
+  <main class="hompy-main page">
+    <form id="admin-login" class="card admin-login">
+      <h2>관리자 로그인</h2>
       <label class="field">
         <span class="field-label">이메일</span>
         <input name="email" type="email" autocomplete="username">
@@ -40,7 +39,7 @@
         <input name="password" type="password" autocomplete="current-password" required>
       </label>
       <p id="admin-error" class="error" role="alert" hidden></p>
-      <button class="btn btn-primary btn-block" type="submit">♡ 들어가기</button>
+      <button class="btn btn-primary btn-block" type="submit">들어가기</button>
     </form>
 
     <div id="admin-panel" class="admin-grid" hidden>
@@ -133,11 +132,15 @@
       </section>
     </div>
   </main>
-  <script src="js/motion.js?v=2.0.0"></script>
-  <script src="js/fx.js?v=2.0.0"></script>
-  <script src="js/participants.js?v=2.0.0"></script>
-  <script src="js/draw.js?v=2.0.0"></script>
-  <script src="js/store.js?v=2.0.0"></script>
-  <script src="js/admin.js?v=2.0.0"></script>
+  </div>
+  <p class="credit">© AX2 마니또 · 관리실</p>
+
+  <script src="js/motion.js?v=2.1.0"></script>
+  <script src="js/fx.js?v=2.1.0"></script>
+  <script src="js/participants.js?v=2.1.0"></script>
+  <script src="js/draw.js?v=2.1.0"></script>
+  <script src="js/store.js?v=2.1.0"></script>
+  <script src="js/admin.js?v=2.1.0"></script>
+  <script src="js/hompy.js?v=2.1.0"></script>
 </body>
 </html>

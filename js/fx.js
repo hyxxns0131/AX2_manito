@@ -19,7 +19,7 @@ function scrambleText(el, text, ms = 700) {
 // 스프링클이 터지는 효과. host 가운데에서 퍼짐
 function burstConfetti(host, count = 26) {
   if (REDUCE_MOTION) return;
-  const colors = ["#ee5f7f", "#ffd27a", "#8fdcc4", "#c7a8f0", "#8a5233"];
+  const colors = ["#ff5a7a", "#ffd84d", "#8fdcc4", "#7fc4f0", "#c9b6f2"];
   const shapes = ["dot", "tri", "bar", "ring"];
   for (let i = 0; i < count; i++) {
     const el = document.createElement("i");
@@ -58,7 +58,7 @@ function buildGacha(host) {
       <path pathLength="1" d="M214 292c16-22 30 22 46 0s30 22 36 6"/>
     </svg>
     <div class="gacha">
-      <div class="gacha-roof"><span>Sweets</span></div>
+      <div class="gacha-roof"><span>LUCKY</span></div>
       <div class="gacha-dome" aria-hidden="true">${balls}<span class="gacha-glare"></span></div>
       <div class="gacha-body">
         ${knob}
@@ -128,7 +128,7 @@ async function playGacha() {
     for (let i = 0; i < 16; i++) {
       const s = document.createElement("i");
       s.className = "sparkle";
-      s.textContent = "✦♡✧♥"[i % 4];
+      s.textContent = "✦♡✧★"[i % 4];
       s.style.left = `${Math.random() * 94}%`;
       s.style.fontSize = `${12 + Math.random() * 16}px`;
       s.style.fontStyle = "normal";

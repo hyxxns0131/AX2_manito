@@ -3,100 +3,122 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>우리 팀 마니또</title>
-  <script src="js/theme.js?v=2.0.0"></script>
-  <link rel="icon" href="assets/icons/heart.svg?v=2.0.0" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Dancing+Script:wght@700&family=Gowun+Dodum&family=Jua&display=swap">
+  <title>AX2 마니또 미니홈피</title>
+  <script src="js/theme.js?v=2.1.0"></script>
+  <link rel="icon" href="assets/icons/heart.svg?v=2.1.0" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
-  <link rel="stylesheet" href="css/base.css?v=2.0.0">
-  <link rel="stylesheet" href="css/components.css?v=2.0.0">
-  <link rel="stylesheet" href="css/pages.css?v=2.0.0">
-  <link rel="stylesheet" href="css/fx.css?v=2.0.0">
-  <link rel="stylesheet" href="css/hompy.css?v=2.0.0">
+  <link rel="stylesheet" href="css/base.css?v=2.1.0">
+  <link rel="stylesheet" href="css/components.css?v=2.1.0">
+  <link rel="stylesheet" href="css/pages.css?v=2.1.0">
+  <link rel="stylesheet" href="css/fx.css?v=2.1.0">
+  <link rel="stylesheet" href="css/hompy.css?v=2.1.0">
 </head>
 <body class="page-login">
   <div class="sparkles" data-sparkles aria-hidden="true"></div>
 
   <div class="hompy">
-    <header class="hompy-bar">
-      <p class="hompy-title"><img src="assets/icons/heart.svg" alt="" width="20" height="20"> AX2 마니또 미니홈피</p>
-      <div class="hompy-actions"><div data-theme-picker></div></div>
+    <header class="hompy-top">
+      <p class="hompy-count">TODAY <b data-today></b><i>|</i>MEMBER <b data-members>-</b></p>
+      <div class="hompy-headline">
+        <h1 class="hompy-title">AX2 마니또 미니홈피 <span class="hompy-url">http://ax2.manito/home</span></h1>
+        <div class="bgm" aria-hidden="true">
+          <span class="bgm-icon">♪</span>
+          <div class="ticker" data-ticker="두근두근 마니또 (Feat. AX2) · 빼빼로데이 11.11"></div>
+          <span class="bgm-ctrl">▶ ❚❚ ■</span>
+        </div>
+        <div class="hompy-actions"><div data-theme-picker></div></div>
+      </div>
     </header>
 
-    <div class="hompy-body hompy-body-login">
-      <aside class="hompy-side">
-        <p class="side-count">TODAY <b data-today></b> · 멤버 <b data-members>-</b></p>
-        <figure class="side-photo side-poster"><img src="assets/img/poster.jpg" alt="" width="520" height="711"></figure>
-        <p class="side-status">마니또 파티시에 모집 중</p>
+    <div class="hompy-body">
+      <aside class="hompy-side page">
+        <p class="side-today">TODAY IS.. <b>설렘 ♡</b></p>
+        <figure class="side-photo">
+          <img src="assets/minimi/smile.svg" alt="" width="160" height="184">
+          <figcaption>미니미</figcaption>
+        </figure>
+        <p class="side-name">AX2 마니또 <small>[모집 중]</small></p>
+        <p class="side-intro">누군가 나를 몰래 챙겨주고,<br>나도 누군가를 몰래 챙겨줘요.<br>정체는 끝까지 비밀 🤫</p>
         <p class="side-dday" data-dday></p>
-        <div class="side-room">
-          <p class="side-label">♡ 미니룸</p>
-          <img src="assets/img/house.jpg" alt="" width="520" height="413">
-        </div>
-<<<<<<< HEAD
-        <div class="side-room">
-          <p class="side-label">♡ 일촌 요정</p>
-          <img src="assets/img/spirit-vanilla.jpg" alt="" width="240" height="441">
-=======
-
-        <div class="hud hud-top" aria-hidden="true">
-          <span>♥ X3</span><span>★ X28</span><span class="hud-gold">SCORE 00028</span>
->>>>>>> 879ea906d7050a55c88398a630fd9fc2959a6b26
-        </div>
+        <ul class="side-list">
+          <li>참가 <b data-members>-</b>명</li>
+          <li>본인·쌍방 매칭 없음</li>
+          <li>익명 쪽지 · 힌트 뽑기</li>
+        </ul>
       </aside>
 
-      <main class="hompy-main login-main">
+      <span class="binder" aria-hidden="true"></span>
+
+      <main class="hompy-main page">
         <form id="login-form" class="card login-card" autocomplete="off">
-          <h2>로그인</h2>
-          <h1 class="logo" data-kinetic>마니또<span class="logo-heart">♥</span></h1>
+          <h2>로그인 <small>개인 코드로 들어와요</small></h2>
+          <p class="logo" data-kinetic>마니또<span class="logo-heart">♥</span></p>
           <p class="sign-sub" data-scramble>빼빼로데이 스페셜 · 11.11</p>
-          <label class="field">
-            <span class="field-label">이름</span>
-            <select id="name" required>
-              <option value="">♡ 내 이름 고르기</option>
-            </select>
-          </label>
-          <label class="field">
-            <span class="field-label">개인 코드</span>
-            <input id="code" type="text" inputmode="numeric" spellcheck="false"
-                   placeholder="● ● ● ● ● ●" autocapitalize="characters" required>
-          </label>
-          <p id="login-error" class="error" role="alert" hidden></p>
-          <button class="btn btn-primary btn-block" type="submit">♡ 미니홈피 들어가기</button>
-          <p class="login-foot"><a href="admin.html">관리자</a> · v2.0.0</p>
+          <div class="login-box">
+            <label class="login-row">
+              <span class="field-label">이름</span>
+              <select id="name" required>
+                <option value="">내 이름 고르기</option>
+              </select>
+            </label>
+            <label class="login-row">
+              <span class="field-label">개인코드</span>
+              <input id="code" type="text" inputmode="numeric" spellcheck="false"
+                     placeholder="6자리 코드" autocapitalize="characters" required>
+            </label>
+            <button class="btn btn-primary login-go" type="submit">로그인</button>
+            <p id="login-error" class="error" role="alert" hidden></p>
+          </div>
+          <p class="login-foot"><a href="admin.html">관리자</a> · v2.1.0</p>
         </form>
 
-        <section class="card gacha-card" aria-labelledby="gacha-title">
-          <h2 id="gacha-title">오늘의 뽑기</h2>
-          <p class="muted">손잡이를 돌려 보세요! 힌트를 모아 내 마니또를 맞혀요 🍫</p>
-          <div data-gacha></div>
-        </section>
+        <section class="card notice-board" aria-labelledby="rule-title">
+            <h2 id="rule-title">공지사항 <small>꼭 읽어주세요</small></h2>
+            <p class="period"><span>마니또 기간</span><b>11월 5일(목) ~ 11월 11일(수)</b></p>
+            <ol class="rules">
+              <li><b>선물은 5천 원 이하</b>로만! 마니띠에게 부담 없는 선물을 준비해요.</li>
+              <li>마니띠에게 <b>칭찬 3번 이상</b> 하기</li>
+              <li>마니띠에게 <b>하루에 1번 이상 친절</b> 베풀기</li>
+            </ol>
+            <ul class="board">
+              <li><span class="board-tag">공지</span><p>내 <b>마니띠</b>, 내 <b>마니또</b>와 <b>익명으로 쪽지</b>를 주고받을 수 있어요. 쪽지 메뉴에서 확인하세요 💌</p></li>
+              <li><span class="board-tag is-hot">필독</span><p><b>빼빼로데이</b> 마니띠는 자기 마니또에게 <em>빼빼로 1통</em>을 사 줘야 해요. 맛은 <b>마니또가 원하는 맛</b>으로! 🍫</p></li>
+              <li><span class="board-tag is-hot">필독</span><p>마니띠가 자기 마니또를 맞히면, 마니또는 <b>마니띠의 소원 1개</b>를 들어줘야 해요. <em>(거절 불가!)</em></p></li>
+            </ul>
+          </section>
 
-        <section class="card album-card" aria-labelledby="album-title">
-          <h2 id="album-title">사진첩 · 오늘의 디저트</h2>
-          <ul class="shelf">
-            <li><img src="assets/img/dessert-heart.jpg" alt="" width="420" height="420">딸기 하트 마카롱</li>
-            <li><img src="assets/img/dessert-gold.jpg" alt="" width="420" height="420">우정의 케이크</li>
-            <li><img src="assets/img/dessert-rose.jpg" alt="" width="420" height="420">장미 수플레</li>
-            <li><img src="assets/img/dessert-star.jpg" alt="" width="420" height="420">별빛 플레이트</li>
-            <li><img src="assets/img/house.jpg" alt="" width="520" height="413">과자의 집</li>
-          </ul>
-        </section>
+        <div class="home-split">
+          <section class="card" aria-labelledby="room-title">
+            <h2 id="room-title">미니룸</h2>
+            <div class="miniroom">
+              <div class="room-stage">
+                <img class="room" src="assets/miniroom.svg" alt="선물 상자와 빼빼로가 놓인 작은 방" width="320" height="276">
+                <img class="room-mimi" src="assets/minimi/smile.svg" alt="" width="160" height="184" style="left:37%;top:47%">
+                <img class="room-mimi is-b" src="assets/minimi/friend.svg" alt="" width="160" height="184" style="left:52%;top:52%">
+                <span class="room-talk" style="left:46%;top:36%">누가 내 마니또지?</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="card gacha-card" aria-labelledby="gacha-title">
+            <h2 id="gacha-title">오늘의 뽑기</h2>
+            <p class="muted">손잡이를 돌려 보세요! 힌트를 모아 내 마니또를 맞혀요</p>
+            <div data-gacha></div>
+          </section>
+        </div>
+
       </main>
     </div>
   </div>
 
-  <div class="ticker" data-ticker="HAPPY 빼빼로데이 ♡ 11.11 ♡ SWEET MANITO" aria-hidden="true"></div>
-  <p class="credit">이미지: 꿈빛 파티시엘 © Natsumi Matsumoto / Shueisha · Yumeiro Patissiere Project</p>
+  <p class="credit">© AX2 마니또 · 미니홈피 스킨 v2.1.0</p>
   <div class="page-wipe" aria-hidden="true"></div>
 
-  <script src="js/motion.js?v=2.0.0"></script>
-  <script src="js/fx.js?v=2.0.0"></script>
-  <script src="js/participants.js?v=2.0.0"></script>
-  <script src="js/store.js?v=2.0.0"></script>
-  <script src="js/auth.js?v=2.0.0"></script>
-  <script src="js/hompy.js?v=2.0.0"></script>
+  <script src="js/motion.js?v=2.1.0"></script>
+  <script src="js/fx.js?v=2.1.0"></script>
+  <script src="js/participants.js?v=2.1.0"></script>
+  <script src="js/store.js?v=2.1.0"></script>
+  <script src="js/auth.js?v=2.1.0"></script>
+  <script src="js/hompy.js?v=2.1.0"></script>
 </body>
 </html>

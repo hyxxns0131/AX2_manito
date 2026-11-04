@@ -54,7 +54,7 @@
   if (day < today) day = new Date(now.getFullYear() + 1, 10, 11);
   const left = Math.round((day - today) / 86400000);
   document.querySelectorAll("[data-dday]").forEach(el => {
-    el.textContent = left ? `빼빼로데이 D-${left}` : "오늘은 빼빼로데이! ♡";
+    el.textContent = left ? `마니또 종료 D-${left}` : "오늘은 마니또 마지막 날! ♡";
   });
 
   store.getPeople().then(people => {

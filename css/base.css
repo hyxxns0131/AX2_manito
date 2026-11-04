@@ -1,45 +1,29 @@
-/* 리셋, 변수, 폰트 — 테마: 핑크 미니홈피 (맛은 js/theme.js에서 사람별로 바뀜) */
+/* 기본 — 색·글꼴 토큰, 리셋 (미니홈피 테마) */
 :root {
-  /* 맛 (theme.js가 --flavor, --accent를 덮어씀) */
-  --flavor: #ffd9e3;
-  --accent: #ee6f8f;
-  --accent-dark: color-mix(in srgb, var(--accent), #5a2a20 32%);
-  --accent-soft: color-mix(in srgb, var(--accent), #fff 55%);
-  --accent-pale: color-mix(in srgb, var(--accent), #fff 85%);
+  /* 스킨: js/theme.js가 --skin, --accent를 바꿈 */
+  --skin: #9fd0ee;
+  --accent: #2b7fc4;
+  --accent-dark: color-mix(in srgb, var(--accent) 75%, #000);
+  --accent-soft: color-mix(in srgb, var(--accent) 10%, #fff);
+  --frame: color-mix(in srgb, var(--skin) 45%, #fff);
 
-  /* 플라스틱 핑크 */
-  --pink-50: #fff6f4;
-  --pink-100: #ffe6ea;
-  --pink-200: #ffcfda;
-  --pink-300: #f9afc1;
-  --pink-500: #ee6f8f;
-  --pink-600: #d9587d;
-  --pink-700: #b23a5a;
+  --ink: #333;
+  --ink-soft: #555;
+  --muted: #8c8c8c;
+  --line: #bdbdbd;
+  --line-soft: #e2e2e2;
+  --page: #fff;
+  --paper: #fafafa;
+  --orange: #ff6c00;
+  --new: #ff3d3d;
+  --ok: #2e9a4f;
+  --warn: #d9480f;
 
-  /* 포인트 */
-  --mint: #a6e6dc;
-  --mint-700: #4fae9f;
-  --peach: #f7b08e;
-  --star: #f6a15f;
-  --lilac: #d8bdf5;
-  --yellow: #ffe27a;
+  --font-pixel: "Galmuri11", "Dotum", "돋움", monospace;
+  --font-body: "Dotum", "돋움", "Gulim", "굴림", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 
-  --ink: #6b3f2a;
-  --ink-soft: #a0735b;
-  --white: #fff;
-
-  --radius: 18px;
-  --plastic-hi: inset 0 4px 8px rgba(255, 255, 255, .75);
-  --plastic-lo: inset 0 -6px 12px rgba(179, 51, 124, .25);
-  --drop: 0 16px 30px rgba(179, 51, 124, .22);
-
-  --font-display: "Bagel Fat One", "Jua", sans-serif;
-  --font-round: "Jua", "Gowun Dodum", sans-serif;
-  --font-script: "Dancing Script", "Jua", cursive;
-  --font-retro: "Galmuri11", var(--font-round);
-  --font-body: "Gowun Dodum", system-ui, sans-serif;
-
-  --ease-bounce: cubic-bezier(.3, 1.5, .5, 1);
+  --radius: 10px;
+  --ease-bounce: cubic-bezier(.34, 1.56, .64, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -49,53 +33,38 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   min-height: 100vh;
-  overflow-x: hidden;
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.6;
+  background:
+    radial-gradient(rgba(255, 255, 255, .6) 1.2px, transparent 1.6px) 0 0 / 14px 14px,
+    var(--skin);
   color: var(--ink);
-  background-color: var(--flavor);
-  background-image:
-    linear-gradient(90deg, rgba(255, 255, 255, .5) 50%, transparent 50%),
-    linear-gradient(rgba(255, 255, 255, .5) 50%, transparent 50%);
-  background-size: 44px 44px;
-  background-attachment: fixed;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
-h1, h2, h3 {
-  margin: 0 0 .5em;
-  font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1.25;
-  color: var(--pink-700);
-}
-h1 { font-size: clamp(2.4rem, 10vw, 3.4rem); }
-h2 { font-size: 1.35rem; }
-h3 { font-size: 1.1rem; }
-
-p { margin: 0 0 .75em; }
-img { display: block; max-width: 100%; }
-a { color: inherit; }
-ul, ol { margin: 0; padding: 0; list-style: none; }
-
+h1, h2, h3, p, ul, ol, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img, svg { display: block; max-width: 100%; }
+img { height: auto; }
 button, input, select, textarea { font: inherit; color: inherit; }
-
-:focus-visible { outline: 3px solid var(--lilac); outline-offset: 2px; }
-::selection { background: var(--pink-200); }
-
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+a { color: var(--accent); }
 [hidden] { display: none !important; }
 
+:focus-visible { outline: 2px dashed var(--accent); outline-offset: 2px; }
+
+.pixel { image-rendering: pixelated; }
+
 .sr-only {
-  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
-.svg-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-  }
-}
+.muted { color: var(--muted); font-size: 12px; }

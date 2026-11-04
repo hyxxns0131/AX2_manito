@@ -4,54 +4,65 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>내 미니홈피</title>
-  <script src="js/theme.js?v=2.0.0"></script>
-  <link rel="icon" href="assets/icons/heart.svg?v=2.0.0" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Dancing+Script:wght@700&family=Gowun+Dodum&family=Jua&display=swap">
+  <script src="js/theme.js?v=2.1.0"></script>
+  <link rel="icon" href="assets/icons/heart.svg?v=2.1.0" type="image/svg+xml">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
-  <link rel="stylesheet" href="css/base.css?v=2.0.0">
-  <link rel="stylesheet" href="css/components.css?v=2.0.0">
-  <link rel="stylesheet" href="css/pages.css?v=2.0.0">
-  <link rel="stylesheet" href="css/fx.css?v=2.0.0">
-  <link rel="stylesheet" href="css/hompy.css?v=2.0.0">
+  <link rel="stylesheet" href="css/base.css?v=2.1.0">
+  <link rel="stylesheet" href="css/components.css?v=2.1.0">
+  <link rel="stylesheet" href="css/pages.css?v=2.1.0">
+  <link rel="stylesheet" href="css/fx.css?v=2.1.0">
+  <link rel="stylesheet" href="css/hompy.css?v=2.1.0">
 </head>
 <body class="page-me">
   <div class="sparkles" data-sparkles aria-hidden="true"></div>
 
   <div class="hompy">
-    <header class="hompy-bar">
-      <p class="hompy-title"><img src="assets/icons/heart.svg" alt="" width="20" height="20"> <span id="me-name"></span> 님의 미니홈피</p>
-      <div class="hompy-actions">
-        <div data-theme-picker></div>
-        <button id="logout" class="btn btn-ghost btn-sm" type="button">나가기</button>
+    <header class="hompy-top">
+      <p class="hompy-count">TODAY <b data-today></b><i>|</i>MEMBER <b data-members>-</b></p>
+      <div class="hompy-headline">
+        <h1 class="hompy-title"><span id="me-name"></span> 님의 미니홈피 <span class="hompy-url">http://ax2.manito/me</span></h1>
+        <div class="bgm" aria-hidden="true">
+          <span class="bgm-icon">♪</span>
+          <div class="ticker" data-ticker="두근두근 마니또 (Feat. AX2) · 빼빼로데이 11.11"></div>
+          <span class="bgm-ctrl">▶ ❚❚ ■</span>
+        </div>
+        <div class="hompy-actions">
+          <div data-theme-picker></div>
+          <button id="logout" class="btn btn-ghost btn-sm" type="button">로그아웃</button>
+        </div>
       </div>
     </header>
 
     <div class="hompy-body">
       <!-- 왼쪽 프로필 -->
-      <aside class="hompy-side">
-        <p class="side-count">TODAY <b data-today></b> · 멤버 <b data-members>-</b></p>
-        <figure class="side-photo"><img src="assets/img/ichigo-chef.jpg" alt="" width="320" height="320"></figure>
-        <p class="side-status"><span id="banner-name"></span> <small>[온라인]</small></p>
-        <p class="side-mood">오늘의 기분: 두근두근 ♡</p>
+      <aside class="hompy-side page">
+        <p class="side-today">TODAY IS.. <b>두근 ♡</b></p>
+        <figure class="side-photo">
+          <img src="assets/minimi/smile.svg" alt="" width="160" height="184">
+          <figcaption>내 미니미</figcaption>
+        </figure>
+        <p class="side-name"><span id="banner-name"></span> <small>[온라인]</small></p>
+        <p class="side-intro">마니또 활동 중 ♡<br>들키지 않게 몰래몰래!</p>
         <p class="side-dday" data-dday></p>
-        <div class="side-room">
-          <p class="side-label">♡ 미니룸</p>
-          <img src="assets/img/house.jpg" alt="" width="520" height="413">
-        </div>
+        <ul class="side-list">
+          <li>일촌 <b data-members>-</b>명</li>
+          <li><a href="#manitti">내 마니띠 보러 가기</a></li>
+          <li><a href="#note">쪽지함 열기</a></li>
+        </ul>
       </aside>
 
-      <main class="hompy-main">
+      <span class="binder" aria-hidden="true"></span>
+
+      <main class="hompy-main page">
         <!-- 홈 -->
         <div class="tab-panel" data-panel="home" role="tabpanel">
           <!-- 정체 공개 -->
           <section id="final" class="final" aria-labelledby="final-title" hidden>
             <div class="receipt">
-              <p class="receipt-head">SECRET<br>♡ LETTER ♡</p>
+              <p class="receipt-head">♡ 비밀 편지가 도착했어요 ♡</p>
               <p class="receipt-meta">AX2 TEAM · 빼빼로데이 11.11</p>
-              <img class="letter-art" src="assets/img/keyvisual.jpg" alt="" width="900" height="505">
-              <h2 id="final-title">🎉 마니또 정체 공개!</h2>
+              <img class="letter-art" src="assets/minimi/laugh.svg" alt="" width="160" height="184">
+              <h2 id="final-title">마니또 정체 공개!</h2>
               <p class="final-line">나를 몰래 챙겨준 마니또는</p>
               <strong id="final-giver" class="final-name"></strong>
               <p>님이었어요!</p>
@@ -63,32 +74,57 @@
             </div>
           </section>
 
+          <section class="card notice-board" aria-labelledby="rule-title">
+              <h2 id="rule-title">공지사항 <small>꼭 읽어주세요</small></h2>
+              <p class="period"><span>마니또 기간</span><b>11월 5일(목) ~ 11월 11일(수)</b></p>
+              <ol class="rules">
+                <li><b>선물은 5천 원 이하</b>로만! 마니띠에게 부담 없는 선물을 준비해요.</li>
+                <li>마니띠에게 <b>칭찬 3번 이상</b> 하기</li>
+                <li>마니띠에게 <b>하루에 1번 이상 친절</b> 베풀기</li>
+              </ol>
+              <ul class="board">
+                <li><span class="board-tag">공지</span><p>내 <b>마니띠</b>, 내 <b>마니또</b>와 <b>익명으로 쪽지</b>를 주고받을 수 있어요. 쪽지 메뉴에서 확인하세요 💌</p></li>
+                <li><span class="board-tag is-hot">필독</span><p><b>빼빼로데이</b> 마니띠는 자기 마니또에게 <em>빼빼로 1통</em>을 사 줘야 해요. 맛은 <b>마니또가 원하는 맛</b>으로! 🍫</p></li>
+                <li><span class="board-tag is-hot">필독</span><p>마니띠가 자기 마니또를 맞히면, 마니또는 <b>마니띠의 소원 1개</b>를 들어줘야 해요. <em>(거절 불가!)</em></p></li>
+              </ul>
+            </section>
+
           <section class="card" aria-labelledby="home-title">
-            <h2 id="home-title">오늘의 할 일</h2>
-            <ul class="todo">
-              <li><button type="button" data-tab="manitti"><img src="assets/img/dessert-heart.jpg" alt="" width="420" height="420"><b>마니띠 확인</b><span>내가 챙겨줄 사람</span></button></li>
-              <li><button type="button" data-tab="hint"><img src="assets/img/dessert-star.jpg" alt="" width="420" height="420"><b>힌트 뽑기</b><span>마니또 정체 맞히기</span></button></li>
-              <li><button type="button" data-tab="note"><img src="assets/img/dessert-rose.jpg" alt="" width="420" height="420"><b>쪽지 쓰기</b><span>익명으로 대화하기</span></button></li>
-              <li><button type="button" data-tab="profile"><img src="assets/img/dessert-gold.jpg" alt="" width="420" height="420"><b>내 프로필</b><span>좋아하는 것, 힌트</span></button></li>
-            </ul>
+            <h2 id="home-title">Updated news</h2>
+            <div class="news">
+              <ul class="news-list">
+                <li><button type="button" data-tab="manitti"><span class="tag">[마니띠]</span><b>내가 몰래 챙겨줄 사람 확인하기</b><span class="new-mark">N</span></button></li>
+                <li><button type="button" data-tab="hint"><span class="tag">[힌트]</span><b>뽑기로 내 마니또 정체 맞히기</b><span class="new-mark">N</span></button></li>
+                <li><button type="button" data-tab="note"><span class="tag">[쪽지]</span><b>익명 쪽지 주고받기</b><span class="new-mark">N</span></button></li>
+                <li><button type="button" data-tab="profile"><span class="tag">[프로필]</span><b>좋아하는 것 · 내 정체 힌트 쓰기</b><span class="new-mark">N</span></button></li>
+              </ul>
+              <div class="news-board">
+                <button type="button" data-tab="manitti">마니띠 <b>1</b></button>
+                <button type="button" data-tab="hint">힌트 <b>3</b></button>
+                <button type="button" data-tab="note">쪽지함 <b>2</b></button>
+                <button type="button" data-tab="profile">프로필 <b>1</b></button>
+              </div>
+            </div>
           </section>
 
-          <section class="card" aria-labelledby="friends-title">
-            <h2 id="friends-title">마니또 도우미 일촌</h2>
-            <ul class="spirits">
-              <li class="photo spirit"><img src="assets/img/spirit-vanilla.jpg" alt="바닐라" width="240" height="441"><b>바닐라</b><span>힌트를 모아 봐요!</span></li>
-              <li class="photo spirit"><img src="assets/img/spirit-chocolat.jpg" alt="쇼콜라" width="240" height="453"><b>쇼콜라</b><span>정체는 끝까지 비밀!</span></li>
-              <li class="photo spirit"><img src="assets/img/spirit-cafe.jpg" alt="카페" width="240" height="470"><b>카페</b><span>쪽지로 마음을 전해요</span></li>
-              <li class="photo spirit"><img src="assets/img/spirit-caramel.jpg" alt="캐러멜" width="240" height="450"><b>캐러멜</b><span>달콤한 11월 11일!</span></li>
-            </ul>
+          <section class="card" aria-labelledby="room-title">
+            <h2 id="room-title">미니룸</h2>
+            <div class="miniroom">
+              <div class="room-stage">
+                <img class="room" src="assets/miniroom.svg" alt="선물 상자와 빼빼로가 놓인 작은 방" width="320" height="276">
+                <img class="room-mimi" src="assets/minimi/smile.svg" alt="" width="160" height="184" style="left:37%;top:47%">
+                <img class="room-mimi is-b" src="assets/minimi/friend.svg" alt="" width="160" height="184" style="left:52%;top:52%">
+                <span class="room-talk" style="left:46%;top:36%">선물 뭐 줄까?</span>
+              </div>
+            </div>
           </section>
+
         </div>
 
         <!-- 마니띠 -->
         <div class="tab-panel" data-panel="manitti" role="tabpanel">
           <section class="card" aria-labelledby="manito-title">
-            <h2 id="manito-title">나의 마니띠는?</h2>
-            <p class="muted">마니띠는 내가 몰래 챙겨줄 사람이에요.</p>
+            <h2 id="manito-title">나의 마니띠는? <small>내가 몰래 챙겨줄 사람</small></h2>
             <p id="manito-status" class="notice">불러오는 중…</p>
 
             <div id="reveal" class="reveal" hidden>
@@ -99,8 +135,8 @@
                   <span class="flip-hint">♡ 눌러서 열어보기</span>
                 </span>
                 <span class="flip-face flip-back id-card">
-                  <span class="id-head">♡ MY MANITTI <small>✦</small></span>
-                  <span class="id-photo" aria-hidden="true">♥</span>
+                  <span class="id-head">♡ 마니띠 일촌 카드</span>
+                  <span class="id-photo" aria-hidden="true"><img src="assets/minimi/friend.svg" alt="" width="160" height="184"></span>
                   <span class="flip-sub">당신의 마니띠는</span>
                   <strong id="manito-name" class="flip-name"></strong>
                   <span class="badge">쉿, 비밀이에요 🤫</span>
@@ -108,12 +144,12 @@
               </button>
 
               <div id="reveal-tip" class="reveal-tip">
-                <figure class="photo"><img src="assets/img/spirit-vanilla.jpg" alt="" width="240" height="441"></figure>
-                <p class="tip-bubble">선물 상자를 톡 눌러 봐요! 내가 몰래 챙겨 줄 마니띠가 나온답니다 ♡</p>
+                <img src="assets/minimi/smile.svg" alt="" width="160" height="184">
+                <p class="tip-bubble">선물 상자를 톡 눌러 봐요! 내가 몰래 챙겨 줄 마니띠가 나와요 ♡</p>
               </div>
 
               <div id="their-profile" class="their-profile" hidden>
-                <h3><span id="their-name"></span> 님은요</h3>
+                <h3><span id="their-name"></span> 님의 프로필</h3>
                 <p id="their-empty" class="muted">아직 프로필을 작성하지 않았어요.</p>
                 <p class="mini-label">😍 좋아하는 것</p>
                 <ul id="their-likes" class="chips"></ul>
@@ -129,14 +165,14 @@
         <div class="tab-panel" data-panel="hint" role="tabpanel">
           <section id="hint-game" class="card" aria-labelledby="hint-title">
             <h2 id="hint-title">내 마니또 힌트 뽑기</h2>
-            <p class="muted">내 마니또가 자기 정체에 대해 남긴 힌트가 마카롱에 들어 있어요. 뽑아서 누군지 맞혀 보세요!</p>
+            <p class="muted">내 마니또가 자기 정체에 대해 남긴 힌트가 캡슐에 들어 있어요. 뽑아서 누군지 맞혀 보세요!</p>
             <p id="hint-status" class="notice" role="status">불러오는 중…</p>
 
             <div id="hint-play" class="claw-layout" hidden>
               <div class="machine">
                 <div class="machine-top">
                   <span class="machine-lights" aria-hidden="true"><i></i><i></i><i></i></span>
-                  <span class="machine-marquee">SWEET CATCHER</span>
+                  <span class="machine-marquee">HINT CATCHER</span>
                   <span class="machine-lights" aria-hidden="true"><i></i><i></i><i></i></span>
                 </div>
 
@@ -167,7 +203,7 @@
               </div>
 
               <div class="hint-box">
-                <img id="claw-face" class="claw-face" src="assets/img/ichigo-smile.jpg" alt="" width="240" height="240">
+                <img id="claw-face" class="claw-face" src="assets/minimi/smile.svg" alt="" width="160" height="184">
                 <h3>뽑은 힌트</h3>
                 <p id="claw-message" class="claw-message" role="status"></p>
                 <p id="hint-list-empty" class="muted">아직 뽑은 힌트가 없어요.</p>
@@ -177,12 +213,15 @@
             </div>
 
             <dialog id="hint-dialog" class="hint-dialog" aria-labelledby="hint-dialog-title">
-              <span class="hint-rays" aria-hidden="true"><i class="zoom-ring" style="--n:0"></i><i class="zoom-ring" style="--n:1"></i><i class="zoom-ring" style="--n:2"></i><i class="zoom-ring" style="--n:3"></i></span>
-              <img class="hint-sticker" src="assets/img/spirit-vanilla.jpg" alt="" width="240" height="441">
-              <span class="hint-capsule" aria-hidden="true"><i></i><i></i></span>
-              <h3 id="hint-dialog-title">힌트 획득!</h3>
-              <p id="hint-dialog-text" class="hint-dialog-text"></p>
-              <button id="hint-dialog-close" class="btn btn-primary" type="button">확인</button>
+              <p class="hint-dialog-bar"><span>알림</span><span aria-hidden="true">_ □ ×</span></p>
+              <div class="hint-dialog-inner">
+                <span class="hint-rays" aria-hidden="true"><i class="zoom-ring" style="--n:0"></i><i class="zoom-ring" style="--n:1"></i><i class="zoom-ring" style="--n:2"></i><i class="zoom-ring" style="--n:3"></i></span>
+                <img class="hint-sticker" src="assets/minimi/laugh.svg" alt="" width="160" height="184">
+                <span class="hint-capsule" aria-hidden="true"><i></i><i></i></span>
+                <h3 id="hint-dialog-title">힌트 획득!</h3>
+                <p id="hint-dialog-text" class="hint-dialog-text"></p>
+                <button id="hint-dialog-close" class="btn btn-primary" type="button">확인</button>
+              </div>
             </dialog>
           </section>
         </div>
@@ -196,7 +235,7 @@
 
           <!-- 마니띠 (내가 챙겨주는 사람) -->
           <section id="chat-giver" class="card chat" aria-labelledby="chat-giver-title">
-            <h2 id="chat-giver-title">내 마니띠 <span class="chat-title-name">○○○</span> 와 대화 중…</h2>
+            <h2 id="chat-giver-title">내 마니띠 <span class="chat-title-name">○○○</span> 님과 쪽지 중</h2>
             <div class="qq">
               <div class="qq-main">
                 <p class="qq-note">마니띠에게 나는 익명으로 보여요. 들키지 않게 조심!</p>
@@ -210,19 +249,19 @@
                 </form>
               </div>
               <aside class="qq-side" aria-hidden="true">
-                <p class="qq-side-head">▼ 상대 프로필</p>
-                <img src="assets/img/dessert-heart.jpg" alt="" width="420" height="420">
+                <p class="qq-side-head">▼ 상대</p>
+                <img src="assets/minimi/friend.svg" alt="" width="160" height="184">
                 <p class="qq-side-head">▼ 내 표시 이름</p>
                 <p class="qq-side-text">비밀 마니또 🤫</p>
-                <p class="qq-side-head">▼ 도우미</p>
-                <img src="assets/img/spirit-cafe.jpg" alt="" width="240" height="470">
+                <p class="qq-side-head">▼ 나</p>
+                <img src="assets/minimi/smile.svg" alt="" width="160" height="184">
               </aside>
             </div>
           </section>
 
           <!-- 마니또 (나를 챙겨주는 사람) -->
           <section id="chat-receiver" class="card chat" aria-labelledby="chat-receiver-title" hidden>
-            <h2 id="chat-receiver-title">내 마니또 <span class="chat-title-name">???</span> 와 대화 중…</h2>
+            <h2 id="chat-receiver-title">내 마니또 <span class="chat-title-name">???</span> 님과 쪽지 중</h2>
             <div class="qq">
               <div class="qq-main">
                 <p class="qq-note">나를 몰래 챙겨주는 사람이에요. 정체는 공개일에!</p>
@@ -236,12 +275,12 @@
                 </form>
               </div>
               <aside class="qq-side" aria-hidden="true">
-                <p class="qq-side-head">▼ 상대 프로필</p>
-                <img src="assets/img/dessert-rose.jpg" alt="" width="420" height="420">
+                <p class="qq-side-head">▼ 상대</p>
+                <img src="assets/minimi/shock.svg" alt="" width="160" height="184">
                 <p class="qq-side-head">▼ 정체</p>
                 <p class="qq-side-text">공개일까지 비밀 ♡</p>
-                <p class="qq-side-head">▼ 도우미</p>
-                <img src="assets/img/spirit-chocolat.jpg" alt="" width="240" height="453">
+                <p class="qq-side-head">▼ 나</p>
+                <img src="assets/minimi/smile.svg" alt="" width="160" height="184">
               </aside>
             </div>
           </section>
@@ -251,7 +290,6 @@
         <div class="tab-panel" data-panel="profile" role="tabpanel">
           <section class="card" aria-labelledby="profile-title">
             <h2 id="profile-title">내 프로필</h2>
-            <figure class="photo card-deco" aria-hidden="true"><img src="assets/img/spirit-chocolat.jpg" alt="" width="240" height="453"></figure>
             <p class="muted profile-intro">나를 챙겨줄 마니또가 볼 수 있어요. 쉼표(,)로 여러 개 적어주세요.</p>
             <form id="profile-form">
               <label class="field">
@@ -292,7 +330,7 @@
         </div>
       </main>
 
-      <!-- 오른쪽 탭 -->
+      <!-- 오른쪽 메뉴 탭 -->
       <nav class="hompy-tabs" role="tablist" aria-label="미니홈피 메뉴">
         <button type="button" role="tab" data-tab="home">홈</button>
         <button type="button" role="tab" data-tab="manitti">마니띠</button>
@@ -303,15 +341,15 @@
     </div>
   </div>
 
-  <p class="credit">이미지: 꿈빛 파티시엘 © Natsumi Matsumoto / Shueisha · Yumeiro Patissiere Project · v2.0.0</p>
+  <p class="credit">© AX2 마니또 · 미니홈피 스킨 v2.1.0</p>
 
-  <script src="js/motion.js?v=2.0.0"></script>
-  <script src="js/fx.js?v=2.0.0"></script>
-  <script src="js/participants.js?v=2.0.0"></script>
-  <script src="js/store.js?v=2.0.0"></script>
-  <script src="js/auth.js?v=2.0.0"></script>
-  <script src="js/claw.js?v=2.0.0"></script>
-  <script src="js/me.js?v=2.0.0"></script>
-  <script src="js/hompy.js?v=2.0.0"></script>
+  <script src="js/motion.js?v=2.1.0"></script>
+  <script src="js/fx.js?v=2.1.0"></script>
+  <script src="js/participants.js?v=2.1.0"></script>
+  <script src="js/store.js?v=2.1.0"></script>
+  <script src="js/auth.js?v=2.1.0"></script>
+  <script src="js/claw.js?v=2.1.0"></script>
+  <script src="js/me.js?v=2.1.0"></script>
+  <script src="js/hompy.js?v=2.1.0"></script>
 </body>
 </html>
