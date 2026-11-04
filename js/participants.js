@@ -10,7 +10,6 @@ const PARTICIPANTS = [
   { id: 8,  name: "권혁주", gender: "" },
   { id: 9,  name: "김민서", gender: "" },
   { id: 10, name: "유정현", gender: "" },
-  { id: 11, name: "이정빈", gender: "" },
   { id: 12, name: "장희주", gender: "" },
   { id: 13, name: "소준희", gender: "" },
   { id: 14, name: "문승호", gender: "" },
