@@ -4,15 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>내 마니또</title>
-  <script src="js/theme.js?v=1.5.0"></script>
-  <link rel="icon" href="assets/icons/heart.svg?v=1.5.0" type="image/svg+xml">
+  <script src="js/theme.js?v=1.6.0"></script>
+  <link rel="icon" href="assets/icons/heart.svg?v=1.6.0" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+KR:wght@400;700&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
-  <link rel="stylesheet" href="css/base.css?v=1.5.0">
-  <link rel="stylesheet" href="css/components.css?v=1.5.0">
-  <link rel="stylesheet" href="css/pages.css?v=1.5.0">
+  <link rel="stylesheet" href="css/base.css?v=1.6.0">
+  <link rel="stylesheet" href="css/components.css?v=1.6.0">
+  <link rel="stylesheet" href="css/pages.css?v=1.6.0">
+  <link rel="stylesheet" href="css/fx.css?v=1.6.0">
 </head>
 <body class="page-me">
   <header class="topbar">
@@ -24,6 +25,8 @@
       </div>
     </div>
   </header>
+
+  <div class="ticker" data-ticker="SECRET MANITO ✿ AX2 TEAM ✿ WHO IS YOUR MANITO?" aria-hidden="true"></div>
 
   <main class="wrap grid">
     <!-- 정체 공개 -->
@@ -124,10 +127,12 @@
           <p id="claw-message" class="claw-message" role="status"></p>
           <p id="hint-list-empty" class="muted">아직 뽑은 힌트가 없어요.</p>
           <ol id="hint-list" class="hint-list"></ol>
+          <div class="gacha-mini" data-gacha="deco" aria-hidden="true"></div>
         </div>
       </div>
 
       <dialog id="hint-dialog" class="hint-dialog" aria-labelledby="hint-dialog-title">
+        <span class="hint-rays" aria-hidden="true"><i class="zoom-ring" style="--n:0"></i><i class="zoom-ring" style="--n:1"></i><i class="zoom-ring" style="--n:2"></i><i class="zoom-ring" style="--n:3"></i></span>
         <span class="hint-capsule" aria-hidden="true"><i></i><i></i></span>
         <h3 id="hint-dialog-title">힌트 획득!</h3>
         <p id="hint-dialog-text" class="hint-dialog-text"></p>
@@ -204,11 +209,12 @@
       </form>
     </section>
   </main>
-  <script src="js/motion.js?v=1.5.0"></script>
-  <script src="js/participants.js?v=1.5.0"></script>
-  <script src="js/store.js?v=1.5.0"></script>
-  <script src="js/auth.js?v=1.5.0"></script>
-  <script src="js/claw.js?v=1.5.0"></script>
-  <script src="js/me.js?v=1.5.0"></script>
+  <script src="js/motion.js?v=1.6.0"></script>
+  <script src="js/fx.js?v=1.6.0"></script>
+  <script src="js/participants.js?v=1.6.0"></script>
+  <script src="js/store.js?v=1.6.0"></script>
+  <script src="js/auth.js?v=1.6.0"></script>
+  <script src="js/claw.js?v=1.6.0"></script>
+  <script src="js/me.js?v=1.6.0"></script>
 </body>
 </html>

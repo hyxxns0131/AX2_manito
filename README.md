@@ -219,7 +219,8 @@ function draw(people, target, tries = 3000) {
 - **나머지 화면**: 각 칸이 테두리 있는 게임 화면이고 위에 `WORLD 1-n`, `1P` HUD 표시
 - **콘솔 색**: 다이얼을 돌리거나 🎨 버튼에서 프리셋 6가지·직접 고르기. `js/theme.js`가 이 브라우저에 사람별로 저장 (다른 기기와는 공유되지 않음)
 - **폰트**: HUD·제목 [Galmuri11](https://github.com/quiple/galmuri) (jsDelivr), 로고·버튼 `Bagel Fat One`, 본문 `Noto Sans KR` (Google Fonts)
-- **애니메이션**: 화면 켜짐·꺼짐, 틀렸을 때 지지직, 조이스틱·다이얼, 구름과 소품 (`prefers-reduced-motion` 시 생략)
+- **가챠 머신**: 메인 화면에서 손잡이를 돌릴 수 있고, 힌트를 뽑으면 마이페이지의 머신도 함께 돌아감
+- **애니메이션** (`css/fx.css`, `js/fx.js`, `prefers-reduced-motion` 시 생략): Halftone·Grainy 배경, 흐르는 띠와 큰 글자(Kinetic Typography), Y2K Chrome 로고, Text Scramble, Claymorphism 가챠, Liquid·Shape Morph, Holographic 캡슐, Line Animation, Squash and Stretch, Memphis 컨페티, Infinite Zoom
 
 ---
 

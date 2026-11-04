@@ -59,7 +59,7 @@ function createClawGame(root, session) {
       const c = document.createElement("span");
       c.className = `capsule capsule-${CAPSULE_COLORS[i % CAPSULE_COLORS.length]}`;
       // 칸을 나눠 겹치지 않게 놓고, 칸 안에서만 무작위
-      c.dataset.x = String(30 + i * 22 + Math.random() * 12);
+      c.dataset.x = String(28 + i * 26 + Math.random() * 8);
       c.style.left = `${c.dataset.x}%`;
       glass.append(c);
     }
@@ -95,8 +95,11 @@ function createClawGame(root, session) {
   }
 
   function showHint(text) {
-    $in("#hint-dialog-text").textContent = text;
+    const out = $in("#hint-dialog-text");
+    out.textContent = "";
     dialog.showModal();
+    burstConfetti(dialog);
+    setTimeout(() => scrambleText(out, text, 900), REDUCE_MOTION ? 0 : 700);
   }
 
   async function grab() {
@@ -143,6 +146,7 @@ function createClawGame(root, session) {
       const result = await drawing;
       if (result) {
         game.drawn = [...game.drawn, result.text];
+        await playGacha();
         showHint(result.text);
       } else {
         say("남은 힌트가 없어요.");

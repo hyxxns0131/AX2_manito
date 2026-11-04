@@ -121,7 +121,10 @@ async function initManito(people, settings, receiverId) {
   let opened = false;
   try { opened = localStorage.getItem(openedKey) === "1"; } catch {}
   if (opened) open();
-  else card.addEventListener("click", open, { once: true });
+  else card.addEventListener("click", () => {
+    open();
+    setTimeout(() => scrambleText($("#manito-name"), receiver.name, 800), REDUCE_MOTION ? 0 : 900);
+  }, { once: true });
 
   return { receiver, lockedUntil: null };
 }
@@ -220,6 +223,7 @@ function renderFinal(people, assignment) {
     return li;
   }));
   section.hidden = false;
+  scrambleText($("#final-giver"), myGiver?.name ?? "?", 900);
   return myGiver;
 }
 

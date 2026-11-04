@@ -4,17 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>우리 팀 마니또</title>
-  <script src="js/theme.js?v=1.5.0"></script>
-  <link rel="icon" href="assets/icons/heart.svg?v=1.5.0" type="image/svg+xml">
+  <script src="js/theme.js?v=1.6.0"></script>
+  <link rel="icon" href="assets/icons/heart.svg?v=1.6.0" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+KR:wght@400;700&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
-  <link rel="stylesheet" href="css/base.css?v=1.5.0">
-  <link rel="stylesheet" href="css/components.css?v=1.5.0">
-  <link rel="stylesheet" href="css/pages.css?v=1.5.0">
+  <link rel="stylesheet" href="css/base.css?v=1.6.0">
+  <link rel="stylesheet" href="css/components.css?v=1.6.0">
+  <link rel="stylesheet" href="css/pages.css?v=1.6.0">
+  <link rel="stylesheet" href="css/fx.css?v=1.6.0">
 </head>
 <body class="page-login">
+  <div class="ticker" data-ticker="SECRET MANITO ✿ AX2 TEAM ✿ WHO IS YOUR MANITO?" aria-hidden="true"></div>
+
   <form id="login-form" class="console" autocomplete="off">
     <div class="console-vents" aria-hidden="true"><i></i><i class="vent-wide"></i><i></i></div>
 
@@ -48,9 +51,9 @@
       <div class="crt">
         <div class="scene" aria-hidden="true">
           <i class="cloud c1"></i><i class="cloud c2"></i><i class="cloud c3"></i>
-          <img class="scene-item s-gift" src="assets/icons/gift.svg?v=1.5.0" alt="" width="84" height="84">
-          <img class="scene-item s-heart" src="assets/icons/heart.svg?v=1.5.0" alt="" width="48" height="48">
-          <img class="scene-item s-star" src="assets/icons/star.svg?v=1.5.0" alt="" width="56" height="56">
+          <img class="scene-item s-gift" src="assets/icons/gift.svg?v=1.6.0" alt="" width="84" height="84">
+          <img class="scene-item s-heart" src="assets/icons/heart.svg?v=1.6.0" alt="" width="48" height="48">
+          <img class="scene-item s-star" src="assets/icons/star.svg?v=1.6.0" alt="" width="56" height="56">
           <i class="grass"></i>
         </div>
 
@@ -60,8 +63,8 @@
 
         <div class="crt-content">
           <div class="start-panel">
-            <h1 class="logo">마니또<span class="logo-heart">♥</span></h1>
-            <p class="logo-sub">AX2 TEAM · SECRET GAME</p>
+            <h1 class="logo" data-kinetic>마니또<span class="logo-heart">♥</span></h1>
+            <p class="logo-sub" data-scramble>AX2 TEAM · SECRET GAME</p>
 
             <label class="field">
               <span class="field-label">PLAYER <small>이름</small></span>
@@ -80,7 +83,7 @@
         </div>
 
         <div class="hud hud-bottom" aria-hidden="true">
-          <span>1P ▮▮▮▮▮▮</span><span class="brand">MANITO v1.5.0</span><span class="hud-gold">WORLD 1-1</span>
+          <span>1P ▮▮▮▮▮▮</span><span class="brand">MANITO v1.6.0</span><span class="hud-gold">WORLD 1-1</span>
         </div>
       </div>
     </div>
@@ -102,9 +105,26 @@
     </div>
   </form>
 
-  <script src="js/motion.js?v=1.5.0"></script>
-  <script src="js/participants.js?v=1.5.0"></script>
-  <script src="js/store.js?v=1.5.0"></script>
-  <script src="js/auth.js?v=1.5.0"></script>
+  <!-- 메인 가챠 무대 -->
+  <section class="gacha-stage" aria-label="오늘의 뽑기">
+    <div>
+      <h2 class="kinetic-title">
+        <span class="line" data-kinetic>WHO IS</span>
+        <span class="line" data-kinetic>YOUR</span>
+        <span class="line" data-kinetic>MANITO?</span>
+      </h2>
+      <p class="kinetic-sub">손잡이를 돌려 보세요! 힌트를 모아 내 마니또를 맞혀요 🎁</p>
+    </div>
+    <div data-gacha></div>
+  </section>
+
+  <div class="ticker ticker-alt" data-ticker="SECRET MANITO ✿ AX2 TEAM ✿ WHO IS YOUR MANITO?" aria-hidden="true"></div>
+  <div class="zoom-tunnel" aria-hidden="true"><i class="zoom-ring" style="--n:0"></i><i class="zoom-ring" style="--n:1"></i><i class="zoom-ring" style="--n:2"></i><i class="zoom-ring" style="--n:3"></i></div>
+
+  <script src="js/motion.js?v=1.6.0"></script>
+  <script src="js/fx.js?v=1.6.0"></script>
+  <script src="js/participants.js?v=1.6.0"></script>
+  <script src="js/store.js?v=1.6.0"></script>
+  <script src="js/auth.js?v=1.6.0"></script>
 </body>
 </html>
